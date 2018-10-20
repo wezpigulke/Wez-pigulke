@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/today"
+            android:icon="@drawable/today"
+            android:title="Dzisiaj" />
+        <item
+            android:id="@+id/reminder"
+            android:icon="@drawable/reminder"
+            android:title="Lista przypomnień"/>
+        <item
+            android:id="@+id/listOfMedicine"
+            android:icon="@drawable/medicine"
+            android:title="Baza leków" />
+        <item
+            android:id="@+id/listOfDoctors"
+            android:icon="@drawable/doctor"
+            android:title="Lista lekarzy" />
+        <item
+            android:id="@+id/listOfVisit"
+            android:icon="@drawable/visit"
+            android:title="Wizyty u lekarza" />
+        <item
+        android:id="@+id/listOfTests"
+            android:icon="@drawable/measurement"
+        android:title="Lista pomiarów" />
+        <item
+            android:id="@+id/listOfNotes"
+            android:icon="@drawable/notes_icon"
+            android:title="Własne notatki" />
+        <item
+            android:id="@+id/listOfProfiles"
+            android:icon="@drawable/profile"
+            android:title="Lista profili" />
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/setting"
+            android:title="Ustawienia" />
+        <item
+            android:id="@+id/aboutAuthor"
+            android:icon="@drawable/author"
+            android:title="O autorze" />
+    </group>
+</menu>

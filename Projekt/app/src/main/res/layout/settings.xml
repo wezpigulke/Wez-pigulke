@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <me.itangqi.waveloadingview.WaveLoadingView
+        android:id="@+id/waveLoadingView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+
+        app:wlv_borderColor="@android:color/holo_blue_dark"
+        app:wlv_borderWidth="3dp"
+        app:wlv_shapeType="circle"
+        app:wlv_round_rectangle="true"
+        app_wlv_triangle_direction="north"
+        wlv_titleTopSize="42dp"
+
+        app:wlv_titleCenterStrokeColor="@android:color/black"
+        app:wlv_titleCenterStrokeWidth="3dp"
+        app:wlv_titleCenterColor="@android:color/white"
+        app:wlv_titleCenterSize="42dp"
+
+        app:wlv_titleBottomStrokeColor="@android:color/black"
+        app:wlv_titleBottomStrokeWidth="3dp"
+        app:wlv_titleBottomColor="@android:color/white"
+        app:wlv_titleBottomSize="42dp"
+
+        app:wlv_waveAmplitude="70"
+        app:wlv_waveColor="#77C920"/>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:text="Usuń dane"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="198dp"
+        android:layout_height="36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/waveLoadingView"
+        android:layout_marginBottom="117dp"
+        android:text="Zapomniane: "
+        android:textSize="24dp" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="198dp"
+        android:layout_height="36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/waveLoadingView"
+        android:layout_marginBottom="163dp"
+        android:text="Przyjęte: "
+        android:textSize="24dp" />
+
+</RelativeLayout>

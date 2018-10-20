@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="544dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Spinner
+                android:id="@+id/spinnerProfileMeasurement"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginBottom="32dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="32dp"
+                app:layout_constraintBottom_toTopOf="@+id/spinnerTypeMeasurement"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dateMeasurement" />
+
+            <Spinner
+                android:id="@+id/spinnerTypeMeasurement"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginStart="70dp"
+                app:layout_constraintBottom_toTopOf="@+id/resultMeasurement"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinnerProfileMeasurement" />
+
+            <TextView
+                android:id="@+id/timeMeasurement"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="32dp"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/spinnerTypeMeasurement"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/dateMeasurement"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="32dp"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/resultMeasurement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="29dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="32dp"
+                android:backgroundTint="@android:color/holo_green_light"
+                android:ems="10"
+                android:hint="Wynik pomiaru"
+                android:inputType="number"
+                android:textCursorDrawable="@android:color/holo_blue_light"
+                app:layout_constraintBottom_toTopOf="@+id/dodajMeasurement"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinnerTypeMeasurement"
+                tools:targetApi="lollipop" />
+
+            <Button
+                android:id="@+id/dodajMeasurement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginEnd="135dp"
+                android:layout_marginLeft="135dp"
+                android:layout_marginRight="135dp"
+                android:layout_marginStart="135dp"
+                android:text="DODAJ"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/resultMeasurement" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

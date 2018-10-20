@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.kuba.dsadsax">
+    <uses-permission android:name="android.permision.CALL_PHONE"></uses-permission>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+
+
+    <uses-sdk android:maxSdkVersion="27"
+        android:targetSdkVersion="27"></uses-sdk>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/logo"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".StartMenu"
+            android:label="Weź pigułkę"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".MainMenu"
+            android:label="Dzisiaj"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".AddReminder"
+            android:parentActivityName=".MainMenu"
+            android:label="Dodawanie przypomnienia"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".GoToAuthor"
+            android:label="O autorze"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".AddDoctor"
+            android:label="Dodaj lekarza"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".GoToSettings"
+            android:label="Ustawienia"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".GoToProfiles"
+            android:label="Lista profili"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".GoToNotes"
+            android:label="Własne notatki"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".GoToVisit"
+            android:label="Lista wizyt"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".AddProfile"
+            android:label="Dodaj profil"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".AddVisit"
+            android:label="Dodaj wizytę"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".AddNotes"
+            android:configChanges="orientation"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".AddMeasurement"
+            android:label="Dodaj pomiar"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".AddTypeMeasurement"
+            android:configChanges="orientation"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity android:name=".RepeatingActivity"
+            android:label="Weź tabletkę"/>
+
+        <receiver android:name=".NotificationReceiver"/>
+
+    </application>
+
+</manifest>

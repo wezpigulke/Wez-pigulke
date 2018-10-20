@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/specializationVisit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/addressVisit"
+        android:layout_marginTop="11dp"
+        android:text="Imie i nazwisko"
+        android:textColor="#00a7f5"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/dateVisit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/profileVisit"
+        android:layout_alignStart="@+id/profileVisit"
+        android:layout_below="@+id/specializationVisit"
+        android:text="Specjalizacja"
+        android:textColor="#f92a3f"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/addressVisit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/dateVisit"
+        android:layout_below="@+id/dateVisit"
+        android:text="Numer telefonu"
+        android:textColor="#000"
+        android:textSize="16dp" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="74dp"
+        android:layout_height="77dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="13dp"
+        app:srcCompat="@drawable/doctor"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="14dp" />
+</RelativeLayout>

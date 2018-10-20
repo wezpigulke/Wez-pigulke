@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <Spinner
+                android:id="@+id/spinner2"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="32dp"
+                app:layout_constraintBottom_toTopOf="@+id/specializationVisit"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dateVisit" />
+
+            <TextView
+                android:id="@+id/timeVisit"
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/spinner2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/dateVisit"
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/specializationVisit"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@android:color/holo_green_light"
+                android:ems="10"
+                android:hint="Imie lekarza"
+                android:inputType="textPersonName"
+                android:textCursorDrawable="@android:color/holo_blue_light"
+                app:layout_constraintBottom_toTopOf="@+id/surnameVisit"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner2"
+                tools:targetApi="lollipop" />
+
+            <EditText
+                android:id="@+id/surnameVisit"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@android:color/holo_green_light"
+                android:ems="10"
+                android:hint="Nazwisko"
+                android:inputType="textPersonName"
+                android:textCursorDrawable="@android:color/holo_blue_light"
+                app:layout_constraintBottom_toTopOf="@+id/nameVisit"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/specializationVisit" />
+
+            <EditText
+                android:id="@+id/nameVisit"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@android:color/holo_green_light"
+                android:ems="10"
+                android:hint="Specjalizacja"
+                android:inputType="textPersonName"
+                android:textCursorDrawable="@android:color/holo_blue_light"
+                app:layout_constraintBottom_toTopOf="@+id/addressVisit"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/surnameVisit" />
+
+            <EditText
+                android:id="@+id/addressVisit"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginEnd="70dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@android:color/holo_green_light"
+                android:ems="10"
+                android:hint="Adres"
+                android:inputType="textPersonName"
+                android:textCursorDrawable="@android:color/holo_blue_light"
+                app:layout_constraintBottom_toTopOf="@+id/dodajVisit"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nameVisit" />
+
+            <Button
+                android:id="@+id/dodajVisit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="135dp"
+                android:layout_marginLeft="135dp"
+                android:layout_marginRight="135dp"
+                android:layout_marginStart="135dp"
+                android:layout_marginTop="16dp"
+                android:text="DODAJ"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addressVisit" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
