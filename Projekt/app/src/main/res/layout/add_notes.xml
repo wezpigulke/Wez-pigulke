@@ -17,10 +17,11 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
+                app:theme="@style/ToolbarTheme"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_weight="1"
-                android:background="@color/colorPrimary"
+                android:background="?attr/colorPrimary"
                 android:minHeight="?attr/actionBarSize"
                 app:title="Dodaj notatkę"
                 app:titleTextColor="@color/white"

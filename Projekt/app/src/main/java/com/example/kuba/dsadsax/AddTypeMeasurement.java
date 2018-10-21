@@ -3,6 +3,7 @@ package com.example.kuba.dsadsax;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +27,8 @@ public class AddTypeMeasurement extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_type_measurement);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         dodajButton = findViewById(R.id.dodajTypButton);
         typBadania = findViewById(R.id.typBadania);
@@ -58,4 +61,17 @@ public class AddTypeMeasurement extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                onBackPressed();
+
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

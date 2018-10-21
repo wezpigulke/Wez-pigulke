@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -67,6 +68,8 @@ public class AddMeasurement extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_measurement);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
@@ -254,4 +257,18 @@ public class AddMeasurement extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                onBackPressed();
+
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
+

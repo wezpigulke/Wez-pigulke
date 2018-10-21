@@ -35,7 +35,6 @@
 
         <activity
             android:name=".AddReminder"
-            android:parentActivityName=".MainMenu"
             android:label="Dodawanie przypomnienia"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
@@ -53,7 +52,8 @@
             android:name=".AddDoctor"
             android:label="Dodaj lekarza"
             android:configChanges="orientation"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:parentActivityName=".Ad">
         </activity>
 
         <activity
@@ -61,6 +61,14 @@
             android:label="Ustawienia"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name=".GoToDoctors"
+            android:label="Doktorzy"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
         </activity>
 
         <activity

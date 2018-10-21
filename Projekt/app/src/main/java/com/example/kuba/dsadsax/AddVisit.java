@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -78,6 +79,8 @@ public class AddVisit extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_visit);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         add = findViewById(R.id.dodajVisit);
         data = findViewById(R.id.dateVisit);
@@ -281,4 +284,17 @@ public class AddVisit extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                onBackPressed();
+
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

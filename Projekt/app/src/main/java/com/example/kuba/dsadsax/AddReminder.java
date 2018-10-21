@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -114,6 +115,8 @@ public class AddReminder extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_reminder);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         myDb = new DatabaseHelper(this);
         Cursor c = myDb.getAllData_PRZYPOMNIENIE();
@@ -1227,6 +1230,18 @@ public class AddReminder extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                onBackPressed();
+
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

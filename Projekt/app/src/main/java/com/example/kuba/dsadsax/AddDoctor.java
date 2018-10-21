@@ -1,7 +1,9 @@
 package com.example.kuba.dsadsax;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,7 +11,7 @@ import android.widget.EditText;
 public class AddDoctor extends AppCompatActivity {
 
     DatabaseHelper myDb;
-    private static final String TAG = "AddProfile";
+    private static final String TAG = "AddDoctor";
 
     private Button add;
 
@@ -66,4 +68,18 @@ public class AddDoctor extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                onBackPressed();
+
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
