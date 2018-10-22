@@ -1,10 +1,12 @@
 package com.example.kuba.dsadsax;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +31,7 @@ public class GoToMeasurement extends Fragment{
     private ArrayList<String> labelx;
     private String uzytkownik;
     private String typ;
+    private Integer idd;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -147,9 +150,7 @@ public class GoToMeasurement extends Fragment{
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
 
-                            int id = (int) results.get(position).getId();
-                            myDb.remove_POMIARY(id);
-                            AktualizujBaze();
+                            idd = (int) results.get(position).getId();
 
                         }
 
@@ -184,6 +185,28 @@ public class GoToMeasurement extends Fragment{
 
         adapter = new MeasurementListAdapter(getActivity(), results);
         lv.setAdapter(adapter);
+
+    }
+
+    public void dialogRemove() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialog);
+
+        builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
+                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        myDb.remove_POMIARY(idd);
+                        AktualizujBaze();
+                    }
+                })
+                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        builder.show();
 
     }
 

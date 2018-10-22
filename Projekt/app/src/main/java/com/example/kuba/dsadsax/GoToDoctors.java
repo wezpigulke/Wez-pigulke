@@ -3,11 +3,13 @@ package com.example.kuba.dsadsax;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ public class GoToDoctors extends Fragment {
     private List<Doctor> results;
     private DoctorListAdapter adapter;
     private ListView lv;
+    private Integer idd;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -84,9 +87,8 @@ public class GoToDoctors extends Fragment {
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
 
-                            int idd = (int) results.get(position).getId();
-                            myDb.remove_DOKTORZY((int) idd);
-                            AktualizujBaze();
+                            idd = (int) results.get(position).getId();
+                            dialogRemove();
 
                         }
                     }
@@ -117,4 +119,27 @@ public class GoToDoctors extends Fragment {
         lv.setAdapter(adapter);
 
     }
+
+    public void dialogRemove() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialog);
+
+        builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
+                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        myDb.remove_DOKTORZY((int) idd);
+                        AktualizujBaze();
+                    }
+                })
+                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        builder.show();
+
+    }
+
 }

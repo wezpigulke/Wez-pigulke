@@ -3,15 +3,15 @@ package com.example.kuba.dsadsax;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.text.InputFilter;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,16 +19,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class GoToReminder extends Fragment {
 
@@ -40,8 +32,7 @@ public class GoToReminder extends Fragment {
     private ArrayList<String> label;
     private String uzytkownik;
     private FloatingActionButton fab;
-    private Integer id_prz;
-    private Integer ilosc_dn;
+    private Integer idd;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -125,34 +116,13 @@ public class GoToReminder extends Fragment {
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
 
-                            int idd = (int) results.get(position).getId();
-
-                            myDb = new DatabaseHelper(getActivity());
-                            final Cursor c = myDb.getID_NOTYFIKACJA(idd);
-
-                            if (c.getCount() != 0) {
-                                while (c.moveToNext()) {
-
-                                    AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-                                    Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
-                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                            getActivity(), Integer.parseInt(c.getString(0)), myIntent,
-                                            PendingIntent.FLAG_UPDATE_CURRENT);
-                                    alarmManager.cancel(pendingIntent);
-
-                                    myDb.insert_USUNIETE_PRZ(Integer.parseInt(c.getString(0)));
-
-                                }
-                            }
-
-                            myDb.remove_PRZYPOMNIENIE((int) idd);
-                            myDb.remove_NOTYFIKACJA((int) idd);
-
-                            AktualizujBaze();
+                            idd = results.get(position).getId();
+                            dialogRemove();
 
                         }
 
                     }
+
                 });
 
         lv.setOnTouchListener(touchListener);
@@ -174,7 +144,7 @@ public class GoToReminder extends Fragment {
 
         if (c.getCount() != 0) {
             while (c.moveToNext()) {
-                if(Integer.parseInt(c.getString(5))==0) {
+                if (Integer.parseInt(c.getString(5)) == 0) {
                     myDb.remove_PRZYPOMNIENIE(c.getInt(0));
                 }
                 results.add(new Reminder(c.getInt(0), c.getString(3) + " (" + c.getString(4) + ")", c.getString(8), "Pozostało dni: " + c.getString(5), c.getString(6)));
@@ -185,4 +155,53 @@ public class GoToReminder extends Fragment {
         lv.setAdapter(adapter);
 
     }
+
+    public void dialogRemove() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialog);
+
+        builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
+                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        usunDane();
+                    }
+                })
+                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        builder.show();
+
+    }
+
+    private void usunDane() {
+
+        myDb = new DatabaseHelper(getActivity());
+        final Cursor c = myDb.getID_NOTYFIKACJA(idd);
+
+        if (c.getCount() != 0) {
+            while (c.moveToNext()) {
+
+                AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+                Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                        getActivity(), Integer.parseInt(c.getString(0)), myIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+                alarmManager.cancel(pendingIntent);
+
+                myDb.insert_USUNIETE_PRZ(Integer.parseInt(c.getString(0)));
+
+            }
+        }
+
+        myDb.remove_PRZYPOMNIENIE((int) idd);
+        myDb.remove_NOTYFIKACJA((int) idd);
+
+        AktualizujBaze();
+
+    }
+
 }

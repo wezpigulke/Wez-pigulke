@@ -3,6 +3,7 @@ package com.example.kuba.dsadsax;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +43,7 @@ public class GoToToday extends Fragment {
     private String nazwaLeku;
     private String dawka;
     private Integer typ;
+    private Integer idd;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -112,83 +115,8 @@ public class GoToToday extends Fragment {
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
 
-                            int idd = (int) results.get(position).getId();
-
-                            myDb = new DatabaseHelper(getActivity());
-
-                            int id = 0;
-                            int typ = 0;
-                            int id_p = 0;
-                            int dni = 0;
-
-                            Cursor ccc = myDb.getdataID_NOTYFIKACJA(idd);
-                            if (ccc.getCount() != 0) {
-                                while (ccc.moveToNext()) {
-                                    nazwaLeku = ccc.getString(1);
-                                    dawka = ccc.getString(2);
-                                    profil = ccc.getString(5);
-                                    id = Integer.parseInt(ccc.getString(6));
-                                    id_p = Integer.parseInt(ccc.getString(7));
-                                    typ = Integer.parseInt(ccc.getString(8));
-                                    dni = Integer.parseInt(ccc.getString(9));
-                                }
-                            }
-
-                            String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                            Date dzisiaj = null;
-
-                            try {
-                                dzisiaj = sdf.parse(dzisiejszaData);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-
-                            Calendar cz = Calendar.getInstance();
-                            cz.setTime(dzisiaj);
-                            cz.add(Calendar.DATE, typ);
-
-                            myDb.remove_NOTYFIKACJA(id);
-                            myDb.insert_USUNIETE_PRZ(id);
-
-                            AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-                            Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                    getActivity(), id, myIntent,
-                                    PendingIntent.FLAG_UPDATE_CURRENT);
-                            alarmManager.cancel(pendingIntent);
-
-                            if(dni>0) {
-
-                                Intent intx = new Intent(getContext(), NotificationReceiver.class);
-                                intx.putExtra("Value", profil + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + dawka + ")");
-
-                                pendingIntent = PendingIntent.getBroadcast(
-                                        getContext(), id, intx,
-                                        PendingIntent.FLAG_UPDATE_CURRENT);
-
-                                alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
-                                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cz.getTimeInMillis(), AlarmManager.INTERVAL_DAY * typ, pendingIntent);
-
-                                myDb.remove_USUNIETE_PRZ(id);
-
-                                Cursor policz = myDb.getCount_NOTYFIKACJA(id_p, dzisiejszaData);
-                                int ile = 0;
-
-                                if (policz.getCount() != 0) {
-                                        policz.moveToNext();
-                                        ile = Integer.parseInt(policz.getString(0));
-                                    }
-
-                                if (ile==0) myDb.updateDays_PRZYPOMNIENIE(id_p, dzisiejszaData, dni - 1);
-                                if ((dni-1)==0)  myDb.remove_PRZYPOMNIENIE(id_p);
-                            }
-                            else {
-                                myDb.remove_PRZYPOMNIENIE(id_p);
-                            }
-
-                            AktualizujBaze();
-
+                            idd = (int) results.get(position).getId();
+                            dialogRemove();
                         }
                     }
                 });
@@ -252,4 +180,103 @@ public class GoToToday extends Fragment {
         lv.setAdapter(adapter);
 
     }
+
+    private void usunDane() {
+        myDb = new DatabaseHelper(getActivity());
+
+        int id = 0;
+        int typ = 0;
+        int id_p = 0;
+        int dni = 0;
+
+        Cursor ccc = myDb.getdataID_NOTYFIKACJA(idd);
+        if (ccc.getCount() != 0) {
+            while (ccc.moveToNext()) {
+                nazwaLeku = ccc.getString(1);
+                dawka = ccc.getString(2);
+                profil = ccc.getString(5);
+                id = Integer.parseInt(ccc.getString(6));
+                id_p = Integer.parseInt(ccc.getString(7));
+                typ = Integer.parseInt(ccc.getString(8));
+                dni = Integer.parseInt(ccc.getString(9));
+            }
+        }
+
+        String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        Date dzisiaj = null;
+
+        try {
+            dzisiaj = sdf.parse(dzisiejszaData);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Calendar cz = Calendar.getInstance();
+        cz.setTime(dzisiaj);
+        cz.add(Calendar.DATE, typ);
+
+        myDb.remove_NOTYFIKACJA(id);
+        myDb.insert_USUNIETE_PRZ(id);
+
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                getActivity(), id, myIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
+
+        if(dni>0) {
+
+            Intent intx = new Intent(getContext(), NotificationReceiver.class);
+            intx.putExtra("Value", profil + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + dawka + ")");
+
+            pendingIntent = PendingIntent.getBroadcast(
+                    getContext(), id, intx,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+
+            alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cz.getTimeInMillis(), AlarmManager.INTERVAL_DAY * typ, pendingIntent);
+
+            myDb.remove_USUNIETE_PRZ(id);
+
+            Cursor policz = myDb.getCount_NOTYFIKACJA(id_p, dzisiejszaData);
+            int ile = 0;
+
+            if (policz.getCount() != 0) {
+                policz.moveToNext();
+                ile = Integer.parseInt(policz.getString(0));
+            }
+
+            if (ile==0) myDb.updateDays_PRZYPOMNIENIE(id_p, dzisiejszaData, dni - 1);
+            if ((dni-1)==0)  myDb.remove_PRZYPOMNIENIE(id_p);
+        }
+        else {
+            myDb.remove_PRZYPOMNIENIE(id_p);
+        }
+
+        AktualizujBaze();
+    }
+
+    public void dialogRemove() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialog);
+
+        builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
+                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        usunDane();
+                    }
+                })
+                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        builder.show();
+
+    }
+
 }

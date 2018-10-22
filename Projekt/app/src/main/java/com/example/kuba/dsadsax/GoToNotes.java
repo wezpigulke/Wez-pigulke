@@ -3,6 +3,7 @@ package com.example.kuba.dsadsax;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +40,7 @@ public class GoToNotes extends Fragment {
     private Spinner spinner;
     private ArrayList<String> label;
     private String uzytkownik;
+    private Integer idd;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -127,9 +130,8 @@ public class GoToNotes extends Fragment {
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
 
-                            int id = (int) results.get(position).getId();
-                            myDb.remove_NOTATKI(id);
-                            AktualizujBaze();
+                            idd = (int) results.get(position).getId();
+                            dialogRemove();
 
                         }
 
@@ -162,6 +164,28 @@ public class GoToNotes extends Fragment {
 
         adapter = new NotesListAdapter(getActivity(), results);
         lv.setAdapter(adapter);
+
+    }
+
+    public void dialogRemove() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialog);
+
+        builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
+                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        myDb.remove_NOTATKI(idd);
+                        AktualizujBaze();
+                    }
+                })
+                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        builder.show();
 
     }
 
