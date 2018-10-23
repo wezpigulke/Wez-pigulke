@@ -260,7 +260,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-
     public Cursor getUserData_NOTYFIKACJA(String user) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, B.Profil " +
@@ -277,6 +276,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "FROM " + NOTYFIKACJA +
                 " WHERE " + "ID_przypomnienie" + "=" + "'" + id + "'" +
                 " AND " + "Data" + "=" + "'" + data + "'", null);
+        return res;
+    }
+
+    public Cursor getCountAll_NOTYFIKACJA(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT COUNT(ID_notyfikacja) " +
+                "FROM " + NOTYFIKACJA +
+                " WHERE " + "ID_przypomnienie" + "=" + "'" + id + "'", null);
         return res;
     }
 
@@ -307,6 +314,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getID_NOTYFIKACJAFROMID(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT ID_notyfikacja FROM " + NOTYFIKACJA + " WHERE " + NOTYFIKACJA_ID + "=" + id, null);
+        return res;
+    }
+
+    public Cursor getID_PRZYPOMNIENIE(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT ID_przypomnienie FROM " + NOTYFIKACJA + " WHERE " + NOTYFIKACJA_ID_NOTYFIKACJA + "=" + id, null);
+        return res;
+    }
+
     public Cursor getMAXid_NOTYFIKACJA() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID_notyfikacja), 0) FROM " + NOTYFIKACJA, null);
@@ -316,6 +335,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void remove_NOTYFIKACJA(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(NOTYFIKACJA, NOTYFIKACJA_ID_NOTYFIKACJA + "=" + id, null);
+    }
+
+    public void remove_ALL_NOTYFIKACJA(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(NOTYFIKACJA, NOTYFIKACJA_PRZYPOMNIENIE + "=" + id, null);
     }
 
 

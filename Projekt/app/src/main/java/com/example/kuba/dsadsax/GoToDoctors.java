@@ -30,6 +30,7 @@ public class GoToDoctors extends Fragment {
     private DoctorListAdapter adapter;
     private ListView lv;
     private Integer idd;
+    private String nrtel;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -70,7 +71,8 @@ public class GoToDoctors extends Fragment {
                 int idd = (int) view.getTag();
                 Cursor c = myDb.getNumer_DOKTORZY(idd);
                 c.moveToFirst();
-                dialContactPhone(c.getString(0));
+                nrtel = c.getString(0);
+                dialogCallOrSms();
 
             }
         });
@@ -133,6 +135,28 @@ public class GoToDoctors extends Fragment {
                     }
                 })
                 .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        builder.show();
+
+    }
+
+    public void dialogCallOrSms() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialog);
+
+        builder.setMessage("Co chcesz zrobić?").setCancelable(false)
+                .setPositiveButton("Zadzwonić", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialContactPhone(nrtel);
+                    }
+                })
+                .setNegativeButton("Nic", new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }

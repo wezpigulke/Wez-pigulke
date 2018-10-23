@@ -151,6 +151,7 @@ public class GoToMeasurement extends Fragment{
                         for (int position : reverseSortedPositions) {
 
                             idd = (int) results.get(position).getId();
+                            dialogRemove();
 
                         }
 

@@ -19,8 +19,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class GoToReminder extends Fragment {
 
@@ -144,7 +149,7 @@ public class GoToReminder extends Fragment {
 
         if (c.getCount() != 0) {
             while (c.moveToNext()) {
-                if (Integer.parseInt(c.getString(5)) == 0) {
+                if (Integer.parseInt(c.getString(5)) <= 0) {
                     myDb.remove_PRZYPOMNIENIE(c.getInt(0));
                 }
                 results.add(new Reminder(c.getInt(0), c.getString(3) + " (" + c.getString(4) + ")", c.getString(8), "Pozostało dni: " + c.getString(5), c.getString(6)));

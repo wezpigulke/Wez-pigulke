@@ -125,6 +125,7 @@ public class AddMeasurement extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 typ_badania = typBadania.getItemAtPosition(position).toString();
+                typBadania.setSelection(0);
                 String selection = (String) parentView.getItemAtPosition(position);
                     if(selection.equals("Dodaj nowy typ"))
                     {
@@ -143,7 +144,7 @@ public class AddMeasurement extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (wynikPomiaru.getText().length() > 0) {
+                if (wynikPomiaru.getText().length() > 0 && !typBadania.getSelectedItem().toString().equals("Wybierz typ badania")) {
 
                     myDb.insert_POMIARY(
                             typBadania.getSelectedItem().toString(),
@@ -154,7 +155,8 @@ public class AddMeasurement extends AppCompatActivity {
                     );
 
                     onBackPressed();
-                } else openDialog();
+                } else if (wynikPomiaru.getText().length() <= 0) openDialog("Wpisz wynik pomiaru");
+                else if (typBadania.getSelectedItem().toString().equals("Wybierz typ badania")) openDialog("Wybierz typ badania lub dodaj nowy");
             }
         });
 
@@ -224,7 +226,7 @@ public class AddMeasurement extends AppCompatActivity {
             while(cxs.moveToNext()) {
                 labelx.add(cxs.getString(0));
             }
-        }
+        } else labelx.add("Wybierz typ badania");
 
         labelx.add("Dodaj nowy typ");
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, labelx);
@@ -241,9 +243,9 @@ public class AddMeasurement extends AppCompatActivity {
         }
     }
 
-    public void openDialog() {
+    public void openDialog(String text) {
         OpenDialog openDialog = new OpenDialog();
-        openDialog.setValue("Wpisz wynik pomiaru");
+        openDialog.setValue(text);
         openDialog.show(getSupportFragmentManager(), "AddMeasurement");
     }
 
