@@ -13,8 +13,6 @@ public class DoctorListAdapter extends BaseAdapter {
     private Context mContext;
     private List<Doctor> results;
 
-    //Constructor
-
     public DoctorListAdapter(Context mContext, List<Doctor> results) {
         this.mContext = mContext;
         this.results = results;

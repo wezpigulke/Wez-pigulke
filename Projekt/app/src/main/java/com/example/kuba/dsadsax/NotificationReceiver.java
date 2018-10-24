@@ -1,7 +1,6 @@
 package com.example.kuba.dsadsax;
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -9,10 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.net.wifi.p2p.WifiP2pManager;
-import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -33,6 +29,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         String nazwaLeku = intent.getStringExtra("nazwaLeku");
         String jakaDawka = intent.getStringExtra("jakaDawka");
         Integer iloscDni = intent.getIntExtra("iloscDni", 0);
+        Integer wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -51,7 +48,17 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 100, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Uri alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.audio);
+        Uri alarmSound;
+        alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.alarm1);
+
+        if (wybranyDzwiek==2) alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.alarm2);
+        else if (wybranyDzwiek==3) alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.alarm3);
+        else if (wybranyDzwiek==4) alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.alarm4);
+        else if (wybranyDzwiek==5) alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.alarm5);
+        else if (wybranyDzwiek==6) alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.alarm6);
+        else if (wybranyDzwiek==7) alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.alarm7);
+        else if (wybranyDzwiek==8) alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.alarm8);
+        else if (wybranyDzwiek==9) alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.alarm9);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentIntent(pendingIntent)
@@ -93,13 +100,12 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             if(Integer.parseInt(cz.getString(0))==1) myDb.remove_PRZYPOMNIENIE(id_p);
             myDb.remove_NOTYFIKACJA(id_n);
-            myDb.insert_USUNIETE_PRZ(id_n);
 
             Toast.makeText(context, String.valueOf(id_n), Toast.LENGTH_LONG).show();
 
         } else {
 
-            if(Integer.parseInt(cz.getString(0))==1) myDb.updateDays_PRZYPOMNIENIE(id_p, dzisiaj, ilosc_dn - 1);
+            if(Integer.parseInt(cz.getString(0))==1) myDb.updateDays_PRZYPOMNIENIE(id_p, ilosc_dn - 1);
             myDb.remove_NOTYFIKACJA(id_n);
 
         }

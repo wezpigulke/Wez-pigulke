@@ -9,15 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.util.Objects;
+
 public class AddTypeMeasurement extends AppCompatActivity {
 
-    private static int c = 0;
     DatabaseHelper myDb;
     private static final String TAG = "AddTypeMeasurement";
 
-    private Button dodajButton;
     private EditText typBadania;
-    private Spinner spn;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -28,24 +27,18 @@ public class AddTypeMeasurement extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_type_measurement);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        dodajButton = findViewById(R.id.dodajTypButton);
+        Button dodajButton = findViewById(R.id.dodajTypButton);
         typBadania = findViewById(R.id.typBadania);
-        spn = findViewById(R.id.spinnerTypeMeasurement);
 
-        c = 1;
-
-        dodajButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (typBadania.getText().length() > 0) {
-                    myDb.insert_TYP_POMIAR(
-                            typBadania.getText().toString()
-                    );
-                    onBackPressed();
-                } else openDialog();
-            }
+        dodajButton.setOnClickListener(v -> {
+            if (typBadania.getText().length() > 0) {
+                myDb.insert_TYP_POMIAR(
+                        typBadania.getText().toString()
+                );
+                onBackPressed();
+            } else openDialog();
         });
 
     }

@@ -1,5 +1,6 @@
 package com.example.kuba.dsadsax;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class GoToDoctors extends Fragment {
@@ -33,48 +36,44 @@ public class GoToDoctors extends Fragment {
     private String nrtel;
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("Lista lekarzy");
+        Objects.requireNonNull(getActivity()).setTitle("Lista lekarzy");
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.doctors, container, false);
 
-        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fabb);
+        FloatingActionButton fab = v.findViewById(R.id.fabb);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), AddDoctor.class);
-                startActivity(intent);
-            }
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), AddDoctor.class);
+            startActivity(intent);
         });
 
         results = new ArrayList<>();
-        lv = (ListView) v.findViewById(R.id.doctorList);
+        lv = v.findViewById(R.id.doctorList);
 
         return v;
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void onResume() {
 
         super.onResume();
         AktualizujBaze();
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
+        lv.setOnItemClickListener((parent, view, i, l) -> {
 
-                int idd = (int) view.getTag();
-                Cursor c = myDb.getNumer_DOKTORZY(idd);
-                c.moveToFirst();
-                nrtel = c.getString(0);
-                dialogCallOrSms();
+            int idd = (int) view.getTag();
+            Cursor c = myDb.getNumer_DOKTORZY(idd);
+            c.moveToFirst();
+            nrtel = c.getString(0);
+            dialogCallOrSms();
 
-            }
         });
 
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
@@ -89,7 +88,7 @@ public class GoToDoctors extends Fragment {
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
 
-                            idd = (int) results.get(position).getId();
+                            idd = results.get(position).getId();
                             dialogRemove();
 
                         }
@@ -124,21 +123,14 @@ public class GoToDoctors extends Fragment {
 
     public void dialogRemove() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()),R.style.AlertDialog);
 
         builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
-                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        myDb.remove_DOKTORZY((int) idd);
-                        AktualizujBaze();
-                    }
+                .setPositiveButton("Tak", (dialog, which) -> {
+                    myDb.remove_DOKTORZY(idd);
+                    AktualizujBaze();
                 })
-                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                .setNegativeButton("Nie", (dialog, which) -> dialog.cancel());
 
         builder.show();
 
@@ -146,21 +138,11 @@ public class GoToDoctors extends Fragment {
 
     public void dialogCallOrSms() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()),R.style.AlertDialog);
 
         builder.setMessage("Co chcesz zrobić?").setCancelable(false)
-                .setPositiveButton("Zadzwonić", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialContactPhone(nrtel);
-                    }
-                })
-                .setNegativeButton("Nic", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                .setPositiveButton("Zadzwonić", (dialog, which) -> dialContactPhone(nrtel))
+                .setNegativeButton("Nic", (dialog, which) -> dialog.cancel());
 
         builder.show();
 

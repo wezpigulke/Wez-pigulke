@@ -41,12 +41,6 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".AddReminder2"
-            android:configChanges="orientation"
-            android:label="Dodawanie przypomnienia"
-            android:screenOrientation="portrait"/>
-
-        <activity
             android:name=".AddDoctor"
             android:label="Dodaj lekarza"
             android:configChanges="orientation"

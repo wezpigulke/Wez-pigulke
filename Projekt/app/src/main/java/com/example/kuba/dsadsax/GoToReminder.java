@@ -39,6 +39,14 @@ public class GoToReminder extends Fragment {
     private FloatingActionButton fab;
     private Integer idd;
 
+    public static GoToReminder newInstance(int index) {
+        GoToReminder f = new GoToReminder();
+        Bundle args = new Bundle();
+        args.putInt("index", index);
+        f.setArguments(args);
+        return f;
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -54,17 +62,14 @@ public class GoToReminder extends Fragment {
 
         label = new ArrayList<>();
         results = new ArrayList<>();
-        lv = (ListView) v.findViewById(R.id.todayList);
+        lv = v.findViewById(R.id.todayList);
         spinner = v.findViewById(R.id.todaySpinner);
         uzytkownik = "Wszyscy";
 
-        fab = (FloatingActionButton) v.findViewById(R.id.fabProfile2);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), AddReminder.class);
-                startActivity(intent);
-            }
+        fab = v.findViewById(R.id.fabProfile2);
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), AddReminder.class);
+            startActivity(intent);
         });
 
         return v;
@@ -166,17 +171,8 @@ public class GoToReminder extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialog);
 
         builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
-                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        usunDane();
-                    }
-                })
-                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                .setPositiveButton("Tak", (dialog, which) -> usunDane())
+                .setNegativeButton("Nie", (dialog, which) -> dialog.cancel());
 
         builder.show();
 
@@ -197,13 +193,11 @@ public class GoToReminder extends Fragment {
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 alarmManager.cancel(pendingIntent);
 
-                myDb.insert_USUNIETE_PRZ(Integer.parseInt(c.getString(0)));
-
             }
         }
 
-        myDb.remove_PRZYPOMNIENIE((int) idd);
-        myDb.remove_NOTYFIKACJA((int) idd);
+        myDb.remove_PRZYPOMNIENIE(idd);
+        myDb.remove_NOTYFIKACJA(idd);
 
         AktualizujBaze();
 

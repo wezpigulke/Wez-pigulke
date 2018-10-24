@@ -1,5 +1,6 @@
 package com.example.kuba.dsadsax;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,6 @@ public class VisitListAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Visit> results;
-
-    //Constructor
 
     public VisitListAdapter(Context mContext, List<Visit> results) {
         this.mContext = mContext;
@@ -38,13 +37,13 @@ public class VisitListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View v = View.inflate(mContext, R.layout.visit_listview, null);
+        @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.visit_listview, null);
 
-        TextView profileVisit = (TextView)v.findViewById(R.id.profileVisit);
-        TextView nameVisit = (TextView)v.findViewById(R.id.nameVisit);
-        TextView specializationVisit = (TextView)v.findViewById(R.id.specializationVisit);
-        TextView dateVisit = (TextView)v.findViewById(R.id.dateVisit);
-        TextView addressVisit = (TextView)v.findViewById(R.id.addressVisit);
+        TextView profileVisit = v.findViewById(R.id.profileVisit);
+        TextView nameVisit = v.findViewById(R.id.nameVisit);
+        TextView specializationVisit = v.findViewById(R.id.specializationVisit);
+        TextView dateVisit = v.findViewById(R.id.dateVisit);
+        TextView addressVisit = v.findViewById(R.id.addressVisit);
 
         profileVisit.setText(results.get(position).getProfile());
         nameVisit.setText(results.get(position).getName());

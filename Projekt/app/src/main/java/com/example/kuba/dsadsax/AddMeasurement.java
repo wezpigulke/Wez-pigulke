@@ -140,67 +140,47 @@ public class AddMeasurement extends AppCompatActivity {
             }
         });
 
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        add.setOnClickListener(v -> {
 
-                if (wynikPomiaru.getText().length() > 0 && !typBadania.getSelectedItem().toString().equals("Wybierz typ badania")) {
+            if (wynikPomiaru.getText().length() > 0 && !typBadania.getSelectedItem().toString().equals("Wybierz typ badania")) {
 
-                    myDb.insert_POMIARY(
-                            typBadania.getSelectedItem().toString(),
-                            wynikPomiaru.getText().toString(),
-                            uzytkownik,
-                            godzinaBadania.getText().toString(),
-                            dataBadania.getText().toString()
-                    );
+                myDb.insert_POMIARY(
+                        typBadania.getSelectedItem().toString(),
+                        wynikPomiaru.getText().toString(),
+                        uzytkownik,
+                        godzinaBadania.getText().toString(),
+                        dataBadania.getText().toString()
+                );
 
-                    onBackPressed();
-                } else if (wynikPomiaru.getText().length() <= 0) openDialog("Wpisz wynik pomiaru");
-                else if (typBadania.getSelectedItem().toString().equals("Wybierz typ badania")) openDialog("Wybierz typ badania lub dodaj nowy");
-            }
+                onBackPressed();
+            } else if (wynikPomiaru.getText().length() <= 0) openDialog("Wpisz wynik pomiaru");
+            else if (typBadania.getSelectedItem().toString().equals("Wybierz typ badania")) openDialog("Wybierz typ badania lub dodaj nowy");
         });
 
-        godzinaBadania.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TimePickerDialog dialog = new TimePickerDialog(AddMeasurement.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, godzinaBadaniaListener, hour, minutes, true);
-                dialog.show();
-            }
+        godzinaBadania.setOnClickListener(view -> {
+            TimePickerDialog dialog = new TimePickerDialog(AddMeasurement.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, godzinaBadaniaListener, hour, minutes, true);
+            dialog.show();
         });
 
-        godzinaBadaniaListener = new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                String time;
-                if (minute < 10) time = hourOfDay + ":0" + minute;
-                else time = hourOfDay + ":" + minute;
-                godzinaBadania.setText(time);
-            }
+        godzinaBadaniaListener = (view, hourOfDay, minute) -> {
+            String time1;
+            if (minute < 10) time1 = hourOfDay + ":0" + minute;
+            else time1 = hourOfDay + ":" + minute;
+            godzinaBadania.setText(time1);
         };
 
-        dataBadania.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog dialog = new DatePickerDialog(AddMeasurement.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, dataBadaniaListener, year, month - 1, day);
-                dialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
-                dialog.show();
-            }
+        dataBadania.setOnClickListener(view -> {
+            DatePickerDialog dialog = new DatePickerDialog(AddMeasurement.this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, dataBadaniaListener, year, month - 1, day);
+            dialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+            dialog.show();
         });
 
-        dataBadaniaListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int yeear, int moonth, int dayOfMonth) {
-                moonth = moonth + 1;
-                String date;
-                if (moonth < 10) date = dayOfMonth + "/0" + moonth + "/" + yeear;
-                else date = dayOfMonth + "/" + moonth + "/" + yeear;
-/*
-                year = yeear;
-                month = moonth;
-                day = dayOfMonth;
-*/
-                dataBadania.setText(date);
-            }
+        dataBadaniaListener = (view, yeear, moonth, dayOfMonth) -> {
+            moonth = moonth + 1;
+            String date1;
+            if (moonth < 10) date1 = dayOfMonth + "/0" + moonth + "/" + yeear;
+            else date1 = dayOfMonth + "/" + moonth + "/" + yeear;
+            dataBadania.setText(date1);
         };
 
     }

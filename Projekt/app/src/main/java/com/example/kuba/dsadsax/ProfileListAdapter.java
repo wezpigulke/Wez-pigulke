@@ -1,5 +1,6 @@
 package com.example.kuba.dsadsax;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ public class ProfileListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View v = View.inflate(mContext, R.layout.profile_listview, null);
+        @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.profile_listview, null);
 
         TextView profileName = (TextView)v.findViewById(R.id.profileVisit);
 

@@ -1,5 +1,6 @@
 package com.example.kuba.dsadsax;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -42,6 +43,8 @@ public class GoToToday extends Fragment {
     private String profil;
     private String nazwaLeku;
     private String dawka;
+    private String godzina;
+    private String data;
     private Integer typ;
     private Integer idd;
 
@@ -60,7 +63,7 @@ public class GoToToday extends Fragment {
 
         label = new ArrayList<>();
         results = new ArrayList<>();
-        lv = (ListView) v.findViewById(R.id.todayList);
+        lv = v.findViewById(R.id.todayList);
         spinner = v.findViewById(R.id.todaySpinner);
         uzytkownik = "Wszyscy";
         return v;
@@ -83,6 +86,7 @@ public class GoToToday extends Fragment {
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void onResume() {
 
         super.onResume();
@@ -115,7 +119,7 @@ public class GoToToday extends Fragment {
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
 
-                            idd = (int) results.get(position).getId();
+                            idd = results.get(position).getId();
                             dialogRemove();
                         }
                     }
@@ -140,38 +144,38 @@ public class GoToToday extends Fragment {
 
         while (c.moveToNext()) {
 
-                String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-                String dzisiejszyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+            String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+            String dzisiejszyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                SimpleDateFormat tdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            SimpleDateFormat tdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
-                Date firstDate = null;
-                Date secondDate = null;
+            Date firstDate = null;
+            Date secondDate = null;
 
-                Date firstTime = null;
-                Date secondTime = null;
+            Date firstTime = null;
+            Date secondTime = null;
 
-                try {
-                    firstDate = sdf.parse(dzisiejszaData);
-                    firstTime = tdf.parse(dzisiejszyCzas);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    secondDate = sdf.parse(c.getString(4));
-                    secondTime = tdf.parse(c.getString(3));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+            try {
+                firstDate = sdf.parse(dzisiejszaData);
+                firstTime = tdf.parse(dzisiejszyCzas);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            try {
+                secondDate = sdf.parse(c.getString(4));
+                secondTime = tdf.parse(c.getString(3));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
-                long diff = secondDate.getTime() - firstDate.getTime();
-                long diffDays = diff / (24 * 60 * 60 * 1000);
-                long diffInMillis = secondTime.getTime() - firstTime.getTime();
+            long diff = secondDate.getTime() - firstDate.getTime();
+            long diffDays = diff / (24 * 60 * 60 * 1000);
+            long diffInMillis = secondTime.getTime() - firstTime.getTime();
 
-                if (diffDays == 0 && diffInMillis >= 0) {
-                    results.add(new Today(c.getInt(0), c.getString(1) + " (" + c.getString(2) + ")", "Godzina: " + c.getString(3), c.getString(4)));
-                }
+            if (diffDays == 0 && diffInMillis >= 0) {
+                results.add(new Today(c.getInt(0), c.getString(1) + " (" + c.getString(2) + ")", "Godzina: " + c.getString(3), c.getString(4)));
+            }
         }
 
         results.sort(Comparator.comparing(Today::getDate));
@@ -181,7 +185,8 @@ public class GoToToday extends Fragment {
 
     }
 
-    private void usunDane() {
+    private void usunDane() throws ParseException {
+
         myDb = new DatabaseHelper(getActivity());
 
         int id = 0;
@@ -190,10 +195,13 @@ public class GoToToday extends Fragment {
         int dni = 0;
 
         Cursor ccc = myDb.getdataID_NOTYFIKACJA(idd);
+
         if (ccc.getCount() != 0) {
             while (ccc.moveToNext()) {
                 nazwaLeku = ccc.getString(1);
                 dawka = ccc.getString(2);
+                godzina = ccc.getString(3);
+                data = ccc.getString(4);
                 profil = ccc.getString(5);
                 id = Integer.parseInt(ccc.getString(6));
                 id_p = Integer.parseInt(ccc.getString(7));
@@ -202,22 +210,42 @@ public class GoToToday extends Fragment {
             }
         }
 
-        String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        Date dzisiaj = null;
 
-        try {
-            dzisiaj = sdf.parse(dzisiejszaData);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
+        SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt.parse(data));
+        c.add(Calendar.DATE, 1);
+        String dataJutrzejsza = dt.format(c.getTime());
+
+        String czyDwucyfrowa = String.valueOf(godzina.charAt(1));
+        Integer minutes;
+        Integer hour;
+
+        if (czyDwucyfrowa.equals(":")) {
+            hour = Integer.parseInt(String.valueOf(godzina.charAt(0)));
+            minutes = Integer.parseInt(String.valueOf(godzina.charAt(2))
+                    + String.valueOf(godzina.charAt(3)));
+        } else {
+            hour = Integer.parseInt(String.valueOf(godzina.charAt(0))
+                    + String.valueOf(godzina.charAt(1)));
+            minutes = Integer.parseInt(String.valueOf(godzina.charAt(3))
+                    + String.valueOf(godzina.charAt(4)));
         }
 
         Calendar cz = Calendar.getInstance();
-        cz.setTime(dzisiaj);
+        cz.set(Integer.parseInt(data.substring(6, 10)),
+                Integer.parseInt(data.substring(3, 5)) - 1,
+                Integer.parseInt(data.substring(0, 2)),
+                hour,
+                minutes,
+                0);
+
         cz.add(Calendar.DATE, typ);
 
-        myDb.remove_NOTYFIKACJA(id);
-        myDb.insert_USUNIETE_PRZ(id);
+        myDb.updateDate_NOTYFIKACJA(id, dataJutrzejsza);
 
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
@@ -226,10 +254,18 @@ public class GoToToday extends Fragment {
                 PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
 
-        if(dni>0) {
+        Cursor policz = myDb.getCount_NOTYFIKACJA(id_p, dzisiejszaData);
+        int ile = 0;
+
+        if (policz.getCount() != 0) {
+            policz.moveToNext();
+            ile = Integer.parseInt(policz.getString(0));
+        }
+
+        if (dni > 1) {
 
             Intent intx = new Intent(getContext(), NotificationReceiver.class);
-            intx.putExtra("Value", profil + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + dawka + ")");
+            intx.putExtra("Value", uzytkownik + " " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + dawka + ")");
 
             pendingIntent = PendingIntent.getBroadcast(
                     getContext(), id, intx,
@@ -238,42 +274,27 @@ public class GoToToday extends Fragment {
             alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cz.getTimeInMillis(), AlarmManager.INTERVAL_DAY * typ, pendingIntent);
 
-            myDb.remove_USUNIETE_PRZ(id);
+            if (ile == 0) myDb.updateDays_PRZYPOMNIENIE(id_p, dni - 1);
 
-            Cursor policz = myDb.getCount_NOTYFIKACJA(id_p, dzisiejszaData);
-            int ile = 0;
-
-            if (policz.getCount() != 0) {
-                policz.moveToNext();
-                ile = Integer.parseInt(policz.getString(0));
-            }
-
-            if (ile==0) myDb.updateDays_PRZYPOMNIENIE(id_p, dzisiejszaData, dni - 1);
-            if ((dni-1)==0)  myDb.remove_PRZYPOMNIENIE(id_p);
-        }
-        else {
-            myDb.remove_PRZYPOMNIENIE(id_p);
-        }
+        } else if (ile == 0) myDb.remove_PRZYPOMNIENIE(id_p);
 
         AktualizujBaze();
+
     }
 
     public void dialogRemove() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialog);
 
         builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
-                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setPositiveButton("Tak", (dialog, which) -> {
+                    try {
                         usunDane();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
                 })
-                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                .setNegativeButton("Nie", (dialog, which) -> dialog.cancel());
 
         builder.show();
 

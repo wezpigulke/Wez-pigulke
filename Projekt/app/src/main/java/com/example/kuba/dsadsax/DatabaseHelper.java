@@ -5,79 +5,72 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.TextView;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "database.db";
+    private static final String DATABASE_NAME = "database.db";
 
-    public static final String UZYTKOWNICY = "Uzytkownicy";
-    public static final String UZYTKOWNICY_ID = "ID";
-    public static final String UZYTKOWNICY_IMIE = "Imie";
+    private static final String UZYTKOWNICY = "Uzytkownicy";
+    private static final String UZYTKOWNICY_ID = "ID";
+    private static final String UZYTKOWNICY_IMIE = "Imie";
 
-    public static final String PRZYPOMNIENIE = "Przypomnienie";
-    public static final String PRZYPOMNIENIE_ID = "ID";
-    public static final String PRZYPOMNIENIE_GODZINA = "Godzina";
-    public static final String PRZYPOMNIENIE_DATA = "Data";
-    public static final String PRZYPOMNIENIE_LEK = "Lek";
-    public static final String PRZYPOMNIENIE_DAWKA = "Dawka";
-    public static final String PRZYPOMNIENIE_ILOSC_DNI = "Ilosc_dni";
-    public static final String PRZYPOMNIENIE_PROFIL = "Profil";
-    public static final String PRZYPOMNIENIE_TYP = "Typ";
-    public static final String PRZYPOMNIENIE_WSZYSTKIEGODZINY = "Wszystkie_godziny";
+    private static final String PRZYPOMNIENIE = "Przypomnienie";
+    private static final String PRZYPOMNIENIE_ID = "ID";
+    private static final String PRZYPOMNIENIE_GODZINA = "Godzina";
+    private static final String PRZYPOMNIENIE_DATA = "Data";
+    private static final String PRZYPOMNIENIE_LEK = "Lek";
+    private static final String PRZYPOMNIENIE_DAWKA = "Dawka";
+    private static final String PRZYPOMNIENIE_ILOSC_DNI = "Ilosc_dni";
+    private static final String PRZYPOMNIENIE_PROFIL = "Profil";
+    private static final String PRZYPOMNIENIE_TYP = "Typ";
+    private static final String PRZYPOMNIENIE_WSZYSTKIEGODZINY = "Wszystkie_godziny";
 
-    public static final String NOTYFIKACJA = "Notyfikacja";
-    public static final String NOTYFIKACJA_ID = "ID";
-    public static final String NOTYFIKACJA_ID_NOTYFIKACJA = "ID_notyfikacja";
-    public static final String NOTYFIKACJA_PRZYPOMNIENIE = "ID_przypomnienie";
-    public static final String NOTYFIKACJA_GODZINA = "Godzina";
-    public static final String NOTYFIKACJA_DATA = "Data";
+    private static final String NOTYFIKACJA = "Notyfikacja";
+    private static final String NOTYFIKACJA_ID = "ID";
+    private static final String NOTYFIKACJA_ID_NOTYFIKACJA = "ID_notyfikacja";
+    private static final String NOTYFIKACJA_PRZYPOMNIENIE = "ID_przypomnienie";
+    private static final String NOTYFIKACJA_GODZINA = "Godzina";
+    private static final String NOTYFIKACJA_OSTATNIADATA = "Data";
 
-    public static final String DOKTORZY = "Doktorzy";
-    public static final String DOKTORZY_ID = "ID";
-    public static final String DOKTORZY_IMIE = "Imie";
-    public static final String DOKTORZY_NAZWISKO = "Nazwisko";
-    public static final String DOKTORZY_SPECJALIZACJA = "Specjalizacja";
-    public static final String DOKTORZY_NUMER = "Numer";
+    private static final String DOKTORZY = "Doktorzy";
+    private static final String DOKTORZY_ID = "ID";
+    private static final String DOKTORZY_IMIE = "Imie";
+    private static final String DOKTORZY_NAZWISKO = "Nazwisko";
+    private static final String DOKTORZY_SPECJALIZACJA = "Specjalizacja";
+    private static final String DOKTORZY_NUMER = "Numer";
 
-    public static final String WIZYTY = "Wizyty";
-    public static final String WIZYTY_ID = "ID";
-    public static final String WIZYTY_GODZINA = "Godzina";
-    public static final String WIZYTY_DATA = "Data";
-    public static final String WIZYTY_IMIE = "Imie";
-    public static final String WIZYTY_NAZWISKO = "Nazwisko";
-    public static final String WIZYTY_SPECJALIZACJA = "Specjalizacja";
-    public static final String WIZYTY_ADRES = "Adres";
-    public static final String WIZYTY_PROFIL = "Profil";
+    private static final String WIZYTY = "Wizyty";
+    private static final String WIZYTY_ID = "ID";
+    private static final String WIZYTY_GODZINA = "Godzina";
+    private static final String WIZYTY_DATA = "Data";
+    private static final String WIZYTY_IMIE = "Imie";
+    private static final String WIZYTY_NAZWISKO = "Nazwisko";
+    private static final String WIZYTY_SPECJALIZACJA = "Specjalizacja";
+    private static final String WIZYTY_ADRES = "Adres";
+    private static final String WIZYTY_PROFIL = "Profil";
 
-    public static final String POMIARY = "Pomiary";
-    public static final String POMIARY_ID = "ID";
-    public static final String POMIARY_TYP = "Typ";
-    public static final String POMIARY_WYNIK = "Wynik";
-    public static final String POMIARY_PROFIL = "Profil";
-    public static final String POMIARY_GODZINA = "Godzina";
-    public static final String POMIARY_DATA = "Data";
+    private static final String POMIARY = "Pomiary";
+    private static final String POMIARY_ID = "ID";
+    private static final String POMIARY_TYP = "Typ";
+    private static final String POMIARY_WYNIK = "Wynik";
+    private static final String POMIARY_PROFIL = "Profil";
+    private static final String POMIARY_GODZINA = "Godzina";
+    private static final String POMIARY_DATA = "Data";
 
-    public static final String TYP_POMIAR = "Typ_pomiar";
-    public static final String TYP_POMIAR_ID = "ID";
-    public static final String TYP_POMIAR_NAZWA = "Typ";
+    private static final String TYP_POMIAR = "Typ_pomiar";
+    private static final String TYP_POMIAR_ID = "ID";
+    private static final String TYP_POMIAR_NAZWA = "Typ";
 
-    public static final String NOTATKI = "Notatki";
-    public static final String NOTATKI_ID = "ID";
-    public static final String NOTATKI_TYTUL = "Tytul";
-    public static final String NOTATKI_TRESC = "Tresc";
-    public static final String NOTATKI_PROFIL = "Profil";
-    public static final String NOTATKI_DATA = "Data";
+    private static final String NOTATKI = "Notatki";
+    private static final String NOTATKI_ID = "ID";
+    private static final String NOTATKI_TYTUL = "Tytul";
+    private static final String NOTATKI_TRESC = "Tresc";
+    private static final String NOTATKI_PROFIL = "Profil";
+    private static final String NOTATKI_DATA = "Data";
 
-    public static final String STATYSTYKI = "Statystyki";
-    public static final String STATYSTYKI_ID = "ID";
-    public static final String STATYSTYKI_WZIETE = "Wziete";
-    public static final String STATYSTYKI_NIEWZIETE = "Niewziete";
-
-    public static final String DODANE_PRZ = "Dodane_przypomnienia";
-    public static final String DODANE_PRZ_ID = "ID";
-
-    public static final String USUNIETE_PRZ = "Usuniete_przypomnienia";
-    public static final String USUNIETE_PRZ_ID = "ID";
+    private static final String STATYSTYKI = "Statystyki";
+    private static final String STATYSTYKI_ID = "ID";
+    private static final String STATYSTYKI_WZIETE = "Wziete";
+    private static final String STATYSTYKI_NIEWZIETE = "Niewziete";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -98,8 +91,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + TYP_POMIAR + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Typ TEXT)");
         db.execSQL("CREATE TABLE " + NOTATKI + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Tytul TEXT, Tresc TEXT, Profil TEXT, Data TEXT)");
         db.execSQL("CREATE TABLE " + STATYSTYKI + " (ID INTEGER PRIMARY KEY, Wziete INTEGER, Niewziete INTEGER)");
-        db.execSQL("CREATE TABLE " + DODANE_PRZ + " (ID INTEGER PRIMARY KEY)");
-        db.execSQL("CREATE TABLE " + USUNIETE_PRZ + " (ID INTEGER PRIMARY KEY)");
     }
 
     @Override
@@ -113,53 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TYP_POMIAR);
         db.execSQL("DROP TABLE IF EXISTS " + NOTATKI);
         db.execSQL("DROP TABLE IF EXISTS " + STATYSTYKI);
-        db.execSQL("DROP TABLE IF EXISTS " + DODANE_PRZ);
-        db.execSQL("DROP TABLE IF EXISTS " + USUNIETE_PRZ);
         onCreate(db);
-    }
-
-    /**
-     * ============ DODANE PRZYPOMNIENIA =============
-     **/
-
-    public boolean insert_DODANE_PRZ(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(DODANE_PRZ_ID, id);
-
-        long result = db.insert(DODANE_PRZ, null, contentValues);
-        if (result == -1)
-            return false;
-        else
-            return true;
-    }
-
-    public void remove_DODANE_PRZ(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(DODANE_PRZ, DODANE_PRZ_ID + "=" + id, null);
-    }
-
-    /**
-     * ============ USUNIETE PRZYPOMNIENIA =============
-     **/
-
-    public boolean insert_USUNIETE_PRZ(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(USUNIETE_PRZ_ID, id);
-
-        long result = db.insert(USUNIETE_PRZ, null, contentValues);
-        if (result == -1)
-            return false;
-        else
-            return true;
-    }
-
-    public void remove_USUNIETE_PRZ(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(USUNIETE_PRZ, USUNIETE_PRZ_ID + "=" + id, null);
     }
 
     /**
@@ -241,7 +186,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(NOTYFIKACJA_ID_NOTYFIKACJA, notyfikacja);
         contentValues.put(NOTYFIKACJA_PRZYPOMNIENIE, przypomnienie);
         contentValues.put(NOTYFIKACJA_GODZINA, godzina);
-        contentValues.put(NOTYFIKACJA_DATA, data);
+        contentValues.put(NOTYFIKACJA_OSTATNIADATA, data);
 
         long result = db.insert(NOTYFIKACJA, null, contentValues);
         if (result == -1)
@@ -279,14 +224,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getCountAll_NOTYFIKACJA(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT COUNT(ID_notyfikacja) " +
-                "FROM " + NOTYFIKACJA +
-                " WHERE " + "ID_przypomnienie" + "=" + "'" + id + "'", null);
-        return res;
-    }
-
     public Cursor getdataID_NOTYFIKACJA(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, B.Profil, " +
@@ -298,31 +235,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getDates_NOTYFIKACJA(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT A.Data " +
-                "FROM " + NOTYFIKACJA + " A " +
-                "INNER JOIN " + PRZYPOMNIENIE + " B " +
-                "ON " + "B.ID = A.ID_przypomnienie " +
-                "WHERE " + " B.ID" + "=" + id, null);
-        return res;
-    }
 
     public Cursor getID_NOTYFIKACJA(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT ID_notyfikacja FROM " + NOTYFIKACJA + " WHERE " + NOTYFIKACJA_PRZYPOMNIENIE + "=" + id, null);
-        return res;
-    }
-
-    public Cursor getID_NOTYFIKACJAFROMID(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT ID_notyfikacja FROM " + NOTYFIKACJA + " WHERE " + NOTYFIKACJA_ID + "=" + id, null);
-        return res;
-    }
-
-    public Cursor getID_PRZYPOMNIENIE(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT ID_przypomnienie FROM " + NOTYFIKACJA + " WHERE " + NOTYFIKACJA_ID_NOTYFIKACJA + "=" + id, null);
         return res;
     }
 
@@ -332,16 +248,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public boolean updateDate_NOTYFIKACJA(Integer id, String days) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(NOTYFIKACJA_OSTATNIADATA, days);
+
+        long result = db.update(NOTYFIKACJA, contentValues, "ID_notyfikacja=" + id, null);
+
+        if (result == -1)
+            return false;
+        else
+            return true;
+    }
+
     public void remove_NOTYFIKACJA(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(NOTYFIKACJA, NOTYFIKACJA_ID_NOTYFIKACJA + "=" + id, null);
     }
-
-    public void remove_ALL_NOTYFIKACJA(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(NOTYFIKACJA, NOTYFIKACJA_PRZYPOMNIENIE + "=" + id, null);
-    }
-
 
     /**
      * ============ NOTATKI ============
@@ -597,11 +521,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(PRZYPOMNIENIE, PRZYPOMNIENIE_ID + "=" + id, null);
     }
 
-    public boolean updateDays_PRZYPOMNIENIE(Integer id, String date, Integer days) {
+    public boolean updateDays_PRZYPOMNIENIE(Integer id, Integer days) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(PRZYPOMNIENIE_DATA, date);
         contentValues.put(PRZYPOMNIENIE_ILOSC_DNI, days);
 
         long result = db.update(PRZYPOMNIENIE, contentValues, "ID=" + id, null);
@@ -652,12 +575,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getID_WIZYTY(String godzina, String data, String imie, String nazwisko) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT id FROM " + WIZYTY + " WHERE godzina='" + godzina + "' AND data='" + data + "' AND imie='" + imie + "' AND nazwisko='" + nazwisko + "'", null);
-        return res;
-    }
-
     public Cursor getMAXid_WIZYTY() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT MAX(ID) FROM " + WIZYTY, null);
@@ -669,9 +586,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(WIZYTY, WIZYTY_ID + "=" + id, null);
     }
 
-    public void removeUser_WIZYTY(String name) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(WIZYTY, WIZYTY_PROFIL + "='" + name + "'", null);
-    }
 
 }

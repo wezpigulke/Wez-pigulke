@@ -30,30 +30,27 @@ public class AddDoctor extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        add = (Button) findViewById(R.id.button);
+        add = findViewById(R.id.button);
 
-        name = (EditText) findViewById(R.id.editText5);
-        surname = (EditText) findViewById(R.id.editText6);
-        specialization = (EditText) findViewById(R.id.editText7);
-        phone_number = (EditText) findViewById(R.id.editText8);
+        name = findViewById(R.id.editText5);
+        surname = findViewById(R.id.editText6);
+        specialization = findViewById(R.id.editText7);
+        phone_number = findViewById(R.id.editText8);
 
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(name.getText().length()>0 && surname.getText().length()>0 && specialization.getText().length()>0 && phone_number.getText().length()==9) {
-                    myDb.insert_DOKTORZY(
-                            name.getText().toString(),
-                            surname.getText().toString(),
-                            specialization.getText().toString(),
-                            phone_number.getText().toString()
-                    );
-                    onBackPressed();
-                }
-                else if(name.getText().length()==0) openDialog("Wpisz imie lekarza");
-                else if(surname.getText().length()==0) openDialog("Wpisz nazwisko lekarza");
-                else if(specialization.getText().length()==0) openDialog("Wpisz specjalizacje lekarza");
-                else if(phone_number.getText().length()==0) openDialog("Wpisz prawidłowy numer (9 cyfr)");
+        add.setOnClickListener(v -> {
+            if(name.getText().length()>0 && surname.getText().length()>0 && specialization.getText().length()>0 && phone_number.getText().length()==9) {
+                myDb.insert_DOKTORZY(
+                        name.getText().toString(),
+                        surname.getText().toString(),
+                        specialization.getText().toString(),
+                        phone_number.getText().toString()
+                );
+                onBackPressed();
             }
+            else if(name.getText().length()==0) openDialog("Wpisz imie lekarza");
+            else if(surname.getText().length()==0) openDialog("Wpisz nazwisko lekarza");
+            else if(specialization.getText().length()==0) openDialog("Wpisz specjalizacje lekarza");
+            else if(phone_number.getText().length()==0) openDialog("Wpisz prawidłowy numer (9 cyfr)");
         });
     }
 

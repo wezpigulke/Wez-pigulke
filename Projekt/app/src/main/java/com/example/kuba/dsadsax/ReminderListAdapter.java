@@ -1,5 +1,6 @@
 package com.example.kuba.dsadsax;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,7 @@ public class ReminderListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View v = View.inflate(mContext, R.layout.reminder_listview, null);
+        @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.reminder_listview, null);
 
         TextView medicineName = (TextView)v.findViewById(R.id.specializationVisit);
         TextView dateMedicine = (TextView)v.findViewById(R.id.dateVisit);

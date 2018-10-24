@@ -15,7 +15,6 @@ public class StartMenu extends AppCompatActivity {
     private static final String TAG = "StartMenu";
 
     private TextView yourName;
-    private Button idzDalej;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,21 +31,18 @@ public class StartMenu extends AppCompatActivity {
             startActivity(cel);
         }
 
-        idzDalej = (Button) findViewById(R.id.przejdzDalej);
-        yourName = (TextView) findViewById(R.id.imie);
+        Button idzDalej = findViewById(R.id.przejdzDalej);
+        yourName = findViewById(R.id.imie);
 
         // ************PRZECHODZENIE ZE STARTU DO GŁÓWNEGO MENU************** //
 
-        idzDalej.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(yourName.getText().toString().trim().length()>0) {
+        idzDalej.setOnClickListener(v -> {
+            if(yourName.getText().toString().trim().length()>0) {
 
-                    myDb.insert_UZYTKOWNICY(yourName.getText().toString());
+                myDb.insert_UZYTKOWNICY(yourName.getText().toString());
 
-                    Intent cel = new Intent(v.getContext(), MainMenu.class);
-                    startActivity(cel);
-                }
+                Intent cel = new Intent(v.getContext(), MainMenu.class);
+                startActivity(cel);
             }
         });
 

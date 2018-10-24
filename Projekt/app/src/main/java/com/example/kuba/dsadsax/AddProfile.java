@@ -24,17 +24,14 @@ public class AddProfile extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        add = (Button) findViewById(R.id.adBut);
-        txt = (EditText) findViewById(R.id.namField);
+        add = findViewById(R.id.adBut);
+        txt = findViewById(R.id.namField);
 
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(txt.getText().length()>0) {
-                    myDb.insert_UZYTKOWNICY(txt.getText().toString());
-                    onBackPressed();
-                } else openDialog();
-            }
+        add.setOnClickListener(v -> {
+            if(txt.getText().length()>0) {
+                myDb.insert_UZYTKOWNICY(txt.getText().toString());
+                onBackPressed();
+            } else openDialog();
         });
     }
 

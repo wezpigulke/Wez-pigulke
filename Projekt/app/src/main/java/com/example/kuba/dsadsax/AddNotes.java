@@ -51,7 +51,7 @@ public class AddNotes extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        label = new ArrayList<String>();
+        label = new ArrayList<>();
         myDb = new DatabaseHelper(this);
 
         super.onCreate(savedInstanceState);
@@ -70,7 +70,6 @@ public class AddNotes extends AppCompatActivity {
 
         Cursor res = myDb.getName_UZYTKOWNICY();
 
-        StringBuffer buffer = new StringBuffer();
         while (res.moveToNext()) {
             uzytkownik = res.getString(0);
         }
@@ -90,28 +89,23 @@ public class AddNotes extends AppCompatActivity {
 
         });
 
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        add.setOnClickListener(v -> {
 
-                if (nazwaNotatki.getText().length() > 0 && trescNotatki.getText().length() > 0) {
+            if (nazwaNotatki.getText().length() > 0 && trescNotatki.getText().length() > 0) {
 
-                    String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(new Date());
+                String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(new Date());
 
-                    //int id, String title, String profile, String date) {
+                myDb.insert_NOTATKI(
+                        nazwaNotatki.getText().toString(),
+                        trescNotatki.getText().toString(),
+                        uzytkownik,
+                        dzisiejszaData
+                );
 
-                    myDb.insert_NOTATKI(
-                            nazwaNotatki.getText().toString(),
-                            trescNotatki.getText().toString(),
-                            uzytkownik,
-                            dzisiejszaData
-                    );
-
-                    onBackPressed();
-                }
-                else if(nazwaNotatki.getText().length()==0) openDialog("Wpisz nazwe notatki");
-                else if(trescNotatki.getText().length()==0) openDialog("Wpisz treść notatki");
+                onBackPressed();
             }
+            else if(nazwaNotatki.getText().length()==0) openDialog("Wpisz nazwe notatki");
+            else if(trescNotatki.getText().length()==0) openDialog("Wpisz treść notatki");
         });
     }
 

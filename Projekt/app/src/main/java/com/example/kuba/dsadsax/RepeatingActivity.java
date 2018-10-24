@@ -20,24 +20,6 @@ public class RepeatingActivity extends AppCompatActivity{
 
     DatabaseHelper myDb;
 
-    private Integer id;
-    private Integer idd;
-    private String godzina;
-    private String data;
-    private String uzytkownik;
-    private String nazwaLeku;
-    private String jakaDawka;
-    private Integer iloscDni;
-
-    private TextView t6;
-    private TextView t7;
-    private TextView t8;
-    private TextView t9;
-    private TextView t10;
-
-    private Button b3;
-    private Button b4;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -45,25 +27,22 @@ public class RepeatingActivity extends AppCompatActivity{
         setContentView(R.layout.repeating_activity_layout);
 
         myDb = new DatabaseHelper(this);
-        Cursor c = myDb.getAllData_PRZYPOMNIENIE();
 
-        t6 = findViewById(R.id.textView6);
-        t7 = findViewById(R.id.textView7);
-        t8 = findViewById(R.id.textView8);
-        t9 = findViewById(R.id.textView9);
-        t10 = findViewById(R.id.textView10);
+        TextView t6 = findViewById(R.id.textView6);
+        TextView t7 = findViewById(R.id.textView7);
+        TextView t8 = findViewById(R.id.textView8);
+        TextView t9 = findViewById(R.id.textView9);
+        TextView t10 = findViewById(R.id.textView10);
 
-        b3 = findViewById(R.id.button3);
-        b4 = findViewById(R.id.button4);
+        Button b3 = findViewById(R.id.button3);
+        Button b4 = findViewById(R.id.button4);
 
-        id = getIntent().getIntExtra("id", 0);
-        idd = getIntent().getIntExtra("idd", 0);
-        godzina = getIntent().getStringExtra("godzina");
-        data = getIntent().getStringExtra("data");
-        uzytkownik = getIntent().getStringExtra("uzytkownik");
-        nazwaLeku = getIntent().getStringExtra("nazwaLeku");
-        jakaDawka = getIntent().getStringExtra("jakaDawka");
-        iloscDni = getIntent().getIntExtra("iloscDni", 0);
+        String godzina = getIntent().getStringExtra("godzina");
+        String data = getIntent().getStringExtra("data");
+        String uzytkownik = getIntent().getStringExtra("uzytkownik");
+        String nazwaLeku = getIntent().getStringExtra("nazwaLeku");
+        String jakaDawka = getIntent().getStringExtra("jakaDawka");
+        Integer iloscDni = getIntent().getIntExtra("iloscDni", 0);
 
         t6.setText(Html.fromHtml("Nazwa tabletki: " + "<b>" + nazwaLeku + " (" + jakaDawka + ")" + "</b> "));
         t7.setText(Html.fromHtml("Godzina: " + "<b>" + godzina + "</b> "));
@@ -71,26 +50,20 @@ public class RepeatingActivity extends AppCompatActivity{
         t9.setText(Html.fromHtml("Data: " + "<b>" + data + "</b> "));
         t10.setText(Html.fromHtml("Pozostało dni: " + "<b>" + iloscDni + "</b> "));
 
-        b3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Cursor cn = myDb.get_STATYSTYKI_NIEWZIETE(0);
-                cn.moveToFirst();
-                myDb.update_STATYSTYKI_NIEWZIETE(0, Integer.parseInt(cn.getString(0)) + 1);
-                finish();
-                goHome();
-            }
+        b3.setOnClickListener(v -> {
+            Cursor cn = myDb.get_STATYSTYKI_NIEWZIETE(0);
+            cn.moveToFirst();
+            myDb.update_STATYSTYKI_NIEWZIETE(0, Integer.parseInt(cn.getString(0)) + 1);
+            finish();
+            goHome();
         });
 
-        b4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Cursor cw = myDb.get_STATYSTYKI_WZIETE(0);
-                cw.moveToFirst();
-                myDb.update_STATYSTYKI_WZIETE(0, Integer.parseInt(cw.getString(0)) + 1);
-                finish();
-                goHome();
-            }
+        b4.setOnClickListener(v -> {
+            Cursor cw = myDb.get_STATYSTYKI_WZIETE(0);
+            cw.moveToFirst();
+            myDb.update_STATYSTYKI_WZIETE(0, Integer.parseInt(cw.getString(0)) + 1);
+            finish();
+            goHome();
         });
 
     }
