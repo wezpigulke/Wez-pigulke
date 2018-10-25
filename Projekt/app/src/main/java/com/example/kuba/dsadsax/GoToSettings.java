@@ -1,26 +1,34 @@
 package com.example.kuba.dsadsax;
 
+import android.content.res.ColorStateList;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import me.itangqi.waveloadingview.WaveLoadingView;
 
 public class GoToSettings extends Fragment{
 
     DatabaseHelper myDb;
+
     WaveLoadingView waveLoadingView;
+
     Integer progress;
-    TextView t13;
-    TextView t14;
+    TextView tProgres;
+    TextView tWziete;
+    TextView tZapomniane;
+    private int i = 0;
+
+    private Handler mHandler = new Handler();
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -45,8 +53,9 @@ public class GoToSettings extends Fragment{
             }
         });
 
-        t13 = v.findViewById(R.id.textView13);
-        t14 = v.findViewById(R.id.textView14);
+        tProgres = v.findViewById(R.id.textView8);
+        tWziete = v.findViewById(R.id.textView13);
+        tZapomniane = v.findViewById(R.id.textView14);
 
         Cursor cw = myDb.get_STATYSTYKI_WZIETE(0);
         cw.moveToFirst();
@@ -56,32 +65,36 @@ public class GoToSettings extends Fragment{
         cn.moveToFirst();
         int niewziete = Integer.parseInt(cn.getString(0));
 
-        t13.setText(Html.fromHtml("</b> " + "Wzięte: " + "<b>" + wziete));
-        t14.setText(Html.fromHtml("</b> " + "Zapomniane: " + "<b>" + niewziete));
-
-
         if(niewziete>=0 && wziete==0) progress = 0;
         else if(wziete>=0 && niewziete==0) progress = 100;
         else progress = ((wziete*100)/(wziete+niewziete));
 
-        waveLoadingView = (WaveLoadingView)v.findViewById(R.id.waveLoadingView);
-        waveLoadingView.setProgressValue(progress);
+        tWziete.setText(Html.fromHtml("</b> " + "Wzięte: " + "<b>" + wziete));
+        tZapomniane.setText(Html.fromHtml("</b> " + "Zapomniane: " + "<b>" + niewziete));
+        tProgres.setText(Html.fromHtml("<b>" + progress + "%" + "</b>"));
 
-        if(progress < 25) {
-            waveLoadingView.setBottomTitle(String.format("%d%%", progress));
-            waveLoadingView.setCenterTitle("");
-            waveLoadingView.setTopTitle("");
-        }
-        else if(progress < 40) {
-            waveLoadingView.setBottomTitle("");
-            waveLoadingView.setCenterTitle(String.format("%d%%", progress));
-            waveLoadingView.setTopTitle("");
-        }
-        else {
-            waveLoadingView.setBottomTitle("");
-            waveLoadingView.setCenterTitle("");
-            waveLoadingView.setTopTitle(String.format("%d%%", progress));
-        }
+        tWziete.setVisibility(View.INVISIBLE);
+        tZapomniane.setVisibility(View.INVISIBLE);
+        tProgres.setVisibility(View.INVISIBLE);
+
+        ProgressBar myprogressbar = v.findViewById(R.id.myprogressbar);
+        myprogressbar.setScaleY(10);
+
+        if(progress<50) myprogressbar.setProgressTintList(ColorStateList.valueOf(Color.RED));
+        else myprogressbar.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
+
+        new Thread(() -> {
+            while(i <= progress) {
+                i++;
+                android.os.SystemClock.sleep(5);
+                mHandler.post(() -> myprogressbar.setProgress(i));
+            }
+            mHandler.post(() -> {
+                tWziete.setVisibility(View.VISIBLE);
+                tZapomniane.setVisibility(View.VISIBLE);
+                tProgres.setVisibility(View.VISIBLE);
+            });
+        }).start();
 
         return v;
 

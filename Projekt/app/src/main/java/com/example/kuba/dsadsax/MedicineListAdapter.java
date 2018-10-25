@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class MedicineListAdapter extends BaseAdapter {
@@ -35,14 +37,17 @@ public class MedicineListAdapter extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
         @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.medicine_listview, null);
 
-        TextView medName = (TextView)v.findViewById(R.id.medName);
+        TextView medName = v.findViewById(R.id.medName);
+        TextView medQuantity = v.findViewById(R.id.medQuantity);
 
-        medName.setText(results.get(position).getMedicine());
+        medName.setText(results.get(position).getName());
+        medQuantity.setText("Ilość tabletek: " + results.get(position).getQuantity());
 
         return v;
     }

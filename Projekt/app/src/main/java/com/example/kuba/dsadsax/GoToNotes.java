@@ -1,12 +1,8 @@
 package com.example.kuba.dsadsax;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,13 +18,9 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 
 public class GoToNotes extends Fragment {
 
@@ -36,17 +28,17 @@ public class GoToNotes extends Fragment {
     private List<Notes> results;
     private NotesListAdapter adapter;
     private ListView lv;
-    private FloatingActionButton fabz;
     private Spinner spinner;
     private ArrayList<String> label;
     private String uzytkownik;
     private Integer idd;
+    private String notatka;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getActivity().setTitle("Własne notatki");
+        Objects.requireNonNull(getActivity()).setTitle("Własne notatki");
     }
 
     @Nullable
@@ -55,20 +47,17 @@ public class GoToNotes extends Fragment {
 
         View v = inflater.inflate(R.layout.notes, container, false);
 
-        label = new ArrayList<String>();
+        label = new ArrayList<>();
 
-        fabz = (FloatingActionButton) v.findViewById(R.id.fabNotes);
+        FloatingActionButton fabz = v.findViewById(R.id.fabNotes);
 
-        fabz.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cel = new Intent(v.getContext(), AddNotes.class);
-                startActivity(cel);
-            }
+        fabz.setOnClickListener(v1 -> {
+            Intent cel = new Intent(v1.getContext(), AddNotes.class);
+            startActivity(cel);
         });
 
         results = new ArrayList<>();
-        lv = (ListView) v.findViewById(R.id.notesList);
+        lv = v.findViewById(R.id.notesList);
         spinner = v.findViewById(R.id.notesSpinner);
         uzytkownik = "Wszyscy";
 
@@ -87,7 +76,7 @@ public class GoToNotes extends Fragment {
         if (cxz.getCount() != 0) {
             while (cxz.moveToNext()) {
                 label.add(cxz.getString(0));
-                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, label);
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, label);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(dataAdapter);
             }
@@ -95,6 +84,7 @@ public class GoToNotes extends Fragment {
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void onResume() {
 
         super.onResume();
@@ -105,16 +95,29 @@ public class GoToNotes extends Fragment {
         loadSpinnerData();
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+
                 uzytkownik = spinner.getItemAtPosition(position).toString();
                 AktualizujBaze();
+
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
 
             }
+
+        });
+
+        lv.setOnItemClickListener((parent, view, position, id) -> {
+
+            idd = results.get(position).getId();
+            Cursor c = myDb.getNotes_NOTATKI(idd);
+            c.moveToFirst();
+            notatka = c.getString(0);
+            dialogShowNotes();
 
         });
 
@@ -130,7 +133,7 @@ public class GoToNotes extends Fragment {
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
 
-                            idd = (int) results.get(position).getId();
+                            idd = results.get(position).getId();
                             dialogRemove();
 
                         }
@@ -151,14 +154,14 @@ public class GoToNotes extends Fragment {
         myDb = new DatabaseHelper(getActivity());
         Cursor c;
 
-        if (uzytkownik == "Wszyscy") c = myDb.getAllData_NOTATKI();
+        if (uzytkownik.equals("Wszyscy")) c = myDb.getAllData_NOTATKI();
         else c = myDb.getUserData_NOTATKI(uzytkownik);
 
         if (c.getCount() != 0) {
             c.moveToLast();
-            results.add(new Notes(c.getInt(0), c.getString(1), c.getString(3), c.getString(4), c.getString(2)));
+            results.add(new Notes(c.getInt(0), c.getString(1), c.getString(3), c.getString(4)));
             while (c.moveToPrevious()) {
-                results.add(new Notes(c.getInt(0), c.getString(1), c.getString(3), c.getString(4), c.getString(2)));
+                results.add(new Notes(c.getInt(0), c.getString(1), c.getString(3), c.getString(4)));
             }
         }
 
@@ -169,21 +172,25 @@ public class GoToNotes extends Fragment {
 
     public void dialogRemove() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()),R.style.AlertDialog);
 
         builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
-                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        myDb.remove_NOTATKI(idd);
-                        AktualizujBaze();
-                    }
+                .setPositiveButton("Tak", (dialog, which) -> {
+                    myDb.remove_NOTATKI(idd);
+                    AktualizujBaze();
                 })
-                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                .setNegativeButton("Nie", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+
+    }
+
+    public void dialogShowNotes() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()),R.style.AlertDialog);
+
+        builder.setMessage(notatka).setCancelable(false)
+                .setPositiveButton("OK", (dialog, which) -> dialog.cancel());
 
         builder.show();
 

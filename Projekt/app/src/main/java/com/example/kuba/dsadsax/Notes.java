@@ -6,14 +6,12 @@ public class Notes {
     private String title;
     private String profile;
     private String date;
-    private String text;
 
-    public Notes(int id, String title, String profile, String date, String text) {
+    Notes(int id, String title, String profile, String date) {
         this.id = id;
         this.title = title;
         this.profile = profile;
         this.date = date;
-        this.text = text;
     }
 
     public int getId() {
@@ -46,14 +44,6 @@ public class Notes {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
 }

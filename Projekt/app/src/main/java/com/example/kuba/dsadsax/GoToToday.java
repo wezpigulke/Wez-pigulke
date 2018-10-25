@@ -4,13 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -20,7 +18,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -248,7 +245,7 @@ public class GoToToday extends Fragment {
         myDb.updateDate_NOTYFIKACJA(id, dataJutrzejsza);
 
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
+        Intent myIntent = new Intent(getActivity(), NotificationReceiverReminder.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 getActivity(), id, myIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -264,7 +261,7 @@ public class GoToToday extends Fragment {
 
         if (dni > 1) {
 
-            Intent intx = new Intent(getContext(), NotificationReceiver.class);
+            Intent intx = new Intent(getContext(), NotificationReceiverReminder.class);
             intx.putExtra("Value", uzytkownik + " " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + dawka + ")");
 
             pendingIntent = PendingIntent.getBroadcast(

@@ -20,14 +20,30 @@
         android:layout_marginTop="12dp"
         android:text="Nazwa leku"
         android:textColor="#f92a3f"
-        android:textSize="24dp" />
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/medQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="42dp"
+        android:text="Ilość tabletek"
+        android:layout_alignStart="@+id/medName"
+        android:layout_below="@+id/medName"
+        android:textColor="#000"
+        android:textSize="16dp" />
 
     <ImageView
         android:id="@+id/imageView5"
         android:layout_width="67dp"
-        android:layout_height="59dp"
-        android:layout_alignParentEnd="true"
+        android:layout_height="67dp"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="0dp"
         app:srcCompat="@drawable/medicinee" />
 
 </RelativeLayout>

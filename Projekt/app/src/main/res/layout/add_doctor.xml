@@ -19,13 +19,13 @@
                 android:id="@+id/editText5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="84dp"
                 android:layout_marginStart="85dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="84dp"
+                android:layout_marginBottom="8dp"
                 android:backgroundTint="@android:color/holo_green_light"
                 android:ems="10"
-                android:hint="Imie lekarza"
+                android:hint="Imie i nazwisko"
                 android:inputType="textPersonName"
                 android:textCursorDrawable="@android:color/holo_blue_light"
                 app:layout_constraintBottom_toTopOf="@+id/editText6"
@@ -35,23 +35,23 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/editText6"
+                android:id="@+id/editText7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="84dp"
                 android:layout_marginStart="85dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="84dp"
+                android:layout_marginBottom="8dp"
                 android:backgroundTint="@android:color/holo_green_light"
                 android:ems="10"
-                android:hint="Nazwisko"
+                android:hint="Specjalizacja"
                 android:inputType="textPersonName"
                 android:textCursorDrawable="@android:color/holo_blue_light"
-                app:layout_constraintBottom_toTopOf="@+id/editText7"
+                app:layout_constraintBottom_toTopOf="@+id/editText5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editText5" />
+                app:layout_constraintTop_toBottomOf="@+id/editText8" />
 
             <EditText
                 android:id="@+id/editText8"
@@ -73,23 +73,23 @@
                 app:layout_constraintTop_toBottomOf="@+id/editText7" />
 
             <EditText
-                android:id="@+id/editText7"
+                android:id="@+id/editText6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="84dp"
                 android:layout_marginStart="85dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="84dp"
+                android:layout_marginBottom="8dp"
                 android:backgroundTint="@android:color/holo_green_light"
                 android:ems="10"
-                android:hint="Specjalizacja"
+                android:hint="Adres gabinetu"
                 android:inputType="textPersonName"
                 android:textCursorDrawable="@android:color/holo_blue_light"
-                app:layout_constraintBottom_toTopOf="@+id/editText8"
+                app:layout_constraintBottom_toTopOf="@+id/editText7"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editText6" />
+                app:layout_constraintTop_toBottomOf="@+id/button" />
 
             <Button
                 android:id="@+id/button"

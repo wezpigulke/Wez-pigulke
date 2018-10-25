@@ -26,32 +26,25 @@
                 android:layout_marginRight="85dp"
                 android:layout_marginStart="85dp"
                 android:layout_marginTop="32dp"
-                app:layout_constraintBottom_toTopOf="@+id/editText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/dateVisit" />
 
-            <EditText
-                android:id="@+id/editText"
+            <Spinner
+                android:id="@+id/spinnerLek"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginEnd="85dp"
-                android:layout_marginLeft="85dp"
-                android:layout_marginRight="85dp"
                 android:layout_marginStart="85dp"
+                android:layout_marginLeft="85dp"
                 android:layout_marginTop="16dp"
-                android:backgroundTint="@android:color/holo_green_light"
-                android:ems="10"
-                android:hint="Nazwa leku"
-                android:inputType="textPersonName"
-                android:textCursorDrawable="@android:color/holo_blue_light"
-                app:layout_constraintBottom_toTopOf="@+id/spinnerDawka"
+                android:layout_marginEnd="85dp"
+                android:layout_marginRight="85dp"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/spinnerProfile"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinnerProfile" />
+                app:layout_constraintTop_toBottomOf="@+id/spinnerDawka" />
 
             <Spinner
                 android:id="@+id/spinnerDawka"
@@ -65,8 +58,7 @@
                 android:layout_marginTop="16dp"
                 app:layout_constraintBottom_toTopOf="@+id/editText2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editText" />
+                app:layout_constraintStart_toStartOf="parent"/>
 
             <Spinner
                 android:id="@+id/spinnerDzwiek"

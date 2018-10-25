@@ -5,9 +5,6 @@
     <uses-permission android:name="android.permision.CALL_PHONE"/>
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
 
-
-    <uses-sdk android:maxSdkVersion="27"/>
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/logo"
@@ -59,6 +56,12 @@
             android:screenOrientation="portrait"/>
 
         <activity
+            android:name=".AddMedicine"
+            android:label="Dodaj lek"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
+
+        <activity
             android:name=".AddNotes"
             android:configChanges="orientation"
             android:theme="@style/AppTheme.NoActionBar"
@@ -72,14 +75,14 @@
 
         <activity
             android:name=".AddTypeMeasurement"
+            android:label="Dodaj typ badania"
             android:configChanges="orientation"
-            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"/>
 
-        <activity android:name=".RepeatingActivity"
+        <activity android:name=".RepeatingActivityReminder"
             android:label="Weź tabletkę"/>
 
-        <receiver android:name=".NotificationReceiver"/>
+        <receiver android:name=".NotificationReceiverReminder"/>
 
     </application>
 

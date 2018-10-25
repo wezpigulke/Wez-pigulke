@@ -79,7 +79,24 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/goThen3"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/goThen3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="135dp"
+                android:layout_marginLeft="135dp"
+                android:layout_marginEnd="135dp"
+                android:layout_marginRight="135dp"
+                android:layout_marginTop="32dp"
+                android:text="DALEJ"
+                app:layout_constraintBottom_toTopOf="@+id/dateMeasurement"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <EditText
                 android:id="@+id/resultMeasurement"
@@ -87,27 +104,25 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="70dp"
                 android:layout_marginLeft="70dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="102dp"
                 android:layout_marginEnd="70dp"
                 android:layout_marginRight="70dp"
-                android:layout_marginBottom="32dp"
                 android:backgroundTint="@android:color/holo_green_light"
                 android:ems="10"
                 android:hint="Wynik pomiaru"
                 android:inputType="number"
                 android:textCursorDrawable="@android:color/holo_blue_light"
-                app:layout_constraintBottom_toTopOf="@+id/dodajMeasurement"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spinnerTypeMeasurement"
+                app:layout_constraintTop_toBottomOf="@+id/dodajMeasurement"
                 tools:targetApi="lollipop" />
 
             <Button
                 android:id="@+id/dodajMeasurement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginTop="48dp"
                 android:layout_marginEnd="135dp"
                 android:layout_marginLeft="135dp"
                 android:layout_marginRight="135dp"
@@ -116,8 +131,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/resultMeasurement" />
+                app:layout_constraintStart_toStartOf="parent" />
 
         </LinearLayout>
     </ScrollView>

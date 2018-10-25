@@ -1,22 +1,20 @@
 package com.example.kuba.dsadsax;
 
+import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class AddDoctor extends AppCompatActivity {
 
     DatabaseHelper myDb;
     private static final String TAG = "AddDoctor";
 
-    private Button add;
-
     private EditText name;
-    private EditText surname;
+    private EditText address;
     private EditText specialization;
     private EditText phone_number;
 
@@ -30,27 +28,33 @@ public class AddDoctor extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        add = findViewById(R.id.button);
+        Button add = findViewById(R.id.button);
 
         name = findViewById(R.id.editText5);
-        surname = findViewById(R.id.editText6);
+        address = findViewById(R.id.editText6);
         specialization = findViewById(R.id.editText7);
         phone_number = findViewById(R.id.editText8);
 
+        int maxD = 0;
+
         add.setOnClickListener(v -> {
-            if(name.getText().length()>0 && surname.getText().length()>0 && specialization.getText().length()>0 && phone_number.getText().length()==9) {
-                myDb.insert_DOKTORZY(
-                        name.getText().toString(),
-                        surname.getText().toString(),
-                        specialization.getText().toString(),
-                        phone_number.getText().toString()
-                );
-                onBackPressed();
-            }
-            else if(name.getText().length()==0) openDialog("Wpisz imie lekarza");
-            else if(surname.getText().length()==0) openDialog("Wpisz nazwisko lekarza");
+            if(name.getText().length()>0 && specialization.getText().length()>0) {
+
+                Cursor max = myDb.getMAXid_DOKTORZY();
+                max.moveToFirst();
+
+                    myDb.insert_DOKTORZY(
+                            Integer.parseInt(max.getString(0)) + 1,
+                            name.getText().toString(),
+                            specialization.getText().toString(),
+                            phone_number.getText().toString(),
+                            address.getText().toString()
+                    );
+
+                }
+            else if(name.getText().length()==0) openDialog("Wpisz imie i nazwisko lekarza");
             else if(specialization.getText().length()==0) openDialog("Wpisz specjalizacje lekarza");
-            else if(phone_number.getText().length()==0) openDialog("Wpisz prawidłowy numer (9 cyfr)");
+            onBackPressed();
         });
     }
 

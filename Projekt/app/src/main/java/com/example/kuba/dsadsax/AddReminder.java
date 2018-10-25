@@ -40,7 +40,7 @@ public class AddReminder extends AppCompatActivity {
 
     private TextView dataTabletka;
     private TextView godzinaTabletka;
-    private EditText nazwaLeku;
+    private String nazwaLeku;
     private EditText ileDni;
     private EditText edt;
     private DatePickerDialog.OnDateSetListener dataTabletkaListener;
@@ -57,10 +57,12 @@ public class AddReminder extends AppCompatActivity {
     private ArrayList<String> label;
     private String uzytkownik;
     private Spinner dawka;
+    private Spinner spinnerNazwaLeku;
     private ArrayList<String> labelDawka;
     private ArrayList<String> labelReminder;
     private ArrayList<String> labelCoIleGodzin;
     private ArrayList<String> labelDzwiek;
+    private ArrayList<String> labelNazwaLeku;
     private String jakaDawka;
     private Integer iloscDni;
     private Spinner spinnerCoIleGodzin;
@@ -71,6 +73,8 @@ public class AddReminder extends AppCompatActivity {
     private Integer dzwiek;
     private MediaPlayer mp;
     private Integer czyUsunacDzien;
+    private Integer labelSize;
+    private Integer labelSizeCopy;
 
     private TextView setTime1;
     private TimePickerDialog.OnTimeSetListener setTime1Listener;
@@ -106,6 +110,7 @@ public class AddReminder extends AppCompatActivity {
         labelReminder = new ArrayList<>();
         labelCoIleGodzin = new ArrayList<>();
         labelDzwiek = new ArrayList<>();
+        labelNazwaLeku = new ArrayList<>();
 
         coWybrane = 0;
         ileRazyDziennie = 2;
@@ -135,7 +140,6 @@ public class AddReminder extends AppCompatActivity {
 
         dataTabletka = findViewById(R.id.dateVisit);
         godzinaTabletka = findViewById(R.id.timeMedicine);
-        nazwaLeku = findViewById(R.id.editText);
         ileDni = findViewById(R.id.editText2);
 
         dodaj = findViewById(R.id.dodajButton);
@@ -149,6 +153,7 @@ public class AddReminder extends AppCompatActivity {
         dawka = findViewById(R.id.spinnerDawka);
         spinnerReminder = findViewById(R.id.spinnerJakCzesto);
         spinnerDzwiek = findViewById(R.id.spinnerDzwiek);
+        spinnerNazwaLeku = findViewById(R.id.spinnerLek);
 
         dzwiek = 1;
         jakaDawka = "Dawka: 1";
@@ -195,6 +200,9 @@ public class AddReminder extends AppCompatActivity {
         loadSpinnerReminder();
         loadSpinnerCoIleGodzin();
         loadSpinnerDzwiek();
+        loadSpinnerNazwaLeku();
+
+        labelSizeCopy = labelSize;
 
         dataTabletka.setVisibility(View.GONE);
         godzinaTabletka.setVisibility(View.GONE);
@@ -217,6 +225,23 @@ public class AddReminder extends AppCompatActivity {
         dodaj.setVisibility(View.GONE);
 
         dawka.setSelection(3);
+
+        spinnerNazwaLeku.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                nazwaLeku = spinnerNazwaLeku.getItemAtPosition(position).toString();
+                String selection = (String) parentView.getItemAtPosition(position);
+                if (selection.equals("Dodaj nowy typ")) {
+                    Intent cel = new Intent(parentView.getContext(), AddMedicine.class);
+                    startActivity(cel);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+
+            }
+        });
 
         spinnerCoIleGodzin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -365,34 +390,34 @@ public class AddReminder extends AppCompatActivity {
                 dzwiek = position;
                 stopPlaying();
 
-                if (position == 0) {
+                if (position == 9) {
                     dzwiek = 1;
                 }
-                if (position == 1) {
+                if (position == 0) {
                     mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
                     mp.start();
-                } else if (position == 2) {
+                } else if (position == 1) {
                     mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm2);
                     mp.start();
-                } else if (position == 3) {
+                } else if (position == 2) {
                     mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm3);
                     mp.start();
-                } else if (position == 4) {
+                } else if (position == 3) {
                     mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm4);
                     mp.start();
-                } else if (position == 5) {
+                } else if (position == 4) {
                     mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm5);
                     mp.start();
-                } else if (position == 6) {
+                } else if (position == 5) {
                     mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm6);
                     mp.start();
-                } else if (position == 7) {
+                } else if (position == 6) {
                     mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm7);
                     mp.start();
-                } else if (position == 8) {
+                } else if (position == 7) {
                     mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm8);
                     mp.start();
-                } else if (position == 9) {
+                } else if (position == 8) {
                     mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm9);
                     mp.start();
                 }
@@ -423,9 +448,12 @@ public class AddReminder extends AppCompatActivity {
 
             stopPlaying();
 
-            if (nazwaLeku.getText().toString().length() != 0) {
+            if(spinnerNazwaLeku.getSelectedItem().toString().equals("Wybierz lek") || spinnerNazwaLeku.getSelectedItem().toString().equals("Dodaj nowy lek")) {
+                openDialog("Wybierz lek lub dodaj nowy");
+            } else {
+
                 dawka.setVisibility(View.GONE);
-                nazwaLeku.setVisibility(View.GONE);
+                spinnerNazwaLeku.setVisibility(View.GONE);
                 spinner.setVisibility(View.GONE);
                 dalej.setVisibility(View.GONE);
                 spinnerDzwiek.setVisibility(View.GONE);
@@ -435,7 +463,8 @@ public class AddReminder extends AppCompatActivity {
                 ileDni.setVisibility(View.VISIBLE);
                 spinnerReminder.setVisibility(View.VISIBLE);
                 dodaj.setVisibility(View.VISIBLE);
-            } else openDialog("Wpisz nazwę leku");
+
+            }
 
         });
 
@@ -496,8 +525,7 @@ public class AddReminder extends AppCompatActivity {
 
         dodaj.setOnClickListener(view -> {
 
-            if (nazwaLeku.getText().length() > 0 &&
-                    ileDni.getText().length() > 0 &&
+            if (ileDni.getText().length() > 0 &&
                     !ileDni.getText().toString().contains(".") &&
                     !ileDni.getText().toString().contains("-") &&
                     !ileDni.getText().toString().contains("*") &&
@@ -571,11 +599,11 @@ public class AddReminder extends AppCompatActivity {
                         }
                     }
 
-                    if (coWybrane == 0 && iloscDni>=1) {
+                    if (coWybrane == 0 && iloscDni >= 1) {
                         myDb.insert_PRZYPOMNIENIE(
                                 godzinaTabletka.getText().toString(),
                                 dataPrzypomnienia,
-                                nazwaLeku.getText().toString(),
+                                nazwaLeku,
                                 jakaDawka,
                                 iloscDni,
                                 uzytkownik,
@@ -594,12 +622,12 @@ public class AddReminder extends AppCompatActivity {
                                 dataPrzypomnienia
                         );
 
-                    } else if (coWybrane == 2 && iloscDni>=1) {
+                    } else if (coWybrane == 2 && iloscDni >= 1) {
 
                         myDb.insert_PRZYPOMNIENIE(
                                 godzinaTabletka.getText().toString(),
                                 dataPrzypomnienia,
-                                nazwaLeku.getText().toString(),
+                                nazwaLeku,
                                 jakaDawka,
                                 iloscDni,
                                 uzytkownik,
@@ -631,16 +659,16 @@ public class AddReminder extends AppCompatActivity {
 
                     }
 
-                    if(iloscDni>=1) {
+                    if (iloscDni >= 1) {
 
-                        Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
-                        intx.putExtra("Value", uzytkownik + " " + godzinaTabletka.getText().toString() + "  |  już czas, aby wziąć: " + nazwaLeku.getText().toString() + " (" + jakaDawka + ")");
+                        Intent intx = new Intent(getApplicationContext(), NotificationReceiverReminder.class);
+                        intx.putExtra("Value", uzytkownik + " " + godzinaTabletka.getText().toString() + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
                         intx.putExtra("id", id);
                         intx.putExtra("idd", idd);
                         intx.putExtra("godzina", godzinaTabletka.getText().toString());
                         intx.putExtra("data", dataPrzypomnienia);
                         intx.putExtra("uzytkownik", uzytkownik);
-                        intx.putExtra("nazwaLeku", nazwaLeku.getText().toString());
+                        intx.putExtra("nazwaLeku", nazwaLeku);
                         intx.putExtra("jakaDawka", jakaDawka);
                         intx.putExtra("iloscDni", iloscDni - 1);
                         intx.putExtra("wybranyDzwiek", dzwiek);
@@ -838,7 +866,7 @@ public class AddReminder extends AppCompatActivity {
                             myDb.insert_PRZYPOMNIENIE(
                                     najwyzszaGodzina,
                                     dataPrzypomnienia,
-                                    nazwaLeku.getText().toString(),
+                                    nazwaLeku,
                                     jakaDawka,
                                     iloscDni,
                                     uzytkownik,
@@ -875,14 +903,14 @@ public class AddReminder extends AppCompatActivity {
                                     dataPrzypomnienia
                             );
 
-                            Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
-                            intx.putExtra("Value", uzytkownik + " " + godzinaPrzypomnienia + "  |  już czas, aby wziąć: " + nazwaLeku.getText().toString() + " (" + jakaDawka + ")");
+                            Intent intx = new Intent(getApplicationContext(), NotificationReceiverReminder.class);
+                            intx.putExtra("Value", uzytkownik + " " + godzinaPrzypomnienia + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
                             intx.putExtra("id", id);
                             intx.putExtra("idd", idd);
                             intx.putExtra("godzina", godzinaPrzypomnienia);
                             intx.putExtra("data", dataPrzypomnienia);
                             intx.putExtra("uzytkownik", uzytkownik);
-                            intx.putExtra("nazwaLeku", nazwaLeku.getText().toString());
+                            intx.putExtra("nazwaLeku", nazwaLeku);
                             intx.putExtra("jakaDawka", jakaDawka);
                             intx.putExtra("iloscDni", iloscDni - 1);
                             intx.putExtra("wybranyDzwiek", dzwiek);
@@ -897,8 +925,7 @@ public class AddReminder extends AppCompatActivity {
 
                     }
                 }
-            } else if (nazwaLeku.getText().length() == 0) openDialog("Wpisz nazwe leku");
-            else if (ileDni.getText().toString().contains(".") ||
+            } else if (ileDni.getText().toString().contains(".") ||
                     ileDni.getText().toString().contains("-") ||
                     ileDni.getText().toString().contains("*") ||
                     ileDni.getText().toString().contains("#") ||
@@ -1112,6 +1139,38 @@ public class AddReminder extends AppCompatActivity {
         }
     }
 
+    private void loadSpinnerNazwaLeku() {
+
+        labelNazwaLeku.clear();
+
+        Cursor cxz = myDb.getData_LEK();
+
+        if (cxz.getCount() != 0) {
+            while (cxz.moveToNext()) {
+                labelNazwaLeku.add(cxz.getString(1));
+            }
+        }
+
+        labelNazwaLeku.add("Dodaj nowy typ");
+        labelNazwaLeku.add("Wybierz lek");
+
+        labelSize = labelNazwaLeku.size() - 1;
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, labelNazwaLeku) {
+            @Override
+            public int getCount() {
+                return(labelSize);
+            }
+        };
+
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerNazwaLeku.setAdapter(dataAdapter);
+
+        if(labelSize!=labelSizeCopy) spinnerNazwaLeku.setSelection(labelSize-2);
+        else spinnerNazwaLeku.setSelection(labelSize);
+
+    }
+
     private void loadSpinnerCoIleGodzin() {
 
         labelCoIleGodzin.add("2 razy dziennie");
@@ -1146,7 +1205,6 @@ public class AddReminder extends AppCompatActivity {
 
     private void loadSpinnerDzwiek() {
 
-        labelDzwiek.add("Domyślny");
         labelDzwiek.add("Alarm nr 1");
         labelDzwiek.add("Alarm nr 2");
         labelDzwiek.add("Alarm nr 3");
@@ -1156,10 +1214,20 @@ public class AddReminder extends AppCompatActivity {
         labelDzwiek.add("Alarm nr 7");
         labelDzwiek.add("Alarm nr 8");
         labelDzwiek.add("Alarm nr 9");
+        labelDzwiek.add("Dźwięk domyślny");
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, labelDzwiek);
+        final int labelSize = labelDzwiek.size() - 1;
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, labelDzwiek) {
+            @Override
+            public int getCount() {
+                return(labelSize);
+            }
+        };
+
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDzwiek.setAdapter(dataAdapter);
+        spinnerDzwiek.setSelection(labelSize);
 
     }
 
@@ -1194,6 +1262,14 @@ public class AddReminder extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    public void onResume() {
+
+        super.onResume();
+        loadSpinnerNazwaLeku();
+
+
     }
 
     @Override

@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class NotificationReceiver extends BroadcastReceiver {
+public class NotificationReceiverReminder extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -33,7 +33,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent repeating_intent = new Intent(context, RepeatingActivity.class);
+        Intent repeating_intent = new Intent(context, RepeatingActivityReminder.class);
 
         repeating_intent.putExtra("id", id_n);
         repeating_intent.putExtra("idd", id_p);
@@ -46,7 +46,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         repeating_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 100, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, id_n, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri alarmSound;
         alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.alarm1);
@@ -80,6 +80,11 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         String dzisiaj = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
 
+        Cursor cl = myDb.getDataName_LEK(nazwaLeku);
+        cl.moveToFirst();
+
+        myDb.update_LEK(Integer.parseInt(cl.getString(0)), Integer.parseInt(cl.getString(1))-1);
+
         Cursor cd = myDb.getDays_PRZYPOMNIENIE(id_p);
         cd.moveToFirst();
         ilosc_dn = Integer.parseInt(cd.getString(0));
@@ -92,7 +97,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         if ((ilosc_dn - 1) <= 0) {
 
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            Intent myIntent = new Intent(context, NotificationReceiver.class);
+            Intent myIntent = new Intent(context, NotificationReceiverReminder.class);
             PendingIntent pendinIntent = PendingIntent.getBroadcast(
                     context, id_n, myIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);

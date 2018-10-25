@@ -1,5 +1,6 @@
 package com.example.kuba.dsadsax;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ public class NotesListAdapter extends BaseAdapter {
 
     //Constructor
 
-    public NotesListAdapter(Context mContext, List<Notes> results) {
+    NotesListAdapter(Context mContext, List<Notes> results) {
         this.mContext = mContext;
         this.results = results;
     }
@@ -40,17 +41,15 @@ public class NotesListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View v = View.inflate(mContext, R.layout.notes_listview, null);
+        @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.notes_listview, null);
 
-        TextView profileNotes = (TextView)v.findViewById(R.id.profileNotes);
-        TextView dateNotes = (TextView)v.findViewById(R.id.dateNotes);
-        TextView nameNotes = (TextView)v.findViewById(R.id.nameNotes2);
-        TextView textNotes = (TextView) v.findViewById(R.id.textNotes);
+        TextView profileNotes = v.findViewById(R.id.profileNotes);
+        TextView dateNotes = v.findViewById(R.id.dateNotes);
+        TextView nameNotes = v.findViewById(R.id.nameNotes2);
 
         profileNotes.setText(results.get(position).getProfile());
         dateNotes.setText(results.get(position).getDate());
         nameNotes.setText(results.get(position).getTitle());
-        textNotes.setText(results.get(position).getText());
 
         v.setTag(results.get(position).getId());
 

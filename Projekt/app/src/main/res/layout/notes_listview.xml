@@ -34,16 +34,6 @@
         android:layout_marginLeft="14dp" />
 
     <TextView
-        android:id="@+id/textNotes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/dateNotes"
-        android:layout_below="@+id/imageView"
-        android:text="Tekst"
-        android:textColor="#000000"
-        android:textSize="18dp" />
-
-    <TextView
         android:id="@+id/nameNotes2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,10 +46,12 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_alignParentEnd="true"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="0dp"
         app:srcCompat="@drawable/notepad" />
 
 </RelativeLayout>

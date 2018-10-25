@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,12 +19,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -55,20 +52,17 @@ public class GoToVisit extends Fragment {
 
         View v = inflater.inflate(R.layout.visit, container, false);
 
-        label = new ArrayList<String>();
+        label = new ArrayList<>();
 
-        fabz = (FloatingActionButton) v.findViewById(R.id.fabz);
+        fabz = v.findViewById(R.id.fabz);
 
-        fabz.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cel = new Intent(v.getContext(), AddVisit.class);
-                startActivity(cel);
-            }
+        fabz.setOnClickListener(v1 -> {
+            Intent cel = new Intent(v1.getContext(), AddVisit.class);
+            startActivity(cel);
         });
 
         results = new ArrayList<>();
-        lv = (ListView) v.findViewById(R.id.visitList);
+        lv = v.findViewById(R.id.visitList);
         spinner = v.findViewById(R.id.spinner4);
         uzytkownik = "Wszyscy";
 
@@ -169,7 +163,7 @@ public class GoToVisit extends Fragment {
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
 
-                            idd = (int) results.get(position).getId();
+                            idd = results.get(position).getId();
                             dialogRemove();
 
                         }
@@ -210,14 +204,14 @@ public class GoToVisit extends Fragment {
 
         int usunID = (idd * 2) - 1;
 
-        Intent myIntent1 = new Intent(getActivity(), NotificationReceiver.class);
+        Intent myIntent1 = new Intent(getActivity(), NotificationReceiverVisit.class);
         PendingIntent pendingIntent1 = PendingIntent.getBroadcast(
                 getActivity(), usunID, myIntent1,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmManager.cancel(pendingIntent1);
 
-        Intent myIntent2 = new Intent(getActivity(), NotificationReceiver.class);
+        Intent myIntent2 = new Intent(getActivity(), NotificationReceiverVisit.class);
         PendingIntent pendingIntent2 = PendingIntent.getBroadcast(
                 getActivity(), usunID + 1, myIntent2,
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -234,17 +228,8 @@ public class GoToVisit extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialog);
 
         builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
-                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        usunDane();
-                    }
-                })
-                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                .setPositiveButton("Tak", (dialog, which) -> usunDane())
+                .setNegativeButton("Nie", (dialog, which) -> dialog.cancel());
 
         builder.show();
 

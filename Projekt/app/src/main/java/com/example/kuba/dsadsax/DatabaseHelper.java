@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+
     private static final String DATABASE_NAME = "database.db";
 
     private static final String UZYTKOWNICY = "Uzytkownicy";
@@ -33,17 +34,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DOKTORZY = "Doktorzy";
     private static final String DOKTORZY_ID = "ID";
-    private static final String DOKTORZY_IMIE = "Imie";
-    private static final String DOKTORZY_NAZWISKO = "Nazwisko";
+    private static final String DOKTORZY_IMIE_I_NAZWISKO = "Imie_Nazwisko";
     private static final String DOKTORZY_SPECJALIZACJA = "Specjalizacja";
     private static final String DOKTORZY_NUMER = "Numer";
+    private static final String DOKTORZY_ADRES = "Adres";
 
     private static final String WIZYTY = "Wizyty";
     private static final String WIZYTY_ID = "ID";
     private static final String WIZYTY_GODZINA = "Godzina";
     private static final String WIZYTY_DATA = "Data";
-    private static final String WIZYTY_IMIE = "Imie";
-    private static final String WIZYTY_NAZWISKO = "Nazwisko";
+    private static final String WIZYTY_IMIE_I_NAZWISKO = "Imie_Nazwisko";
     private static final String WIZYTY_SPECJALIZACJA = "Specjalizacja";
     private static final String WIZYTY_ADRES = "Adres";
     private static final String WIZYTY_PROFIL = "Profil";
@@ -72,6 +72,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String STATYSTYKI_WZIETE = "Wziete";
     private static final String STATYSTYKI_NIEWZIETE = "Niewziete";
 
+    private static final String LEK = "Lek";
+    private static final String LEK_ID = "ID";
+    private static final String LEK_NAZWA = "Nazwa";
+    private static final String LEK_ILOSC_TABLETEK = "Ilosc_tabletek";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
@@ -83,14 +88,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + UZYTKOWNICY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Imie TEXT)");
-        db.execSQL("CREATE TABLE " + PRZYPOMNIENIE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Lek TEXT, Dawka TEXT, Ilosc_dni Integer, Profil TEXT, Typ INTEGER, Wszystkie_godziny TEXT)");
+        db.execSQL("CREATE TABLE " + PRZYPOMNIENIE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Lek Integer, Dawka TEXT, Ilosc_dni Integer, Profil TEXT, Typ INTEGER, Wszystkie_godziny TEXT)");
         db.execSQL("CREATE TABLE " + NOTYFIKACJA + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, ID_notyfikacja INTEGER, ID_przypomnienie INTEGER, Godzina TEXT, Data TEXT)");
-        db.execSQL("CREATE TABLE " + DOKTORZY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Imie TEXT, Nazwisko TEXT, Specjalizacja TEXT, Numer Number(9))");
-        db.execSQL("CREATE TABLE " + WIZYTY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Imie TEXT, Nazwisko TEXT, Specjalizacja TEXT, Adres TEXT, Profil TEXT)");
+        db.execSQL("CREATE TABLE " + DOKTORZY + " (ID INTEGER PRIMARY KEY, Imie_Nazwisko TEXT, Specjalizacja TEXT, Numer TEXT, Adres TEXT)");
+        db.execSQL("CREATE TABLE " + WIZYTY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Imie_Nazwisko TEXT, Specjalizacja TEXT, Adres TEXT, Profil TEXT)");
         db.execSQL("CREATE TABLE " + POMIARY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Typ TEXT, Wynik TEXT, Profil TEXT, Godzina TEXT, Data TEXT)");
         db.execSQL("CREATE TABLE " + TYP_POMIAR + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Typ TEXT)");
         db.execSQL("CREATE TABLE " + NOTATKI + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Tytul TEXT, Tresc TEXT, Profil TEXT, Data TEXT)");
         db.execSQL("CREATE TABLE " + STATYSTYKI + " (ID INTEGER PRIMARY KEY, Wziete INTEGER, Niewziete INTEGER)");
+        db.execSQL("CREATE TABLE " + LEK + " (ID INTEGER PRIMARY KEY, Nazwa TEXT, Ilosc_tabletek INTEGER)");
     }
 
     @Override
@@ -104,7 +110,67 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TYP_POMIAR);
         db.execSQL("DROP TABLE IF EXISTS " + NOTATKI);
         db.execSQL("DROP TABLE IF EXISTS " + STATYSTYKI);
+        db.execSQL("DROP TABLE IF EXISTS " + LEK);
         onCreate(db);
+    }
+
+    /**
+     * ============ STATYSTYKI =============
+     **/
+
+    public boolean insert_LEK(Integer id, String nazwa, Integer ilosc) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(LEK_ID, id);
+        contentValues.put(LEK_NAZWA, nazwa);
+        contentValues.put(LEK_ILOSC_TABLETEK, ilosc);
+
+        long result = db.insert(LEK, null, contentValues);
+        if (result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public Cursor getMAXid_LEK() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID), 0) FROM " + LEK, null);
+        return res;
+    }
+
+    public Cursor getData_LEK() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * " +
+                        "FROM " + LEK
+                , null);
+        return res;
+    }
+
+    public Cursor getDataName_LEK(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * " +
+                        "FROM " + LEK + " WHERE Nazwa='" + name + "'"
+                , null);
+        return res;
+    }
+    public boolean update_LEK(Integer id, Integer ilosc) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(LEK_ILOSC_TABLETEK, ilosc);
+
+        long result = db.update(LEK, contentValues, "ID=" + id, null);
+
+        if (result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public void remove_LEK(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(LEK, LEK_ID + "=" + id, null);
     }
 
     /**
@@ -291,6 +357,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getNotes_NOTATKI(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT Tresc FROM " + NOTATKI + " WHERE ID=" + id, null);
+        return res;
+    }
+
     public Cursor getUserData_NOTATKI(String user) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + NOTATKI + " WHERE Profil='" + user + "'", null);
@@ -371,9 +443,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getCount_TYP_POMIAR() {
+    public Cursor getDataID_TYP_POMIAR(String typ) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT COUNT(" + TYP_POMIAR_ID + ") FROM " + TYP_POMIAR, null);
+        Cursor res = db.rawQuery("SELECT ID FROM " + TYP_POMIAR + " WHERE Typ='" + typ + "'", null);
         return res;
     }
 
@@ -410,6 +482,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getId_UZYTKOWNICY(String imie) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor nam = db.rawQuery("SELECT ID FROM " + UZYTKOWNICY + " WHERE Imie='" + imie + "'", null);
+        return nam;
+    }
+
     public Cursor getName_UZYTKOWNICY() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor nam = db.rawQuery("SELECT Imie FROM " + UZYTKOWNICY + " LIMIT 1", null);
@@ -425,13 +503,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * ============ DOKTORZY ============
      **/
 
-    public boolean insert_DOKTORZY(String name, String surname, String specialization, String phone_number) {
+    public boolean insert_DOKTORZY(Integer id, String name, String specialization, String phone_number, String address) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DOKTORZY_IMIE, name);
-        contentValues.put(DOKTORZY_NAZWISKO, surname);
+        contentValues.put(DOKTORZY_ID, id);
+        contentValues.put(DOKTORZY_IMIE_I_NAZWISKO, name);
         contentValues.put(DOKTORZY_SPECJALIZACJA, specialization);
         contentValues.put(DOKTORZY_NUMER, phone_number);
+        contentValues.put(DOKTORZY_ADRES, address);
         long result = db.insert(DOKTORZY, null, contentValues);
         if (result == -1)
             return false;
@@ -439,9 +518,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
+    public Cursor getMAXid_DOKTORZY() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID), -1) FROM " + DOKTORZY, null);
+        return res;
+    }
+
     public Cursor getAllData_DOKTORZY() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + DOKTORZY, null);
+        return res;
+    }
+
+    public Cursor getIdData_DOKTORZY(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + DOKTORZY + " WHERE ID=" + id, null);
+        return res;
+    }
+
+    public Cursor getNameData_DOKTORZY(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + DOKTORZY + " WHERE Imie_Nazwisko='" + name + "'", null);
         return res;
     }
 
@@ -504,18 +601,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getMedicine_PRZYPOMNIENIE() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT " + PRZYPOMNIENIE_LEK + " FROM " + PRZYPOMNIENIE, null);
-        return res;
-    }
-
-    public Cursor getUserMedicine_PRZYPOMNIENIE(String user) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT " + PRZYPOMNIENIE_LEK + " FROM " + PRZYPOMNIENIE + " WHERE " + PRZYPOMNIENIE_PROFIL + "='" + user + "'", null);
-        return res;
-    }
-
     public void remove_PRZYPOMNIENIE(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(PRZYPOMNIENIE, PRZYPOMNIENIE_ID + "=" + id, null);
@@ -540,13 +625,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      **/
 
 
-    public boolean insert_WIZYTY(String godzina, String data, String imie, String nazwisko, String specjalizacja, String adres, String profile) {
+    public boolean insert_WIZYTY(String godzina, String data, String dane, String specjalizacja, String adres, String profile) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(WIZYTY_GODZINA, godzina);
         contentValues.put(WIZYTY_DATA, data);
-        contentValues.put(WIZYTY_IMIE, imie);
-        contentValues.put(WIZYTY_NAZWISKO, nazwisko);
+        contentValues.put(WIZYTY_IMIE_I_NAZWISKO, dane);
         contentValues.put(WIZYTY_SPECJALIZACJA, specjalizacja);
         contentValues.put(WIZYTY_ADRES, adres);
         contentValues.put(WIZYTY_PROFIL, profile);

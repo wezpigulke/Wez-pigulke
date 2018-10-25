@@ -3,7 +3,6 @@ package com.example.kuba.dsadsax;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -20,12 +19,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class GoToReminder extends Fragment {
 
@@ -187,7 +182,7 @@ public class GoToReminder extends Fragment {
             while (c.moveToNext()) {
 
                 AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-                Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
+                Intent myIntent = new Intent(getActivity(), NotificationReceiverReminder.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
                         getActivity(), Integer.parseInt(c.getString(0)), myIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);

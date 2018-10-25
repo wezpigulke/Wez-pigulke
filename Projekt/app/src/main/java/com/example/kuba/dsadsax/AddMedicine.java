@@ -10,12 +10,13 @@ import android.widget.EditText;
 
 import java.util.Objects;
 
-public class AddTypeMeasurement extends AppCompatActivity {
+public class AddMedicine extends AppCompatActivity {
 
     DatabaseHelper myDb;
-    private static final String TAG = "AddTypeMeasurement";
+    private static final String TAG = "AddMedicine";
 
-    private EditText typBadania;
+    private EditText nazwaLeku;
+    private EditText iloscTabletek;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -24,22 +25,30 @@ public class AddTypeMeasurement extends AppCompatActivity {
         myDb = new DatabaseHelper(this);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_type_measurement);
+        setContentView(R.layout.add_medicine);
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         Button dodajButton = findViewById(R.id.dodajLekButton);
-        typBadania = findViewById(R.id.typBadania);
+        nazwaLeku = findViewById(R.id.nazwaLeku);
+        iloscTabletek = findViewById(R.id.iloscTabletek);
+
+        Cursor c = myDb.getMAXid_LEK();
+        c.moveToFirst();
+        int id = Integer.parseInt(c.getString(0)) + 1;
 
         dodajButton.setOnClickListener(v -> {
-            if (typBadania.getText().length() > 0) {
-                Cursor cp = myDb.getDataID_TYP_POMIAR(typBadania.getText().toString());
-                if(cp.getCount()==0) {
-                    myDb.insert_TYP_POMIAR(
-                            typBadania.getText().toString()
+            if (nazwaLeku.getText().length() > 0 && iloscTabletek.getText().length() > 0) {
+
+                Cursor cl= myDb.getDataName_LEK(nazwaLeku.getText().toString());
+                if (cl.getCount()==0) {
+                    myDb.insert_LEK(
+                            id,
+                            nazwaLeku.getText().toString(),
+                            Integer.valueOf(iloscTabletek.getText().toString())
                     );
                     onBackPressed();
-                } else openDialog("Już istnieje typ badania o takiej samej nazwie w naszej bazie danych");
+                } else openDialog("Już istnieje lek o takiej nazwie w naszej bazie danych");
             } else openDialog("Wpisz typ badania");
         });
 

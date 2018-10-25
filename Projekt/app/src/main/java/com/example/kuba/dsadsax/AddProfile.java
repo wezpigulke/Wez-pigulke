@@ -1,5 +1,6 @@
 package com.example.kuba.dsadsax;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -29,15 +30,18 @@ public class AddProfile extends AppCompatActivity {
 
         add.setOnClickListener(v -> {
             if(txt.getText().length()>0) {
-                myDb.insert_UZYTKOWNICY(txt.getText().toString());
-                onBackPressed();
-            } else openDialog();
+                Cursor cp = myDb.getId_UZYTKOWNICY(txt.getText().toString());
+                if(cp.getCount()==0) {
+                    myDb.insert_UZYTKOWNICY(txt.getText().toString());
+                    onBackPressed();
+                } else openDialog("Już istnieje osoba o takim imieniu w naszej bazie danych");
+            } else openDialog("Wpisz imie");
         });
     }
 
-    public void openDialog() {
+    public void openDialog(String warning) {
         OpenDialog openDialog = new OpenDialog();
-        openDialog.setValue("Wpisz imie");
+        openDialog.setValue(warning);
         openDialog.show(getSupportFragmentManager(), "AddProfile");
     }
 

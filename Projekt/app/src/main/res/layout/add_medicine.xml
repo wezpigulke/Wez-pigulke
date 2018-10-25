@@ -16,20 +16,39 @@
             android:orientation="vertical" >
 
             <EditText
-                android:id="@+id/typBadania"
+                android:id="@+id/nazwaLeku"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="85dp"
-                android:layout_marginLeft="85dp"
-                android:layout_marginRight="85dp"
                 android:layout_marginStart="85dp"
-                android:layout_marginTop="78dp"
+                android:layout_marginLeft="85dp"
+                android:layout_marginTop="68dp"
+                android:layout_marginEnd="85dp"
+                android:layout_marginRight="85dp"
                 android:ems="10"
-                android:hint="Typ badania"
                 android:gravity="center_horizontal"
+                android:hint="Nazwa leku"
                 android:inputType="textPersonName"
-                app:layout_constraintBottom_toTopOf="@+id/dodajLekButton"
                 android:backgroundTint="@android:color/holo_green_light"
+                app:layout_constraintBottom_toTopOf="@+id/dodajLekButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/iloscTabletek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="85dp"
+                android:layout_marginLeft="85dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="85dp"
+                android:layout_marginRight="85dp"
+                android:backgroundTint="@android:color/holo_green_light"
+                android:ems="10"
+                android:gravity="center_horizontal"
+                android:hint="Ilość tabletek"
+                android:inputType="number"
+                app:layout_constraintBottom_toTopOf="@+id/nazwaLeku"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -43,12 +62,12 @@
                 android:layout_marginLeft="149dp"
                 android:layout_marginRight="149dp"
                 android:layout_marginStart="135dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="42dp"
                 android:text="Dodaj"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/typBadania" />
+                app:layout_constraintTop_toBottomOf="@+id/editText3" />
 
         </LinearLayout>
     </ScrollView>

@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -15,11 +16,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,10 +38,11 @@ public class AddVisit extends AppCompatActivity {
 
     private TextView data;
     private TextView godzina;
-    private EditText name;
-    private EditText surname;
-    private EditText specialization;
-    private EditText address;
+
+    private String name;
+    private String specialization;
+    private String address;
+
     private DatePickerDialog.OnDateSetListener dataListener;
     private TimePickerDialog.OnTimeSetListener godzinaListener;
 
@@ -51,16 +52,31 @@ public class AddVisit extends AppCompatActivity {
     private int hour;
     private int minutes;
 
-    private Spinner spinner;
-    private ArrayList<String> label;
-    private String uzytkownik;
+    private Spinner spinnerDzwiek;
+    private ArrayList<String> labelDzwiek;
+    private Integer dzwiek;
+    private MediaPlayer mp;
 
+    private Button add;
+    private Button goThen;
+
+    private Spinner spinner;
+    private Spinner spinnerDoctor;
+    private ArrayList<String> label;
+    private ArrayList<String> labelDoctor;
+    private String uzytkownik;
+    private String lekarz;
+
+    private int labelSize;
+    private int labelSizeCopy;
 
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         label = new ArrayList<>();
+        labelDzwiek = new ArrayList<>();
+        labelDoctor = new ArrayList<>();
 
         String rok = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
         String miesiac = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
@@ -81,13 +97,11 @@ public class AddVisit extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        Button add = findViewById(R.id.dodajVisit);
+        add = findViewById(R.id.dodajVisit);
+
         data = findViewById(R.id.dateVisit);
         godzina = findViewById(R.id.timeVisit);
-        name = findViewById(R.id.specializationVisit);
-        surname = findViewById(R.id.surnameVisit);
-        specialization = findViewById(R.id.nameVisit);
-        address = findViewById(R.id.addressVisit);
+
         final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
@@ -95,6 +109,10 @@ public class AddVisit extends AppCompatActivity {
         godzina.setText(time);
 
         spinner = findViewById(R.id.spinner2);
+        spinnerDzwiek = findViewById(R.id.spinnerDzwiek2);
+        dzwiek = 1;
+
+        spinnerDoctor = findViewById(R.id.spinnerDoctor);
 
         Cursor res = myDb.getName_UZYTKOWNICY();
 
@@ -103,6 +121,10 @@ public class AddVisit extends AppCompatActivity {
         }
 
         loadSpinnerData();
+        loadSpinnerDzwiek();
+        loadSpinnerDoctor();
+
+        labelSizeCopy = labelSize;
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -117,17 +139,49 @@ public class AddVisit extends AppCompatActivity {
 
         });
 
+        spinnerDoctor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+
+                Toast.makeText(getApplicationContext(), String.valueOf(spinnerDoctor.getItemIdAtPosition(position)), Toast.LENGTH_LONG).show();
+                lekarz = spinnerDoctor.getItemAtPosition(position).toString();
+
+                if(lekarz.equals("Dodaj nowego lekarza")) {
+
+                    Intent cel = new Intent(parentView.getContext(), AddDoctor.class);
+                    startActivity(cel);
+
+                } else if (!lekarz.equals("Wybierz lekarza")) {
+
+                    Cursor cd = myDb.getIdData_DOKTORZY(position);
+                    cd.moveToFirst();
+                    name = cd.getString(1);
+                    specialization = cd.getString(2);
+                    address = cd.getString(4);
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+
+            }
+        });
+
         add.setOnClickListener(v -> {
 
-            if (name.getText().length() > 0 && surname.getText().length() > 0 && specialization.getText().length() > 0 && address.getText().length() > 0) {
+            stopPlaying();
 
+            if(spinnerDoctor.getSelectedItem().toString().equals("Dodaj nowego lekarza") ||
+                    spinnerDoctor.getSelectedItem().toString().equals("Dodaj nowego lekarza")) {
+                openDialog("Wybierz lekarza lub dodaj nowego");
+            } else {
                 myDb.insert_WIZYTY(
                         godzina.getText().toString(),
                         data.getText().toString(),
-                        name.getText().toString(),
-                        surname.getText().toString(),
-                        specialization.getText().toString(),
-                        address.getText().toString(),
+                        name,
+                        specialization,
+                        address,
                         uzytkownik
                 );
 
@@ -183,8 +237,17 @@ public class AddVisit extends AppCompatActivity {
                 AlarmManager alarmManager;
 
                 if(diffDays>0) {
-                    intx = new Intent(getApplicationContext(), NotificationReceiver.class);
-                    intx.putExtra("Value", uzytkownik + "  |  wizyta u " + c.getString(5) + " jutro o " + c.getString(1));
+                    intx = new Intent(getApplicationContext(), NotificationReceiverVisit.class);
+                    intx.putExtra("Value", uzytkownik + "  |  wizyta u " + c.getString(4) + " jutro o " + c.getString(1));
+                    intx.putExtra("id", (id * 2) - 1);
+                    intx.putExtra("godzina", c.getString(1));
+                    intx.putExtra("data", c.getString(2));
+                    intx.putExtra("imie_nazwisko", c.getString(3));
+                    intx.putExtra("specjalizacja", c.getString(4));
+                    intx.putExtra("adres", c.getString(5));
+                    intx.putExtra("uzytkownik", c.getString(6));
+                    intx.putExtra("wybranyDzwiek", dzwiek);
+
                     pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (id * 2) - 1, intx, PendingIntent.FLAG_UPDATE_CURRENT);
                     alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                     assert alarmManager != null;
@@ -195,8 +258,17 @@ public class AddVisit extends AppCompatActivity {
                 cal.add(Calendar.HOUR, -2);
 
                 if((diffDays==0 && diffInMillis>0) || diffDays>0) {
-                    intx = new Intent(getApplicationContext(), NotificationReceiver.class);
-                    intx.putExtra("Value", uzytkownik + "  |  wizyta u " + c.getString(5) + " o " + c.getString(1));
+                    intx = new Intent(getApplicationContext(), NotificationReceiverVisit.class);
+                    intx.putExtra("Value", uzytkownik + "  |  wizyta u " + c.getString(4) + " o " + c.getString(1));
+                    intx.putExtra("id", (id * 2) - 1);
+                    intx.putExtra("godzina", c.getString(1));
+                    intx.putExtra("data", c.getString(2));
+                    intx.putExtra("imie_nazwisko", c.getString(3));
+                    intx.putExtra("specjalizacja", c.getString(4));
+                    intx.putExtra("adres", c.getString(5));
+                    intx.putExtra("uzytkownik", c.getString(6));
+                    intx.putExtra("wybranyDzwiek", dzwiek);
+
                     pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id * 2, intx, PendingIntent.FLAG_UPDATE_CURRENT);
                     alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                     assert alarmManager != null;
@@ -204,12 +276,54 @@ public class AddVisit extends AppCompatActivity {
                 }
                 onBackPressed();
             }
-            else if(name.getText().length()==0) openDialog("Wpisz imie lekarza");
-            else if(surname.getText().length()==0) openDialog("Wpisz nazwisko lekarza");
-            else if(specialization.getText().length()==0) openDialog("Wpisz specjalizacje lekarza");
-            else if(address.getText().length()==0) openDialog("Wpisz adres");
+
         });
 
+        spinnerDzwiek.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+
+                dzwiek = position;
+                stopPlaying();
+
+                if (position == 0) {
+                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
+                    mp.start();
+                }
+                if (position == 1) {
+                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm2);
+                    mp.start();
+                } else if (position == 2) {
+                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm3);
+                    mp.start();
+                } else if (position == 3) {
+                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm4);
+                    mp.start();
+                } else if (position == 4) {
+                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm5);
+                    mp.start();
+                } else if (position == 5) {
+                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm6);
+                    mp.start();
+                } else if (position == 6) {
+                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm7);
+                    mp.start();
+                } else if (position == 7) {
+                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm8);
+                    mp.start();
+                } else if (position == 8) {
+                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm9);
+                    mp.start();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+
+            }
+
+        });
 
         /* ========== WYBIERANIE GODZINY ALARMU ============ */
 
@@ -262,6 +376,63 @@ public class AddVisit extends AppCompatActivity {
                 spinner.setAdapter(dataAdapter);
             }
         }
+    }
+
+    private void loadSpinnerDoctor() {
+
+        labelDoctor.clear();
+
+        Cursor cxz = myDb.getAllData_DOKTORZY();
+
+        if(cxz.getCount() != 0) {
+            while(cxz.moveToNext()) {
+                labelDoctor.add(cxz.getString(1));
+            }
+        }
+        labelDoctor.add("Dodaj nowego lekarza");
+        labelDoctor.add("Wybierz lekarza");
+
+        labelSize = labelDoctor.size() - 1;
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, labelDoctor) {
+            @Override
+            public int getCount() {
+                return(labelSize);
+            }
+        };
+
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDoctor.setAdapter(dataAdapter);
+        if(labelSize!=labelSizeCopy) spinnerDoctor.setSelection(labelSize-2);
+        else spinnerDoctor.setSelection(labelSize);
+
+    }
+
+    private void loadSpinnerDzwiek() {
+
+        labelDzwiek.add("Alarm nr 1");
+        labelDzwiek.add("Alarm nr 2");
+        labelDzwiek.add("Alarm nr 3");
+        labelDzwiek.add("Alarm nr 4");
+        labelDzwiek.add("Alarm nr 5");
+        labelDzwiek.add("Alarm nr 6");
+        labelDzwiek.add("Alarm nr 7");
+        labelDzwiek.add("Alarm nr 8");
+        labelDzwiek.add("Alarm nr 9");
+        labelDzwiek.add("Domyślny");
+
+        final int labelSize = labelDzwiek.size() - 1;
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, labelDzwiek) {
+            @Override
+            public int getCount() {
+                return(labelSize);
+            }
+        };
+
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDzwiek.setAdapter(dataAdapter);
+        spinnerDzwiek.setSelection(labelSize);
 
     }
 
@@ -277,6 +448,11 @@ public class AddVisit extends AppCompatActivity {
         finish();
     }
 
+    public void onResume() {
+        super.onResume();
+        loadSpinnerDoctor();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -288,5 +464,13 @@ public class AddVisit extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void stopPlaying() {
+        if (mp != null) {
+            mp.stop();
+            mp.release();
+            mp = null;
+        }
+    };
 
 }
