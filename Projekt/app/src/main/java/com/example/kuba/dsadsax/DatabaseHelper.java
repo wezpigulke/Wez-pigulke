@@ -90,13 +90,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + UZYTKOWNICY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Imie TEXT)");
         db.execSQL("CREATE TABLE " + PRZYPOMNIENIE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Lek Integer, Dawka TEXT, Ilosc_dni Integer, Profil TEXT, Typ INTEGER, Wszystkie_godziny TEXT)");
         db.execSQL("CREATE TABLE " + NOTYFIKACJA + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, ID_notyfikacja INTEGER, ID_przypomnienie INTEGER, Godzina TEXT, Data TEXT)");
-        db.execSQL("CREATE TABLE " + DOKTORZY + " (ID INTEGER PRIMARY KEY, Imie_Nazwisko TEXT, Specjalizacja TEXT, Numer TEXT, Adres TEXT)");
+        db.execSQL("CREATE TABLE " + DOKTORZY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Imie_Nazwisko TEXT, Specjalizacja TEXT, Numer TEXT, Adres TEXT)");
         db.execSQL("CREATE TABLE " + WIZYTY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Imie_Nazwisko TEXT, Specjalizacja TEXT, Adres TEXT, Profil TEXT)");
         db.execSQL("CREATE TABLE " + POMIARY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Typ TEXT, Wynik TEXT, Profil TEXT, Godzina TEXT, Data TEXT)");
         db.execSQL("CREATE TABLE " + TYP_POMIAR + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Typ TEXT)");
         db.execSQL("CREATE TABLE " + NOTATKI + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Tytul TEXT, Tresc TEXT, Profil TEXT, Data TEXT)");
         db.execSQL("CREATE TABLE " + STATYSTYKI + " (ID INTEGER PRIMARY KEY, Wziete INTEGER, Niewziete INTEGER)");
-        db.execSQL("CREATE TABLE " + LEK + " (ID INTEGER PRIMARY KEY, Nazwa TEXT, Ilosc_tabletek INTEGER)");
+        db.execSQL("CREATE TABLE " + LEK + " (ID INTEGER PRIMARY KEY, Nazwa TEXT, Ilosc_tabletek TEXT)");
     }
 
     @Override
@@ -118,7 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * ============ STATYSTYKI =============
      **/
 
-    public boolean insert_LEK(Integer id, String nazwa, Integer ilosc) {
+    public boolean insert_LEK(Integer id, String nazwa, String ilosc) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -147,6 +147,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getDataName_LEK(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT Nazwa " +
+                        "FROM " + LEK + " WHERE ID=" + id
+                , null);
+        return res;
+    }
+
+    public Cursor getNumber_LEK(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT Ilosc_tabletek " +
+                        "FROM " + LEK + " WHERE ID=" + id
+                , null);
+        return res;
+    }
+
     public Cursor getDataName_LEK(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * " +
@@ -154,7 +170,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 , null);
         return res;
     }
-    public boolean update_LEK(Integer id, Integer ilosc) {
+    public boolean update_LEK(Integer id, String ilosc) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -287,6 +303,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "FROM " + NOTYFIKACJA +
                 " WHERE " + "ID_przypomnienie" + "=" + "'" + id + "'" +
                 " AND " + "Data" + "=" + "'" + data + "'", null);
+        return res;
+    }
+
+    public Cursor getCountType_NOTYFIKACJA(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT COUNT(ID) " +
+                "FROM " + NOTYFIKACJA +
+                " WHERE " + "ID_przypomnienie" + "=" + "'" + id + "'", null);
         return res;
     }
 
@@ -503,10 +527,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * ============ DOKTORZY ============
      **/
 
-    public boolean insert_DOKTORZY(Integer id, String name, String specialization, String phone_number, String address) {
+    public boolean insert_DOKTORZY(String name, String specialization, String phone_number, String address) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DOKTORZY_ID, id);
         contentValues.put(DOKTORZY_IMIE_I_NAZWISKO, name);
         contentValues.put(DOKTORZY_SPECJALIZACJA, specialization);
         contentValues.put(DOKTORZY_NUMER, phone_number);
@@ -516,12 +539,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return false;
         else
             return true;
-    }
-
-    public Cursor getMAXid_DOKTORZY() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID), -1) FROM " + DOKTORZY, null);
-        return res;
     }
 
     public Cursor getAllData_DOKTORZY() {
@@ -583,9 +600,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getAllDataMedicine_PRZYPOMNIENIE(String nazwa) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + PRZYPOMNIENIE + " WHERE Lek='" + nazwa + "'", null);
+        return res;
+    }
+
+    public Cursor getIDfromMedicine_PRZYPOMNIENIE(String nazwa) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT ID FROM " + PRZYPOMNIENIE + " WHERE Lek='" + nazwa + "'", null);
+        return res;
+    }
+
+    public Cursor getType_PRZYPOMNIENIE(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT Typ FROM " + PRZYPOMNIENIE + " WHERE ID=" + id, null);
+        return res;
+    }
+
     public Cursor getDays_PRZYPOMNIENIE(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT Ilosc_dni FROM " + PRZYPOMNIENIE + " WHERE " + PRZYPOMNIENIE_ID + "=" + id, null);
+        return res;
+    }
+
+    public Cursor getDose_PRZYPOMNIENIE(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT Dawka FROM " + PRZYPOMNIENIE + " WHERE " + PRZYPOMNIENIE_ID + "=" + id, null);
         return res;
     }
 

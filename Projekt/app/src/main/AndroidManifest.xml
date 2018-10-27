@@ -82,6 +82,12 @@
         <activity android:name=".RepeatingActivityReminder"
             android:label="Weź tabletkę"/>
 
+        <activity android:name=".RepeatingActivityVisit"
+            android:label="Wizyta u lekarza"/>
+
+        <activity android:name=".RepeatingActivityMedicine"
+            android:label="Kończy sie zapas tabletek"/>
+
         <receiver android:name=".NotificationReceiverReminder"/>
 
     </application>

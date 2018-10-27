@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -59,11 +60,11 @@ public class AddVisit extends AppCompatActivity {
 
     private Button add;
     private Button goThen;
+    List<StringWithTag> list;
 
     private Spinner spinner;
     private Spinner spinnerDoctor;
     private ArrayList<String> label;
-    private ArrayList<String> labelDoctor;
     private String uzytkownik;
     private String lekarz;
 
@@ -76,7 +77,8 @@ public class AddVisit extends AppCompatActivity {
 
         label = new ArrayList<>();
         labelDzwiek = new ArrayList<>();
-        labelDoctor = new ArrayList<>();
+        ArrayList<String> labelDoctor = new ArrayList<>();
+        list = new ArrayList<StringWithTag>();
 
         String rok = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
         String miesiac = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
@@ -143,7 +145,10 @@ public class AddVisit extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
-                Toast.makeText(getApplicationContext(), String.valueOf(spinnerDoctor.getItemIdAtPosition(position)), Toast.LENGTH_LONG).show();
+                StringWithTag s = (StringWithTag) parentView.getItemAtPosition(position);
+                Object tag = s.tag;
+                int id_s = Integer.parseInt(tag.toString());
+
                 lekarz = spinnerDoctor.getItemAtPosition(position).toString();
 
                 if(lekarz.equals("Dodaj nowego lekarza")) {
@@ -153,13 +158,14 @@ public class AddVisit extends AppCompatActivity {
 
                 } else if (!lekarz.equals("Wybierz lekarza")) {
 
-                    Cursor cd = myDb.getIdData_DOKTORZY(position);
+                    Cursor cd = myDb.getIdData_DOKTORZY(id_s);
                     cd.moveToFirst();
                     name = cd.getString(1);
                     specialization = cd.getString(2);
                     address = cd.getString(4);
 
                 }
+
             }
 
             @Override
@@ -380,29 +386,30 @@ public class AddVisit extends AppCompatActivity {
 
     private void loadSpinnerDoctor() {
 
-        labelDoctor.clear();
+        list.clear();
 
         Cursor cxz = myDb.getAllData_DOKTORZY();
 
         if(cxz.getCount() != 0) {
             while(cxz.moveToNext()) {
-                labelDoctor.add(cxz.getString(1));
+                list.add(new StringWithTag(cxz.getString(1), cxz.getString(0)));
             }
         }
-        labelDoctor.add("Dodaj nowego lekarza");
-        labelDoctor.add("Wybierz lekarza");
 
-        labelSize = labelDoctor.size() - 1;
+        list.add(new StringWithTag("Dodaj nowego lekarza", "D"));
+        list.add(new StringWithTag("Wybierz lekarza", "W"));
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, labelDoctor) {
+        labelSize = list.size() - 1;
+
+        ArrayAdapter<StringWithTag> adap = new ArrayAdapter<StringWithTag> (this, android.R.layout.simple_spinner_item, list) {
             @Override
             public int getCount() {
                 return(labelSize);
             }
         };
 
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerDoctor.setAdapter(dataAdapter);
+        adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDoctor.setAdapter(adap);
         if(labelSize!=labelSizeCopy) spinnerDoctor.setSelection(labelSize-2);
         else spinnerDoctor.setSelection(labelSize);
 

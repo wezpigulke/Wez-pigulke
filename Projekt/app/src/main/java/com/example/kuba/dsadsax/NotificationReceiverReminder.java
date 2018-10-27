@@ -1,6 +1,7 @@
 package com.example.kuba.dsadsax;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -15,7 +16,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import static android.content.Context.ALARM_SERVICE;
+
 public class NotificationReceiverReminder extends BroadcastReceiver {
+
+    DatabaseHelper myDb;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -35,6 +40,7 @@ public class NotificationReceiverReminder extends BroadcastReceiver {
 
         Intent repeating_intent = new Intent(context, RepeatingActivityReminder.class);
 
+        repeating_intent.putExtra("coPokazac", 0);
         repeating_intent.putExtra("id", id_n);
         repeating_intent.putExtra("idd", id_p);
         repeating_intent.putExtra("godzina", godzina);
@@ -66,24 +72,18 @@ public class NotificationReceiverReminder extends BroadcastReceiver {
                 .setContentTitle("Weź pigułke")
                 .setContentText(powiadomienie)
                 .setSound(alarmSound)
+                .addAction(R.drawable.yes, "Wziąłem", pendingIntent)
+                .addAction(R.drawable.no, "Zapomniałem", pendingIntent)
                 .setVibrate(new long[]{1000, 1000})
                 .setAutoCancel(true)
                 .setOnlyAlertOnce(true);
         notificationManager.notify(id_n, builder.build());
 
-        /* SPRAWDZANIE */
-
         Integer ilosc_dn;
-        DatabaseHelper myDb;
-
         myDb = new DatabaseHelper(context);
-
         String dzisiaj = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
 
-        Cursor cl = myDb.getDataName_LEK(nazwaLeku);
-        cl.moveToFirst();
-
-        myDb.update_LEK(Integer.parseInt(cl.getString(0)), Integer.parseInt(cl.getString(1))-1);
+        /* SPRAWDZANIE ILE DNI POZOSTAŁO */
 
         Cursor cd = myDb.getDays_PRZYPOMNIENIE(id_p);
         cd.moveToFirst();
@@ -92,11 +92,59 @@ public class NotificationReceiverReminder extends BroadcastReceiver {
         Cursor cz = myDb.getCount_NOTYFIKACJA(id_p, dzisiaj);
         cz.moveToFirst();
 
-        Toast.makeText(context, "Wykonuje sprawdzanie", Toast.LENGTH_LONG).show();
+        /* SPRAWDZANIE ILOŚCI LEKU */
+
+        Cursor cl = myDb.getDataName_LEK(nazwaLeku);
+        cl.moveToFirst();
+
+        double iloscLeku = Double.valueOf(cl.getString(2)) - Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
+
+        if(iloscLeku < 0) iloscLeku = 0;
+
+        myDb.update_LEK(Integer.parseInt(cl.getString(0)), String.valueOf(iloscLeku));
+        Integer id = Integer.parseInt(cl.getString(0));
+
+        Cursor cp = myDb.getIDfromMedicine_PRZYPOMNIENIE(nazwaLeku);
+        Double ileNotyfikacji, typPrzypomnienia, jakaDawkaTabletki, pozostalaIloscDni;
+        String jakaDawkaS;
+        Double sumujTypy = 0.0;
+
+        while(cp.moveToNext()) {
+
+            Cursor cs = myDb.getCountType_NOTYFIKACJA(cp.getInt(0));
+            cs.moveToFirst();
+            ileNotyfikacji = Double.parseDouble(cs.getString(0));
+
+            Cursor css = myDb.getType_PRZYPOMNIENIE(cp.getInt(0));
+            css.moveToFirst();
+            typPrzypomnienia = Double.parseDouble(css.getString(0));
+
+            Cursor csss = myDb.getDose_PRZYPOMNIENIE(cp.getInt(0));
+            csss.moveToFirst();
+            jakaDawkaS = csss.getString(0);
+            jakaDawkaTabletki = Double.valueOf(jakaDawkaS.substring(7, jakaDawkaS.length()));
+
+            Cursor cssss = myDb.getDays_PRZYPOMNIENIE(cp.getInt(0));
+            cssss.moveToFirst();
+            pozostalaIloscDni = Double.parseDouble(cssss.getString(0));
+
+            if(typPrzypomnienia>1) {
+
+                if(pozostalaIloscDni<=7) sumujTypy+=((1/typPrzypomnienia)*jakaDawkaTabletki)*pozostalaIloscDni;
+                else sumujTypy+=((1/typPrzypomnienia)*jakaDawkaTabletki)*7;
+
+            }
+            else {
+
+                if(pozostalaIloscDni<=7) sumujTypy+=(typPrzypomnienia*ileNotyfikacji*jakaDawkaTabletki)*pozostalaIloscDni;
+                else sumujTypy+=(typPrzypomnienia*ileNotyfikacji*jakaDawkaTabletki)*7;
+            }
+
+        }
 
         if ((ilosc_dn - 1) <= 0) {
 
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
             Intent myIntent = new Intent(context, NotificationReceiverReminder.class);
             PendingIntent pendinIntent = PendingIntent.getBroadcast(
                     context, id_n, myIntent,
@@ -106,14 +154,56 @@ public class NotificationReceiverReminder extends BroadcastReceiver {
             if(Integer.parseInt(cz.getString(0))==1) myDb.remove_PRZYPOMNIENIE(id_p);
             myDb.remove_NOTYFIKACJA(id_n);
 
-            Toast.makeText(context, String.valueOf(id_n), Toast.LENGTH_LONG).show();
-
         } else {
 
             if(Integer.parseInt(cz.getString(0))==1) myDb.updateDays_PRZYPOMNIENIE(id_p, ilosc_dn - 1);
             myDb.remove_NOTYFIKACJA(id_n);
 
         }
+
+        if(sumujTypy > iloscLeku && Integer.parseInt(cz.getString(0))>1) {
+
+            notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            repeating_intent = new Intent(context, RepeatingActivityReminder.class);
+
+            repeating_intent.putExtra("coPokazac", 1);
+            repeating_intent.putExtra("id", id);
+            repeating_intent.putExtra("nazwa", cl.getString(1));
+            repeating_intent.putExtra("ilosc", String.valueOf(iloscLeku));
+            repeating_intent.putExtra("sumujTypy", String.valueOf(sumujTypy));
+
+            repeating_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            pendingIntent = PendingIntent.getActivity(context, id_n*2, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.alarm1);
+
+            builder = new NotificationCompat.Builder(context)
+                    .setContentIntent(pendingIntent)
+                    .setSmallIcon(R.drawable.logo)
+                    .setContentTitle("Weź pigułke")
+                    .setContentText("UWAGA | Pozostało tylko " + String.valueOf(iloscLeku) + " tabletek leku " + cl.getString(1))
+                    .setSound(alarmSound)
+                    .setVibrate(new long[]{1000, 1000})
+                    .setAutoCancel(true)
+                    .setOnlyAlertOnce(true);
+            notificationManager.notify(id_n*2, builder.build());
+
+        }
+
+    }
+
+    private void wzietaTabletka(String nazwaLeku, String jakaDawka) {
+
+        Cursor cn = myDb.get_STATYSTYKI_NIEWZIETE(0);
+        cn.moveToFirst();
+        myDb.update_STATYSTYKI_NIEWZIETE(0, Integer.parseInt(cn.getString(0)) + 1);
+
+        Cursor cl = myDb.getDataName_LEK(nazwaLeku);
+        cl.moveToFirst();
+        double iloscLeku = Double.valueOf(cl.getString(2)) + Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
+        myDb.update_LEK(Integer.parseInt(cl.getString(0)), String.valueOf(iloscLeku));
 
     }
 

@@ -31,7 +31,6 @@ import java.util.stream.Stream;
 
 import static java.util.Calendar.*;
 
-
 public class AddReminder extends AppCompatActivity {
 
     private static final String TAG = "AddReminder";
@@ -449,7 +448,9 @@ public class AddReminder extends AppCompatActivity {
             stopPlaying();
 
             if(spinnerNazwaLeku.getSelectedItem().toString().equals("Wybierz lek") || spinnerNazwaLeku.getSelectedItem().toString().equals("Dodaj nowy lek")) {
+
                 openDialog("Wybierz lek lub dodaj nowy");
+
             } else {
 
                 dawka.setVisibility(View.GONE);
@@ -525,11 +526,12 @@ public class AddReminder extends AppCompatActivity {
 
         dodaj.setOnClickListener(view -> {
 
-            if (ileDni.getText().length() > 0 &&
-                    !ileDni.getText().toString().contains(".") &&
-                    !ileDni.getText().toString().contains("-") &&
-                    !ileDni.getText().toString().contains("*") &&
-                    !ileDni.getText().toString().contains("#")) {
+        Cursor cl = myDb.getDataName_LEK(nazwaLeku);
+        cl.moveToFirst();
+        Double iloscTabletek = Double.valueOf(cl.getString(2));
+        Double jakaDawkaTabletki = Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
+
+            if ((iloscTabletek-jakaDawkaTabletki)>=0) {
 
                 if (coWybrane == 0 || coWybrane == 2) {
 
@@ -925,11 +927,7 @@ public class AddReminder extends AppCompatActivity {
 
                     }
                 }
-            } else if (ileDni.getText().toString().contains(".") ||
-                    ileDni.getText().toString().contains("-") ||
-                    ileDni.getText().toString().contains("*") ||
-                    ileDni.getText().toString().contains("#") ||
-                    ileDni.getText().length() == 0) openDialog("Wpisz prawidłową ilość dni");
+            } else openDialog("Posiadasz zbyt mało tabletek danego leku, aby dodać przypomnienie");
         });
 
 

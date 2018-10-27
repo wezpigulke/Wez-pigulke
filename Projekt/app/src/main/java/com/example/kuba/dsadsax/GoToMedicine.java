@@ -8,13 +8,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +28,7 @@ public class GoToMedicine extends Fragment {
     private ListView lv;
     private FloatingActionButton fab;
     private Integer id;
+    private Integer id_l;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -86,13 +87,31 @@ public class GoToMedicine extends Fragment {
 
         lv.setOnItemClickListener((parent, view, position, id) -> {
 
-            /*
-            idd = results.get(position).getId();
-            Cursor c = myDb.getNotes_NOTATKI(idd);
-            c.moveToFirst();
-            notatka = c.getString(0);
-            dialogShowNotes();
-            */
+            id_l = results.get(position).getId();
+
+            Cursor cl = myDb.getNumber_LEK(id_l);
+            cl.moveToFirst();
+            String ilosc = cl.getString(0);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialog);
+            builder.setTitle("Aktualizacja ilości");
+
+            final EditText input = new EditText(getContext());
+
+            input.setText(ilosc);
+            input.setGravity(Gravity.CENTER_HORIZONTAL);
+
+            input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+            builder.setView(input);
+
+            builder.setPositiveButton("OK", (dialog, which) -> {
+                myDb.update_LEK(id_l, input.getText().toString());
+                AktualizujBaze();
+            });
+            builder.setNegativeButton("Anuluj", (dialog, which) -> {
+                dialog.cancel();
+            });
+            builder.show();
 
         });
 
@@ -133,9 +152,23 @@ public class GoToMedicine extends Fragment {
 
     private void usunDane() {
 
-        myDb.remove_LEK(id);
-        AktualizujBaze();
+        Cursor cl = myDb.getDataName_LEK(id);
+        cl.moveToFirst();
+        String nazwa = cl.getString(0);
 
+        Cursor cp = myDb.getAllDataMedicine_PRZYPOMNIENIE(nazwa);
+
+        if(cp.getCount()==0) {
+            myDb.remove_LEK(id);
+            AktualizujBaze();
+        } else openDialog("Nie można usunąć. Posiadasz aktywne przypomnienie z tym lekiem");
+
+    }
+
+    public void openDialog(String text) {
+        OpenDialog openDialog = new OpenDialog();
+        openDialog.setValue(text);
+        openDialog.show(getFragmentManager(), "GoToMedicine");
     }
 
 }

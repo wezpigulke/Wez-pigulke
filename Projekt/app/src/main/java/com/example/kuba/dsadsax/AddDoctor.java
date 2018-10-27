@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.Objects;
+
 public class AddDoctor extends AppCompatActivity {
 
     DatabaseHelper myDb;
@@ -26,7 +28,7 @@ public class AddDoctor extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_doctor);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         Button add = findViewById(R.id.button);
 
@@ -35,16 +37,11 @@ public class AddDoctor extends AppCompatActivity {
         specialization = findViewById(R.id.editText7);
         phone_number = findViewById(R.id.editText8);
 
-        int maxD = 0;
-
         add.setOnClickListener(v -> {
+
             if(name.getText().length()>0 && specialization.getText().length()>0) {
 
-                Cursor max = myDb.getMAXid_DOKTORZY();
-                max.moveToFirst();
-
                     myDb.insert_DOKTORZY(
-                            Integer.parseInt(max.getString(0)) + 1,
                             name.getText().toString(),
                             specialization.getText().toString(),
                             phone_number.getText().toString(),

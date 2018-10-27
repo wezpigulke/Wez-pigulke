@@ -45,7 +45,7 @@ public class AddMedicine extends AppCompatActivity {
                     myDb.insert_LEK(
                             id,
                             nazwaLeku.getText().toString(),
-                            Integer.valueOf(iloscTabletek.getText().toString())
+                            iloscTabletek.getText().toString()
                     );
                     onBackPressed();
                 } else openDialog("Już istnieje lek o takiej nazwie w naszej bazie danych");

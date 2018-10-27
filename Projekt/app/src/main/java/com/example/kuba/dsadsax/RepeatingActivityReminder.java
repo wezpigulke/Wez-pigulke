@@ -4,63 +4,133 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.InputType;
+import android.view.Gravity;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class RepeatingActivityReminder extends AppCompatActivity{
 
     DatabaseHelper myDb;
+    private Integer id;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.repeating_activity_layout);
-
         myDb = new DatabaseHelper(this);
+        int coPokazac = getIntent().getIntExtra("coPokazac",-1);
 
-        TextView tNazwa = findViewById(R.id.textView6);
-        TextView tGodzina = findViewById(R.id.textView14);
-        TextView tProfil = findViewById(R.id.textView12);
-        TextView tData = findViewById(R.id.textView9);
-        TextView tPozostalo = findViewById(R.id.textView10);
+        if(coPokazac==0) {
 
-        Button b3 = findViewById(R.id.button3);
-        Button b4 = findViewById(R.id.button4);
+            setContentView(R.layout.repeating_activity_layout);
 
-        String godzina = getIntent().getStringExtra("godzina");
-        String data = getIntent().getStringExtra("data");
-        String uzytkownik = getIntent().getStringExtra("uzytkownik");
-        String nazwaLeku = getIntent().getStringExtra("nazwaLeku");
-        String jakaDawka = getIntent().getStringExtra("jakaDawka");
-        Integer iloscDni = getIntent().getIntExtra("iloscDni", 0);
+            TextView tNazwa = findViewById(R.id.textView6);
+            TextView tGodzina = findViewById(R.id.textView14);
+            TextView tProfil = findViewById(R.id.textView12);
+            TextView tData = findViewById(R.id.textView9);
+            TextView tPozostalo = findViewById(R.id.textView10);
 
-        tNazwa.setText(Html.fromHtml("Nazwa tabletki: " + "<b>" + nazwaLeku + " (" + jakaDawka + ")" + "</b> "));
-        tGodzina.setText(Html.fromHtml("Godzina: " + "<b>" + godzina + "</b> "));
-        tProfil.setText(Html.fromHtml("Profil: " + "<b>" + uzytkownik + "</b> "));
-        tData.setText(Html.fromHtml("Data: " + "<b>" + data + "</b> "));
-        tPozostalo.setText(Html.fromHtml("Pozostało dni: " + "<b>" + iloscDni + "</b> "));
+            Button b3 = findViewById(R.id.button3);
+            Button b4 = findViewById(R.id.button4);
 
-        b3.setOnClickListener(v -> {
-            Cursor cn = myDb.get_STATYSTYKI_NIEWZIETE(0);
-            cn.moveToFirst();
-            myDb.update_STATYSTYKI_NIEWZIETE(0, Integer.parseInt(cn.getString(0)) + 1);
-            finish();
-            goHome();
-        });
+            String godzina = getIntent().getStringExtra("godzina");
+            String data = getIntent().getStringExtra("data");
+            String uzytkownik = getIntent().getStringExtra("uzytkownik");
+            String nazwaLeku = getIntent().getStringExtra("nazwaLeku");
+            String jakaDawka = getIntent().getStringExtra("jakaDawka");
+            Integer iloscDni = getIntent().getIntExtra("iloscDni", 0);
 
-        b4.setOnClickListener(v -> {
-            Cursor cw = myDb.get_STATYSTYKI_WZIETE(0);
-            cw.moveToFirst();
-            myDb.update_STATYSTYKI_WZIETE(0, Integer.parseInt(cw.getString(0)) + 1);
-            finish();
-            goHome();
-        });
+            tNazwa.setText(Html.fromHtml("Nazwa tabletki: " + "<b>" + nazwaLeku + " (" + jakaDawka + ")" + "</b> "));
+            tGodzina.setText(Html.fromHtml("Godzina: " + "<b>" + godzina + "</b> "));
+            tProfil.setText(Html.fromHtml("Profil: " + "<b>" + uzytkownik + "</b> "));
+            tData.setText(Html.fromHtml("Data: " + "<b>" + data + "</b> "));
+            tPozostalo.setText(Html.fromHtml("Pozostało dni: " + "<b>" + iloscDni + "</b> "));
+
+            b3.setOnClickListener(v -> {
+                Cursor cn = myDb.get_STATYSTYKI_NIEWZIETE(0);
+                cn.moveToFirst();
+                myDb.update_STATYSTYKI_NIEWZIETE(0, Integer.parseInt(cn.getString(0)) + 1);
+
+                Cursor cl = myDb.getDataName_LEK(nazwaLeku);
+                cl.moveToFirst();
+                double iloscLeku = Double.valueOf(cl.getString(2)) + Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
+                myDb.update_LEK(Integer.parseInt(cl.getString(0)), String.valueOf(iloscLeku));
+
+                finish();
+                goHome();
+            });
+
+            b4.setOnClickListener(v -> {
+
+                Cursor cw = myDb.get_STATYSTYKI_WZIETE(0);
+                cw.moveToFirst();
+                myDb.update_STATYSTYKI_WZIETE(0, Integer.parseInt(cw.getString(0)) + 1);
+
+                finish();
+                goHome();
+            });
+
+        }
+
+        else if (coPokazac==1) {
+
+            setContentView(R.layout.medicine_activity_layout);
+
+            TextView tNazwa = findViewById(R.id.textView12m);
+            TextView tIlosc = findViewById(R.id.textView6m);
+            TextView tSuma = findViewById(R.id.textView6m2);
+            Button update = findViewById(R.id.button5m);
+
+            id = getIntent().getIntExtra("id", 0);
+            String nazwa = getIntent().getStringExtra("nazwa");
+            String sumujTypy = getIntent().getStringExtra("sumujTypy");
+
+            Cursor cl = myDb.getNumber_LEK(id);
+            cl.moveToFirst();
+            String ilosc = cl.getString(0);
+
+            tNazwa.setText(Html.fromHtml("Nazwa leku: " + "<b>" + nazwa + "</b> "));
+            tIlosc.setText(Html.fromHtml("Ilość tabletek: " + "<b>" + ilosc + "</b> "));
+            tSuma.setText(Html.fromHtml("Tygodniowo zajadasz: " + "<b>" + sumujTypy + "</b> "));
+
+            update.setOnClickListener(v -> {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialog);
+                builder.setTitle("Aktualizacja ilości");
+
+                final EditText input = new EditText(this);
+
+                input.setText(ilosc);
+                input.setGravity(Gravity.CENTER_HORIZONTAL);
+
+                input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+                builder.setView(input);
+
+                builder.setNegativeButton("Anuluj", (dialog, which) -> {
+                    dialog.cancel();
+                    finish();
+                    goHome();
+                });
+
+                builder.setPositiveButton("OK", (dialog, which) -> {
+                    myDb.update_LEK(id, input.getText().toString());
+                    finish();
+                    goHome();
+                });
+                builder.show();
+
+            });
+
+        }
 
     }
-
     public void goHome() {
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);

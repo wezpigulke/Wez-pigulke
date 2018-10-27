@@ -118,6 +118,7 @@
                 android:backgroundTint="@android:color/holo_green_light"
                 android:ems="10"
                 android:hint="Przez ile dni"
+                android:digits="0123456789"
                 android:inputType="number"
                 android:textCursorDrawable="@android:color/holo_blue_light"
                 app:layout_constraintBottom_toTopOf="@+id/spinnerJakCzesto"
