@@ -1,5 +1,6 @@
 package com.example.kuba.dsadsax;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -12,20 +13,73 @@ import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class RepeatingActivityReminder extends AppCompatActivity{
 
     DatabaseHelper myDb;
-    private Integer id;
+    private Integer id_h;
+    private String obecnyCzas;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         myDb = new DatabaseHelper(this);
+
         int coPokazac = getIntent().getIntExtra("coPokazac",-1);
+        int coZrobic = getIntent().getIntExtra("coZrobic",-1);
+
+        String godzina = getIntent().getStringExtra("godzina");
+        String data = getIntent().getStringExtra("data");
+        String uzytkownik = getIntent().getStringExtra("uzytkownik");
+        String nazwaLeku = getIntent().getStringExtra("nazwaLeku");
+        String jakaDawka = getIntent().getStringExtra("jakaDawka");
+        Integer iloscDni = getIntent().getIntExtra("iloscDni", 0);
+        Integer id = getIntent().getIntExtra("id", 0);
+
+        id_h = getIntent().getIntExtra("id_h", 0);
+        obecnyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.cancel(id);
+
+        if(coZrobic==0) {
+
+            Cursor cn = myDb.get_STATYSTYKI_NIEWZIETE(0);
+            cn.moveToFirst();
+            myDb.update_STATYSTYKI_NIEWZIETE(0, Integer.parseInt(cn.getString(0)) + 1);
+
+            Cursor cl = myDb.getDataName_LEK(nazwaLeku);
+            cl.moveToFirst();
+            double iloscLeku = Double.valueOf(cl.getString(2)) + Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
+            myDb.update_LEK(Integer.parseInt(cl.getString(0)), String.valueOf(iloscLeku));
+
+            myDb.update_HISTORIA(id_h, obecnyCzas, "NIEWZIETE");
+
+            finish();
+            goHome();
+
+        }
+
+        else if(coZrobic==1) {
+
+            Cursor cw = myDb.get_STATYSTYKI_WZIETE(0);
+            cw.moveToFirst();
+            myDb.update_STATYSTYKI_WZIETE(0, Integer.parseInt(cw.getString(0)) + 1);
+
+            myDb.update_HISTORIA(id_h, obecnyCzas, "WZIETE");
+
+            finish();
+            goHome();
+
+        }
 
         if(coPokazac==0) {
 
@@ -39,13 +93,6 @@ public class RepeatingActivityReminder extends AppCompatActivity{
 
             Button b3 = findViewById(R.id.button3);
             Button b4 = findViewById(R.id.button4);
-
-            String godzina = getIntent().getStringExtra("godzina");
-            String data = getIntent().getStringExtra("data");
-            String uzytkownik = getIntent().getStringExtra("uzytkownik");
-            String nazwaLeku = getIntent().getStringExtra("nazwaLeku");
-            String jakaDawka = getIntent().getStringExtra("jakaDawka");
-            Integer iloscDni = getIntent().getIntExtra("iloscDni", 0);
 
             tNazwa.setText(Html.fromHtml("Nazwa tabletki: " + "<b>" + nazwaLeku + " (" + jakaDawka + ")" + "</b> "));
             tGodzina.setText(Html.fromHtml("Godzina: " + "<b>" + godzina + "</b> "));
@@ -63,6 +110,8 @@ public class RepeatingActivityReminder extends AppCompatActivity{
                 double iloscLeku = Double.valueOf(cl.getString(2)) + Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
                 myDb.update_LEK(Integer.parseInt(cl.getString(0)), String.valueOf(iloscLeku));
 
+                myDb.update_HISTORIA(id_h, obecnyCzas, "NIEWZIETE");
+
                 finish();
                 goHome();
             });
@@ -72,6 +121,8 @@ public class RepeatingActivityReminder extends AppCompatActivity{
                 Cursor cw = myDb.get_STATYSTYKI_WZIETE(0);
                 cw.moveToFirst();
                 myDb.update_STATYSTYKI_WZIETE(0, Integer.parseInt(cw.getString(0)) + 1);
+
+                myDb.update_HISTORIA(id_h, obecnyCzas, "WZIETE");
 
                 finish();
                 goHome();
@@ -88,7 +139,6 @@ public class RepeatingActivityReminder extends AppCompatActivity{
             TextView tSuma = findViewById(R.id.textView6m2);
             Button update = findViewById(R.id.button5m);
 
-            id = getIntent().getIntExtra("id", 0);
             String nazwa = getIntent().getStringExtra("nazwa");
             String sumujTypy = getIntent().getStringExtra("sumujTypy");
 
@@ -137,4 +187,11 @@ public class RepeatingActivityReminder extends AppCompatActivity{
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
 }

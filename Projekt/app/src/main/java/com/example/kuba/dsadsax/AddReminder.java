@@ -664,7 +664,7 @@ public class AddReminder extends AppCompatActivity {
                     if (iloscDni >= 1) {
 
                         Intent intx = new Intent(getApplicationContext(), NotificationReceiverReminder.class);
-                        intx.putExtra("Value", uzytkownik + " " + godzinaTabletka.getText().toString() + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
+                        intx.putExtra("Value", uzytkownik + " |  " + godzinaTabletka.getText().toString() + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
                         intx.putExtra("id", id);
                         intx.putExtra("idd", idd);
                         intx.putExtra("godzina", godzinaTabletka.getText().toString());
@@ -906,7 +906,7 @@ public class AddReminder extends AppCompatActivity {
                             );
 
                             Intent intx = new Intent(getApplicationContext(), NotificationReceiverReminder.class);
-                            intx.putExtra("Value", uzytkownik + " " + godzinaPrzypomnienia + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
+                            intx.putExtra("Value", uzytkownik + " |  " +  godzinaPrzypomnienia + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
                             intx.putExtra("id", id);
                             intx.putExtra("idd", idd);
                             intx.putExtra("godzina", godzinaPrzypomnienia);
