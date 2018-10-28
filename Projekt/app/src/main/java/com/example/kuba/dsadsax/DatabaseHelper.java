@@ -32,6 +32,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String NOTYFIKACJA_GODZINA = "Godzina";
     private static final String NOTYFIKACJA_OSTATNIADATA = "Data";
 
+    private static final String HISTORIA = "Historia";
+    private static final String HISTORIA_ID = "ID";
+    private static final String HISTORIA_PROFIL = "Profil";
+    private static final String HISTORIA_GODZINA = "Godzina";
+    private static final String HISTORIA_DATA = "Data";
+    private static final String HISTORIA_LEK = "Lek";
+    private static final String HISTORIA_DAWKA = "Dawka";
+    private static final String HISTORIA_GODZINA_AKCEPTACJI = "Godzina_akceptacji";
+    private static final String HISTORIA_STATUS = "Status";
+
     private static final String DOKTORZY = "Doktorzy";
     private static final String DOKTORZY_ID = "ID";
     private static final String DOKTORZY_IMIE_I_NAZWISKO = "Imie_Nazwisko";
@@ -89,6 +99,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + UZYTKOWNICY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Imie TEXT)");
         db.execSQL("CREATE TABLE " + PRZYPOMNIENIE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Lek Integer, Dawka TEXT, Ilosc_dni Integer, Profil TEXT, Typ INTEGER, Wszystkie_godziny TEXT)");
+        db.execSQL("CREATE TABLE " + HISTORIA + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Profil TEXT, Godzina TEXT, Data TEXT, Lek TEXT, Dawka TEXT, Godzina_akceptacji TEXT, Status TEXT)");
         db.execSQL("CREATE TABLE " + NOTYFIKACJA + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, ID_notyfikacja INTEGER, ID_przypomnienie INTEGER, Godzina TEXT, Data TEXT)");
         db.execSQL("CREATE TABLE " + DOKTORZY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Imie_Nazwisko TEXT, Specjalizacja TEXT, Numer TEXT, Adres TEXT)");
         db.execSQL("CREATE TABLE " + WIZYTY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Imie_Nazwisko TEXT, Specjalizacja TEXT, Adres TEXT, Profil TEXT)");
@@ -103,6 +114,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + UZYTKOWNICY);
         db.execSQL("DROP TABLE IF EXISTS " + PRZYPOMNIENIE);
+        db.execSQL("DROP TABLE IF EXISTS " + HISTORIA);
         db.execSQL("DROP TABLE IF EXISTS " + NOTYFIKACJA);
         db.execSQL("DROP TABLE IF EXISTS " + DOKTORZY);
         db.execSQL("DROP TABLE IF EXISTS " + WIZYTY);
@@ -112,6 +124,56 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + STATYSTYKI);
         db.execSQL("DROP TABLE IF EXISTS " + LEK);
         onCreate(db);
+    }
+
+    /**
+     * ============ HISTORIA =============
+     **/
+
+    public boolean insert_HISTORIA(String profil, String godzina, String data, String lek, String dawka, String godzinaAkceptacji, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(HISTORIA_PROFIL, profil);
+        contentValues.put(HISTORIA_GODZINA, godzina);
+        contentValues.put(HISTORIA_DATA, data);
+        contentValues.put(HISTORIA_LEK, lek);
+        contentValues.put(HISTORIA_DAWKA, dawka);
+        contentValues.put(HISTORIA_GODZINA_AKCEPTACJI, godzinaAkceptacji);
+        contentValues.put(HISTORIA_STATUS, status);
+
+        long result = db.insert(HISTORIA, null, contentValues);
+        if (result == -1)
+            return false;
+        else
+            return true;
+    }
+
+    public Cursor getUserData_HISTORIA(String user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + HISTORIA + " WHERE Profil='" + user + "'", null);
+        return res;
+    }
+
+    public Cursor getMAXid_HISTORIA() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID), 0) FROM " + HISTORIA, null);
+        return res;
+    }
+
+    public boolean update_HISTORIA(Integer id, String godzina, String status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(HISTORIA_GODZINA_AKCEPTACJI, godzina);
+        contentValues.put(HISTORIA_STATUS, status);
+
+        long result = db.update(HISTORIA, contentValues, "ID=" + id, null);
+
+        if (result == -1)
+            return false;
+        else
+            return true;
     }
 
     /**

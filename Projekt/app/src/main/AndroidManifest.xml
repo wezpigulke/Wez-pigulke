@@ -4,6 +4,8 @@
     package="com.example.kuba.dsadsax">
     <uses-permission android:name="android.permision.CALL_PHONE"/>
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -90,15 +92,8 @@
 
         <receiver android:name=".NotificationReceiverReminder"/>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        <receiver android:name=".ActionReceiver" />
-=======
         <receiver android:name=".ButtonReceiver"/>
->>>>>>> 6727fdef062daaf576b84da01945e28d7b023f55
 
-=======
->>>>>>> parent of e26ace6... 28.10.2018
     </application>
 
 </manifest>
