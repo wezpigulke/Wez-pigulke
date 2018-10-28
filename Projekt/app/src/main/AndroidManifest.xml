@@ -91,7 +91,11 @@
         <receiver android:name=".NotificationReceiverReminder"/>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         <receiver android:name=".ActionReceiver" />
+=======
+        <receiver android:name=".ButtonReceiver"/>
+>>>>>>> 6727fdef062daaf576b84da01945e28d7b023f55
 
 =======
 >>>>>>> parent of e26ace6... 28.10.2018
