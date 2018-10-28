@@ -92,7 +92,7 @@
 
         <receiver android:name=".NotificationReceiverReminder"/>
 
-        <receiver android:name=".ButtonReceiver"/>
+        <receiver android:name=".ActionReceiver" />
 
     </application>
 

@@ -24,18 +24,16 @@ import java.util.Locale;
 public class RepeatingActivityReminder extends AppCompatActivity{
 
     DatabaseHelper myDb;
-    private Integer id_h;
-    private String obecnyCzas;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
+        Toast.makeText(getApplicationContext(), "ODPALONE", Toast.LENGTH_LONG).show();
 
         super.onCreate(savedInstanceState);
         myDb = new DatabaseHelper(this);
 
         int coPokazac = getIntent().getIntExtra("coPokazac",-1);
-        int coZrobic = getIntent().getIntExtra("coZrobic",-1);
-
         String godzina = getIntent().getStringExtra("godzina");
         String data = getIntent().getStringExtra("data");
         String uzytkownik = getIntent().getStringExtra("uzytkownik");
@@ -43,43 +41,8 @@ public class RepeatingActivityReminder extends AppCompatActivity{
         String jakaDawka = getIntent().getStringExtra("jakaDawka");
         Integer iloscDni = getIntent().getIntExtra("iloscDni", 0);
         Integer id = getIntent().getIntExtra("id", 0);
-
-        id_h = getIntent().getIntExtra("id_h", 0);
-        obecnyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        manager.cancel(id);
-
-        if(coZrobic==0) {
-
-            Cursor cn = myDb.get_STATYSTYKI_NIEWZIETE(0);
-            cn.moveToFirst();
-            myDb.update_STATYSTYKI_NIEWZIETE(0, Integer.parseInt(cn.getString(0)) + 1);
-
-            Cursor cl = myDb.getDataName_LEK(nazwaLeku);
-            cl.moveToFirst();
-            double iloscLeku = Double.valueOf(cl.getString(2)) + Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
-            myDb.update_LEK(Integer.parseInt(cl.getString(0)), String.valueOf(iloscLeku));
-
-            myDb.update_HISTORIA(id_h, obecnyCzas, "NIEWZIETE");
-
-            finish();
-            goHome();
-
-        }
-
-        else if(coZrobic==1) {
-
-            Cursor cw = myDb.get_STATYSTYKI_WZIETE(0);
-            cw.moveToFirst();
-            myDb.update_STATYSTYKI_WZIETE(0, Integer.parseInt(cw.getString(0)) + 1);
-
-            myDb.update_HISTORIA(id_h, obecnyCzas, "WZIETE");
-
-            finish();
-            goHome();
-
-        }
+        Integer id_h = getIntent().getIntExtra("id_h", 0);
+        String obecnyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
         if(coPokazac==0) {
 
@@ -181,17 +144,12 @@ public class RepeatingActivityReminder extends AppCompatActivity{
         }
 
     }
+
     public void goHome() {
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 
 }

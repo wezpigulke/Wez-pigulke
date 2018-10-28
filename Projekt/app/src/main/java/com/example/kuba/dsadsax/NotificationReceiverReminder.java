@@ -1,7 +1,6 @@
 package com.example.kuba.dsadsax;
 
 import android.app.AlarmManager;
-import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,9 +45,9 @@ public class NotificationReceiverReminder extends BroadcastReceiver {
 
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent repeating_intent = new Intent(context, RepeatingActivityReminder.class);
+        Intent repeating_intent = new Intent(context, ActionReceiver.class);
 
-        repeating_intent.putExtra("coPokazac", 0);
+        repeating_intent.putExtra("coZrobic", 3);
         repeating_intent.putExtra("id_h", id_h);
         repeating_intent.putExtra("id", id_n);
         repeating_intent.putExtra("idd", id_p);
@@ -84,7 +82,7 @@ public class NotificationReceiverReminder extends BroadcastReceiver {
         else if (wybranyDzwiek == 9)
             alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.alarm9);
 
-        Intent yes = new Intent(context, RepeatingActivityReminder.class);
+        Intent yes = new Intent(context, ActionReceiver.class);
         yes.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         yes.putExtra("coZrobic", 1);
         yes.putExtra("id_h", id_h);
@@ -93,7 +91,7 @@ public class NotificationReceiverReminder extends BroadcastReceiver {
         yes.putExtra("jakaDawka", jakaDawka);
         PendingIntent yesIntent = PendingIntent.getActivity(context, id_n*10, yes, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent no = new Intent(context, RepeatingActivityReminder.class);
+        Intent no = new Intent(context, ActionReceiver.class);
         no.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         no.putExtra("coZrobic", 0);
         no.putExtra("id_h", id_h);
@@ -204,9 +202,9 @@ public class NotificationReceiverReminder extends BroadcastReceiver {
 
             notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            repeating_intent = new Intent(context, RepeatingActivityReminder.class);
+            repeating_intent = new Intent(context, ActionReceiver.class);
 
-            repeating_intent.putExtra("coPokazac", 1);
+            repeating_intent.putExtra("coZrobic", 2);
             repeating_intent.putExtra("id", id);
             repeating_intent.putExtra("nazwa", cl.getString(1));
             repeating_intent.putExtra("ilosc", String.valueOf(iloscLeku));
