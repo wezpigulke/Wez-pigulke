@@ -20,10 +20,11 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+
 }
 
+
 dependencies {
-    implementation 'com.itextpdf:itextg:5.5.10'
     implementation 'me.itangqi.waveloadingview:library:0.3.5'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
