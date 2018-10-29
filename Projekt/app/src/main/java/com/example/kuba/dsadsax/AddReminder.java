@@ -62,6 +62,7 @@ public class AddReminder extends AppCompatActivity {
     private ArrayList<String> labelCoIleGodzin;
     private ArrayList<String> labelDzwiek;
     private ArrayList<String> labelNazwaLeku;
+    ArrayList<TextView> array;
     private String jakaDawka;
     private Integer iloscDni;
     private Spinner spinnerCoIleGodzin;
@@ -120,7 +121,6 @@ public class AddReminder extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         myDb = new DatabaseHelper(this);
-        Cursor c = myDb.getAllData_PRZYPOMNIENIE();
 
         final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
@@ -170,23 +170,28 @@ public class AddReminder extends AppCompatActivity {
         setTime11 = findViewById(R.id.setTime11);
         setTime12 = findViewById(R.id.setTime12);
 
+        array = new ArrayList<>();
+        array.add(setTime1);
+        array.add(setTime2);
+        array.add(setTime3);
+        array.add(setTime4);
+        array.add(setTime5);
+        array.add(setTime6);
+        array.add(setTime7);
+        array.add(setTime8);
+        array.add(setTime9);
+        array.add(setTime10);
+        array.add(setTime11);
+        array.add(setTime12);
+
         dataTabletka.setText(date);
         godzinaTabletka.setText(time);
 
         spinnerCoIleGodzin = findViewById(R.id.spinnerCoIleGodzin);
 
-        setTime1.setText("08:00");
-        setTime2.setText("09:00");
-        setTime3.setText("10:00");
-        setTime4.setText("11:00");
-        setTime5.setText("12:00");
-        setTime6.setText("13:00");
-        setTime7.setText("14:00");
-        setTime8.setText("15:00");
-        setTime9.setText("16:00");
-        setTime10.setText("17:00");
-        setTime11.setText("18:00");
-        setTime12.setText("19:00");
+        for (int i = 0; i < 12; i++) {
+            array.get(i).setText("00:00");
+        }
 
         Cursor res = myDb.getName_UZYTKOWNICY();
 
@@ -208,18 +213,11 @@ public class AddReminder extends AppCompatActivity {
         ileDni.setVisibility(View.GONE);
         spinnerCoIleGodzin.setVisibility(View.GONE);
         edt.setVisibility(View.GONE);
-        setTime1.setVisibility(View.GONE);
-        setTime2.setVisibility(View.GONE);
-        setTime3.setVisibility(View.GONE);
-        setTime4.setVisibility(View.GONE);
-        setTime5.setVisibility(View.GONE);
-        setTime6.setVisibility(View.GONE);
-        setTime7.setVisibility(View.GONE);
-        setTime8.setVisibility(View.GONE);
-        setTime9.setVisibility(View.GONE);
-        setTime10.setVisibility(View.GONE);
-        setTime11.setVisibility(View.GONE);
-        setTime12.setVisibility(View.GONE);
+
+        for (int i = 0; i < 12; i++) {
+            array.get(i).setVisibility(View.GONE);
+        }
+
         spinnerReminder.setVisibility(View.GONE);
         dodaj.setVisibility(View.GONE);
 
@@ -245,121 +243,16 @@ public class AddReminder extends AppCompatActivity {
         spinnerCoIleGodzin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                String test = spinnerCoIleGodzin.getItemAtPosition(position).toString();
 
-                setTime1.setVisibility(View.GONE);
-                setTime2.setVisibility(View.GONE);
-                setTime3.setVisibility(View.GONE);
-                setTime4.setVisibility(View.GONE);
-                setTime5.setVisibility(View.GONE);
-                setTime6.setVisibility(View.GONE);
-                setTime7.setVisibility(View.GONE);
-                setTime8.setVisibility(View.GONE);
-                setTime9.setVisibility(View.GONE);
-                setTime10.setVisibility(View.GONE);
-                setTime11.setVisibility(View.GONE);
-                setTime12.setVisibility(View.GONE);
-
-                if (position == 0) {
-                    ileRazyDziennie = 2;
-                    setTime1.setVisibility(View.VISIBLE);
-                    setTime2.setVisibility(View.VISIBLE);
-                } else if (position == 1) {
-                    ileRazyDziennie = 3;
-                    setTime1.setVisibility(View.VISIBLE);
-                    setTime2.setVisibility(View.VISIBLE);
-                    setTime3.setVisibility(View.VISIBLE);
-                } else if (position == 2) {
-                    ileRazyDziennie = 4;
-                    setTime1.setVisibility(View.VISIBLE);
-                    setTime2.setVisibility(View.VISIBLE);
-                    setTime3.setVisibility(View.VISIBLE);
-                    setTime4.setVisibility(View.VISIBLE);
-                } else if (position == 3) {
-                    ileRazyDziennie = 5;
-                    setTime1.setVisibility(View.VISIBLE);
-                    setTime2.setVisibility(View.VISIBLE);
-                    setTime3.setVisibility(View.VISIBLE);
-                    setTime4.setVisibility(View.VISIBLE);
-                    setTime5.setVisibility(View.VISIBLE);
-                } else if (position == 4) {
-                    ileRazyDziennie = 6;
-                    setTime1.setVisibility(View.VISIBLE);
-                    setTime2.setVisibility(View.VISIBLE);
-                    setTime3.setVisibility(View.VISIBLE);
-                    setTime4.setVisibility(View.VISIBLE);
-                    setTime5.setVisibility(View.VISIBLE);
-                    setTime6.setVisibility(View.VISIBLE);
-                } else if (position == 5) {
-                    ileRazyDziennie = 7;
-                    setTime1.setVisibility(View.VISIBLE);
-                    setTime2.setVisibility(View.VISIBLE);
-                    setTime3.setVisibility(View.VISIBLE);
-                    setTime4.setVisibility(View.VISIBLE);
-                    setTime5.setVisibility(View.VISIBLE);
-                    setTime6.setVisibility(View.VISIBLE);
-                    setTime7.setVisibility(View.VISIBLE);
-                } else if (position == 6) {
-                    ileRazyDziennie = 8;
-                    setTime1.setVisibility(View.VISIBLE);
-                    setTime2.setVisibility(View.VISIBLE);
-                    setTime3.setVisibility(View.VISIBLE);
-                    setTime4.setVisibility(View.VISIBLE);
-                    setTime5.setVisibility(View.VISIBLE);
-                    setTime6.setVisibility(View.VISIBLE);
-                    setTime7.setVisibility(View.VISIBLE);
-                    setTime8.setVisibility(View.VISIBLE);
-                } else if (position == 7) {
-                    ileRazyDziennie = 9;
-                    setTime1.setVisibility(View.VISIBLE);
-                    setTime2.setVisibility(View.VISIBLE);
-                    setTime3.setVisibility(View.VISIBLE);
-                    setTime4.setVisibility(View.VISIBLE);
-                    setTime5.setVisibility(View.VISIBLE);
-                    setTime6.setVisibility(View.VISIBLE);
-                    setTime7.setVisibility(View.VISIBLE);
-                    setTime8.setVisibility(View.VISIBLE);
-                    setTime9.setVisibility(View.VISIBLE);
-                } else if (position == 8) {
-                    ileRazyDziennie = 10;
-                    setTime1.setVisibility(View.VISIBLE);
-                    setTime2.setVisibility(View.VISIBLE);
-                    setTime3.setVisibility(View.VISIBLE);
-                    setTime4.setVisibility(View.VISIBLE);
-                    setTime5.setVisibility(View.VISIBLE);
-                    setTime6.setVisibility(View.VISIBLE);
-                    setTime7.setVisibility(View.VISIBLE);
-                    setTime8.setVisibility(View.VISIBLE);
-                    setTime9.setVisibility(View.VISIBLE);
-                    setTime10.setVisibility(View.VISIBLE);
-                } else if (position == 9) {
-                    ileRazyDziennie = 11;
-                    setTime1.setVisibility(View.VISIBLE);
-                    setTime2.setVisibility(View.VISIBLE);
-                    setTime3.setVisibility(View.VISIBLE);
-                    setTime4.setVisibility(View.VISIBLE);
-                    setTime5.setVisibility(View.VISIBLE);
-                    setTime6.setVisibility(View.VISIBLE);
-                    setTime7.setVisibility(View.VISIBLE);
-                    setTime8.setVisibility(View.VISIBLE);
-                    setTime9.setVisibility(View.VISIBLE);
-                    setTime10.setVisibility(View.VISIBLE);
-                    setTime11.setVisibility(View.VISIBLE);
-                } else if (position == 10) {
-                    ileRazyDziennie = 12;
-                    setTime1.setVisibility(View.VISIBLE);
-                    setTime2.setVisibility(View.VISIBLE);
-                    setTime3.setVisibility(View.VISIBLE);
-                    setTime4.setVisibility(View.VISIBLE);
-                    setTime5.setVisibility(View.VISIBLE);
-                    setTime6.setVisibility(View.VISIBLE);
-                    setTime7.setVisibility(View.VISIBLE);
-                    setTime8.setVisibility(View.VISIBLE);
-                    setTime9.setVisibility(View.VISIBLE);
-                    setTime10.setVisibility(View.VISIBLE);
-                    setTime11.setVisibility(View.VISIBLE);
-                    setTime12.setVisibility(View.VISIBLE);
+                for (int i = 0; i < 12; i++) {
+                    array.get(i).setVisibility(View.GONE);
                 }
+
+                for (int i = 0; i < position + 2; i++) {
+                    ileRazyDziennie = position + 2;
+                    array.get(i).setVisibility(View.VISIBLE);
+                }
+
             }
 
             @Override
@@ -447,7 +340,7 @@ public class AddReminder extends AppCompatActivity {
 
             stopPlaying();
 
-            if(spinnerNazwaLeku.getSelectedItem().toString().equals("Wybierz lek") || spinnerNazwaLeku.getSelectedItem().toString().equals("Dodaj nowy lek")) {
+            if (spinnerNazwaLeku.getSelectedItem().toString().equals("Wybierz lek") || spinnerNazwaLeku.getSelectedItem().toString().equals("Dodaj nowy lek")) {
 
                 openDialog("Wybierz lek lub dodaj nowy");
 
@@ -478,34 +371,30 @@ public class AddReminder extends AppCompatActivity {
                 ileDni.setVisibility(View.GONE);
                 spinnerCoIleGodzin.setVisibility(View.GONE);
                 edt.setVisibility(View.GONE);
-                setTime1.setVisibility(View.GONE);
-                setTime2.setVisibility(View.GONE);
-                setTime3.setVisibility(View.GONE);
-                setTime4.setVisibility(View.GONE);
-                setTime5.setVisibility(View.GONE);
-                setTime6.setVisibility(View.GONE);
-                setTime7.setVisibility(View.GONE);
-                setTime8.setVisibility(View.GONE);
-                setTime9.setVisibility(View.GONE);
-                setTime10.setVisibility(View.GONE);
-                setTime11.setVisibility(View.GONE);
-                setTime12.setVisibility(View.GONE);
+
+                for (int i = 0; i < 12; i++) {
+                    array.get(i).setVisibility(View.GONE);
+                }
 
                 if (position == 0) {
                     coWybrane = 0;
                     dataTabletka.setVisibility(View.VISIBLE);
                     godzinaTabletka.setVisibility(View.VISIBLE);
-                    ileDni.setVisibility(View.VISIBLE);
                 } else if (position == 1) {
                     coWybrane = 1;
+                    dataTabletka.setVisibility(View.VISIBLE);
+                    godzinaTabletka.setVisibility(View.VISIBLE);
+                    ileDni.setVisibility(View.VISIBLE);
+                } else if (position == 2) {
+                    coWybrane = 2;
                     edt.setVisibility(View.GONE);
                     spinnerCoIleGodzin.setVisibility(View.VISIBLE);
                     setTime1.setVisibility(View.VISIBLE);
                     setTime2.setVisibility(View.VISIBLE);
                     ileDni.setVisibility(View.VISIBLE);
                     dataTabletka.setVisibility(View.VISIBLE);
-                } else if (position == 2) {
-                    coWybrane = 2;
+                } else if (position == 3) {
+                    coWybrane = 3;
                     edt.setVisibility(View.VISIBLE);
                     dataTabletka.setVisibility(View.VISIBLE);
                     godzinaTabletka.setVisibility(View.VISIBLE);
@@ -526,14 +415,112 @@ public class AddReminder extends AppCompatActivity {
 
         dodaj.setOnClickListener(view -> {
 
-        Cursor cl = myDb.getDataName_LEK(nazwaLeku);
-        cl.moveToFirst();
-        Double iloscTabletek = Double.valueOf(cl.getString(2));
-        Double jakaDawkaTabletki = Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
+            Cursor cl = myDb.getDataName_LEK(nazwaLeku);
+            cl.moveToFirst();
+            Double iloscTabletek = Double.valueOf(cl.getString(2));
+            Double jakaDawkaTabletki = Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
 
-            if ((iloscTabletek-jakaDawkaTabletki)>=0) {
+            if ((iloscTabletek - jakaDawkaTabletki) >= 0) {
 
-                if (coWybrane == 0 || coWybrane == 2) {
+                if (coWybrane == 0) {
+
+                    Calendar cal = getInstance();
+                    cal.set(year, month - 1, day, hour, minutes, 0);
+                    String dataPrzypomnienia = dataTabletka.getText().toString();
+                    String godzinaPrzypomnienia = godzinaTabletka.getText().toString();
+
+                    String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+                    String dzisiejszyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    SimpleDateFormat tdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+                    Date firstDate = null;
+                    Date secondDate = null;
+
+                    Date firstTime = null;
+                    Date secondTime = null;
+
+                    try {
+                        firstDate = sdf.parse(dzisiejszaData);
+                        firstTime = tdf.parse(dzisiejszyCzas);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        secondDate = sdf.parse(dataPrzypomnienia);
+                        secondTime = tdf.parse(godzinaPrzypomnienia);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    long diff = secondDate.getTime() - firstDate.getTime();
+                    long diffDays = diff / (24 * 60 * 60 * 1000);
+                    long diffInMillis = secondTime.getTime() - firstTime.getTime();
+
+                    if (diffDays == 0 && diffInMillis < 0) {
+                        Calendar cx = Calendar.getInstance();
+                        try {
+                            cx.setTime(sdf.parse(dataPrzypomnienia));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        cx.add(Calendar.DATE, 1);
+                        dataPrzypomnienia = sdf.format(cx.getTime());
+                        cal.set(year, month - 1, day + 1, hour, minutes, 0);
+                        dataTabletka.getText().toString();
+                    }
+
+                    Integer id = null, idd;
+
+                    Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
+
+                    if (c1.getCount() != 0) {
+                        while (c1.moveToNext()) {
+                            id = Integer.parseInt(c1.getString(0)) + 1;
+                        }
+                    }
+
+                    myDb.insert_PRZYPOMNIENIE(
+                            godzinaTabletka.getText().toString(),
+                            dataPrzypomnienia,
+                            nazwaLeku,
+                            jakaDawka,
+                            1,
+                            uzytkownik,
+                            1,
+                            "Jednorazowo: " + godzinaTabletka.getText().toString()
+                    );
+
+                    Cursor cc = myDb.getMAXid_PRZYPOMNIENIE();
+                    cc.moveToFirst();
+                    idd = Integer.parseInt(cc.getString(0));
+
+                    myDb.insert_NOTYFIKACJA(
+                            id,
+                            idd,
+                            godzinaTabletka.getText().toString(),
+                            dataPrzypomnienia
+                    );
+
+                    Intent intx = new Intent(getApplicationContext(), NotificationReceiverReminder.class);
+                    intx.putExtra("Value", uzytkownik + " |  " + godzinaTabletka.getText().toString() + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
+                    intx.putExtra("id", id);
+                    intx.putExtra("idd", idd);
+                    intx.putExtra("godzina", godzinaTabletka.getText().toString());
+                    intx.putExtra("data", dataPrzypomnienia);
+                    intx.putExtra("uzytkownik", uzytkownik);
+                    intx.putExtra("nazwaLeku", nazwaLeku);
+                    intx.putExtra("jakaDawka", jakaDawka);
+                    intx.putExtra("iloscDni", 0);
+                    intx.putExtra("wybranyDzwiek", dzwiek);
+
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intx, PendingIntent.FLAG_UPDATE_CURRENT);
+                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+
+                    onBackPressed();
+
+                } else if (coWybrane == 1 || coWybrane == 3) {
 
                     iloscDni = Integer.parseInt(ileDni.getText().toString());
 
@@ -601,7 +588,7 @@ public class AddReminder extends AppCompatActivity {
                         }
                     }
 
-                    if (coWybrane == 0 && iloscDni >= 1) {
+                    if (coWybrane == 1 && iloscDni >= 1) {
                         myDb.insert_PRZYPOMNIENIE(
                                 godzinaTabletka.getText().toString(),
                                 dataPrzypomnienia,
@@ -624,7 +611,7 @@ public class AddReminder extends AppCompatActivity {
                                 dataPrzypomnienia
                         );
 
-                    } else if (coWybrane == 2 && iloscDni >= 1) {
+                    } else if (coWybrane == 3 && iloscDni >= 1) {
 
                         myDb.insert_PRZYPOMNIENIE(
                                 godzinaTabletka.getText().toString(),
@@ -683,115 +670,26 @@ public class AddReminder extends AppCompatActivity {
 
                     onBackPressed();
 
-                } else if (coWybrane == 1) {
+                } else if (coWybrane == 2) {
 
                     for (Integer i = 1; i <= ileRazyDziennie; i++) {
 
-                        String godzinaPrzypomnienia = null;
-                        String wszystkieGodziny = null;
+                        String godzinaPrzypomnienia;
+                        String wszystkieGodziny;
 
-                        if (ileRazyDziennie == 2) {
-                            wszystkieGodziny = setTime1.getText().toString() + ", " +
-                                    setTime2.getText().toString();
-                        } else if (ileRazyDziennie == 3) {
-                            wszystkieGodziny = setTime1.getText().toString() + ", " +
-                                    setTime2.getText().toString() + ", " +
-                                    setTime3.getText().toString();
-                        } else if (ileRazyDziennie == 4) {
-                            wszystkieGodziny = setTime1.getText().toString() + ", " +
-                                    setTime2.getText().toString() + ", " +
-                                    setTime3.getText().toString() + ", " +
-                                    setTime4.getText().toString();
-                        } else if (ileRazyDziennie == 5) {
-                            wszystkieGodziny = setTime1.getText().toString() + ", " +
-                                    setTime2.getText().toString() + ", " +
-                                    setTime3.getText().toString() + ", " +
-                                    setTime4.getText().toString() + ", " +
-                                    setTime5.getText().toString();
-                        } else if (ileRazyDziennie == 6) {
-                            wszystkieGodziny = setTime1.getText().toString() + ", " +
-                                    setTime2.getText().toString() + ", " +
-                                    setTime3.getText().toString() + ", " +
-                                    setTime4.getText().toString() + ", " +
-                                    setTime5.getText().toString() + ", " +
-                                    setTime6.getText().toString();
-                        } else if (ileRazyDziennie == 7) {
-                            wszystkieGodziny = setTime1.getText().toString() + ", " +
-                                    setTime2.getText().toString() + ", " +
-                                    setTime3.getText().toString() + ", " +
-                                    setTime4.getText().toString() + ", " +
-                                    setTime5.getText().toString() + ", " +
-                                    setTime6.getText().toString() + ", " +
-                                    setTime7.getText().toString();
-                        } else if (ileRazyDziennie == 8) {
-                            wszystkieGodziny = setTime1.getText().toString() + ", " +
-                                    setTime2.getText().toString() + ", " +
-                                    setTime3.getText().toString() + ", " +
-                                    setTime4.getText().toString() + ", " +
-                                    setTime5.getText().toString() + ", " +
-                                    setTime6.getText().toString() + ", " +
-                                    setTime7.getText().toString() + ", " +
-                                    setTime8.getText().toString();
-                        } else if (ileRazyDziennie == 9) {
-                            wszystkieGodziny = setTime1.getText().toString() + ", " +
-                                    setTime2.getText().toString() + ", " +
-                                    setTime3.getText().toString() + ", " +
-                                    setTime4.getText().toString() + ", " +
-                                    setTime5.getText().toString() + ", " +
-                                    setTime6.getText().toString() + ", " +
-                                    setTime7.getText().toString() + ", " +
-                                    setTime8.getText().toString() + ", " +
-                                    setTime9.getText().toString();
-                        } else if (ileRazyDziennie == 10) {
-                            wszystkieGodziny = setTime1.getText().toString() + ", " +
-                                    setTime2.getText().toString() + ", " +
-                                    setTime3.getText().toString() + ", " +
-                                    setTime4.getText().toString() + ", " +
-                                    setTime5.getText().toString() + ", " +
-                                    setTime6.getText().toString() + ", " +
-                                    setTime7.getText().toString() + ", " +
-                                    setTime8.getText().toString() + ", " +
-                                    setTime9.getText().toString() + ", " +
-                                    setTime10.getText().toString();
-                        } else if (ileRazyDziennie == 11) {
-                            wszystkieGodziny = setTime1.getText().toString() + ", " +
-                                    setTime2.getText().toString() + ", " +
-                                    setTime3.getText().toString() + ", " +
-                                    setTime4.getText().toString() + ", " +
-                                    setTime5.getText().toString() + ", " +
-                                    setTime6.getText().toString() + ", " +
-                                    setTime7.getText().toString() + ", " +
-                                    setTime8.getText().toString() + ", " +
-                                    setTime9.getText().toString() + ", " +
-                                    setTime10.getText().toString() + ", " +
-                                    setTime11.getText().toString();
-                        } else if (ileRazyDziennie == 12) {
-                            wszystkieGodziny = setTime1.getText().toString() + ", " +
-                                    setTime2.getText().toString() + ", " +
-                                    setTime3.getText().toString() + ", " +
-                                    setTime4.getText().toString() + ", " +
-                                    setTime5.getText().toString() + ", " +
-                                    setTime6.getText().toString() + ", " +
-                                    setTime7.getText().toString() + ", " +
-                                    setTime8.getText().toString() + ", " +
-                                    setTime9.getText().toString() + ", " +
-                                    setTime10.getText().toString() + ", " +
-                                    setTime11.getText().toString() + ", " +
-                                    setTime12.getText().toString();
+                        StringBuilder sb = new StringBuilder();
+
+                        for (int j = 0; j < ileRazyDziennie - 1; j++) {
+                            sb.append(array.get(j).getText().toString() + ", ");
                         }
 
-                        if (i == 1) godzinaPrzypomnienia = setTime1.getText().toString();
-                        else if (i == 2) godzinaPrzypomnienia = setTime2.getText().toString();
-                        else if (i == 3) godzinaPrzypomnienia = setTime3.getText().toString();
-                        else if (i == 4) godzinaPrzypomnienia = setTime4.getText().toString();
-                        else if (i == 5) godzinaPrzypomnienia = setTime5.getText().toString();
-                        else if (i == 6) godzinaPrzypomnienia = setTime6.getText().toString();
-                        else if (i == 7) godzinaPrzypomnienia = setTime7.getText().toString();
-                        else if (i == 8) godzinaPrzypomnienia = setTime8.getText().toString();
-                        else if (i == 9) godzinaPrzypomnienia = setTime9.getText().toString();
-                        else if (i == 10) godzinaPrzypomnienia = setTime10.getText().toString();
-                        else if (i == 11) godzinaPrzypomnienia = setTime11.getText().toString();
-                        else if (i == 12) godzinaPrzypomnienia = setTime12.getText().toString();
+                        sb.append(array.get(ileRazyDziennie - 1).getText().toString());
+                        wszystkieGodziny = sb.toString();
+
+                        sb.setLength(0);
+
+                        sb.append(array.get(i - 1).getText().toString());
+                        godzinaPrzypomnienia = sb.toString();
 
                         iloscDni = Integer.parseInt(ileDni.getText().toString());
 
@@ -906,7 +804,7 @@ public class AddReminder extends AppCompatActivity {
                             );
 
                             Intent intx = new Intent(getApplicationContext(), NotificationReceiverReminder.class);
-                            intx.putExtra("Value", uzytkownik + " |  " +  godzinaPrzypomnienia + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
+                            intx.putExtra("Value", uzytkownik + " |  " + godzinaPrzypomnienia + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
                             intx.putExtra("id", id);
                             intx.putExtra("idd", idd);
                             intx.putExtra("godzina", godzinaPrzypomnienia);
@@ -1154,34 +1052,26 @@ public class AddReminder extends AppCompatActivity {
 
         labelSize = labelNazwaLeku.size() - 1;
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, labelNazwaLeku) {
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, labelNazwaLeku) {
             @Override
             public int getCount() {
-                return(labelSize);
+                return (labelSize);
             }
         };
 
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerNazwaLeku.setAdapter(dataAdapter);
 
-        if(labelSize!=labelSizeCopy) spinnerNazwaLeku.setSelection(labelSize-2);
+        if (labelSize != labelSizeCopy) spinnerNazwaLeku.setSelection(labelSize - 2);
         else spinnerNazwaLeku.setSelection(labelSize);
 
     }
 
     private void loadSpinnerCoIleGodzin() {
 
-        labelCoIleGodzin.add("2 razy dziennie");
-        labelCoIleGodzin.add("3 razy dziennie");
-        labelCoIleGodzin.add("4 razy dziennie");
-        labelCoIleGodzin.add("5 razy dziennie");
-        labelCoIleGodzin.add("6 razy dziennie");
-        labelCoIleGodzin.add("7 razy dziennie");
-        labelCoIleGodzin.add("8 razy dziennie");
-        labelCoIleGodzin.add("9 razy dziennie");
-        labelCoIleGodzin.add("10 razy dziennie");
-        labelCoIleGodzin.add("11 razy dziennie");
-        labelCoIleGodzin.add("12 razy dziennie");
+        for(int i=2; i<=12; i++) {
+            labelCoIleGodzin.add(String.valueOf(i) + " razy dziennie");
+        }
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, labelCoIleGodzin);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1191,6 +1081,7 @@ public class AddReminder extends AppCompatActivity {
 
     private void loadSpinnerReminder() {
 
+        labelReminder.add("Jednorazowo");
         labelReminder.add("Codziennie");
         labelReminder.add("X razy dziennie");
         labelReminder.add("Co X dni");
@@ -1203,23 +1094,17 @@ public class AddReminder extends AppCompatActivity {
 
     private void loadSpinnerDzwiek() {
 
-        labelDzwiek.add("Alarm nr 1");
-        labelDzwiek.add("Alarm nr 2");
-        labelDzwiek.add("Alarm nr 3");
-        labelDzwiek.add("Alarm nr 4");
-        labelDzwiek.add("Alarm nr 5");
-        labelDzwiek.add("Alarm nr 6");
-        labelDzwiek.add("Alarm nr 7");
-        labelDzwiek.add("Alarm nr 8");
-        labelDzwiek.add("Alarm nr 9");
+        for(int i=1; i<=9; i++) {
+            labelDzwiek.add("Alarm nr " + String.valueOf(i));
+        }
         labelDzwiek.add("Dźwięk domyślny");
 
         final int labelSize = labelDzwiek.size() - 1;
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, labelDzwiek) {
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, labelDzwiek) {
             @Override
             public int getCount() {
-                return(labelSize);
+                return (labelSize);
             }
         };
 
@@ -1231,18 +1116,9 @@ public class AddReminder extends AppCompatActivity {
 
     private void loadDawkaData() {
 
-        labelDawka.add("Dawka: 0.25");
-        labelDawka.add("Dawka: 0.5");
-        labelDawka.add("Dawka: 0.75");
-        labelDawka.add("Dawka: 1");
-        labelDawka.add("Dawka: 1.25");
-        labelDawka.add("Dawka: 1.5");
-        labelDawka.add("Dawka: 1.75");
-        labelDawka.add("Dawka: 2");
-        labelDawka.add("Dawka: 2.25");
-        labelDawka.add("Dawka: 2.5");
-        labelDawka.add("Dawka: 2.75");
-        labelDawka.add("Dawka: 3");
+        for(Double i=0.25; i<=5; i+=0.25) {
+            labelDawka.add("Dawka: " + String.valueOf(i));
+        }
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, labelDawka);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1263,11 +1139,16 @@ public class AddReminder extends AppCompatActivity {
     }
 
     public void onResume() {
-
         super.onResume();
         loadSpinnerNazwaLeku();
+    }
 
-
+    private void stopPlaying() {
+        if (mp != null) {
+            mp.stop();
+            mp.release();
+            mp = null;
+        }
     }
 
     @Override
@@ -1280,14 +1161,6 @@ public class AddReminder extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void stopPlaying() {
-        if (mp != null) {
-            mp.stop();
-            mp.release();
-            mp = null;
-        }
     }
 
 }

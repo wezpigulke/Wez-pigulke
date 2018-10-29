@@ -30,6 +30,7 @@ import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Paragraph;
@@ -49,8 +50,6 @@ import me.itangqi.waveloadingview.WaveLoadingView;
 public class GoToSettings extends Fragment {
 
     DatabaseHelper myDb;
-
-    WaveLoadingView waveLoadingView;
 
     Integer progress;
     TextView tProgres;
@@ -229,12 +228,12 @@ public class GoToSettings extends Fragment {
             document.add(Chunk.NEWLINE);
 
             PdfPTable table = new PdfPTable(6);
-            table.addCell(new PdfPCell(new Paragraph("Godzina")));
-            table.addCell(new PdfPCell(new Paragraph("Data")));
-            table.addCell(new PdfPCell(new Paragraph("Lek")));
-            table.addCell(new PdfPCell(new Paragraph("Dawka")));
-            table.addCell(new PdfPCell(new Paragraph("Potw.")));
-            table.addCell(new PdfPCell(new Paragraph("Status")));
+            table.addCell(new PdfPCell(new Paragraph("Godzina", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK))));
+            table.addCell(new PdfPCell(new Paragraph("Data", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK))));
+            table.addCell(new PdfPCell(new Paragraph("Lek", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK))));
+            table.addCell(new PdfPCell(new Paragraph("Dawka", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK))));
+            table.addCell(new PdfPCell(new Paragraph("Potw.", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK))));
+            table.addCell(new PdfPCell(new Paragraph("Status", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK))));
             document.add(table);
 
             String statusHistorii;
@@ -249,11 +248,26 @@ public class GoToSettings extends Fragment {
                 while (cp.moveToNext()) {
 
                     PdfPTable table_result = new PdfPTable(6);
-                    table_result.addCell(new PdfPCell(new Paragraph(cp.getString(2))));
-                    table_result.addCell(new PdfPCell(new Paragraph(cp.getString(3))));
-                    table_result.addCell(new PdfPCell(new Paragraph(cp.getString(4))));
-                    table_result.addCell(new PdfPCell(new Paragraph(cp.getString(5))));
-                    table_result.addCell(new PdfPCell(new Paragraph(cp.getString(6))));
+
+                    cell = new PdfPCell(new Paragraph(cp.getString(2)));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    table_result.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph(cp.getString(3).substring(0,5)));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    table_result.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph(cp.getString(4)));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    table_result.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph(cp.getString(5)));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    table_result.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph(cp.getString(6)));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    table_result.addCell(cell);
 
                     statusHistorii = cp.getString(7);
 
@@ -269,8 +283,9 @@ public class GoToSettings extends Fragment {
                         table_result.addCell(cell);
                     }
 
-                    else if (statusHistorii.equals("BRAK INFORMACJI")) {
-                        cell = new PdfPCell(new Paragraph(""));
+                    else if (statusHistorii.equals("BRAK")) {
+                        cell = new PdfPCell(new Paragraph("BRAK"));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                         table_result.addCell(cell);
                     }
 

@@ -1,41 +1,33 @@
 package com.example.kuba.dsadsax;
 
-import android.app.NotificationManager;
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.InputType;
 import android.view.Gravity;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class RepeatingActivityReminder extends AppCompatActivity{
-
-    DatabaseHelper myDb;
-    private Integer id_h;
-    private String obecnyCzas;
+public class RepeatingActivityReminder extends Activity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        myDb = new DatabaseHelper(this);
+        DatabaseHelper myDb = new DatabaseHelper(this);
 
-        int coPokazac = getIntent().getIntExtra("coPokazac",-1);
-        int coZrobic = getIntent().getIntExtra("coZrobic",-1);
-
+        Integer coPokazac = getIntent().getIntExtra("coPokazac",-1);
         String godzina = getIntent().getStringExtra("godzina");
         String data = getIntent().getStringExtra("data");
         String uzytkownik = getIntent().getStringExtra("uzytkownik");
@@ -43,43 +35,8 @@ public class RepeatingActivityReminder extends AppCompatActivity{
         String jakaDawka = getIntent().getStringExtra("jakaDawka");
         Integer iloscDni = getIntent().getIntExtra("iloscDni", 0);
         Integer id = getIntent().getIntExtra("id", 0);
-
-        id_h = getIntent().getIntExtra("id_h", 0);
-        obecnyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-
-        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        manager.cancel(id);
-
-        if(coZrobic==0) {
-
-            Cursor cn = myDb.get_STATYSTYKI_NIEWZIETE(0);
-            cn.moveToFirst();
-            myDb.update_STATYSTYKI_NIEWZIETE(0, Integer.parseInt(cn.getString(0)) + 1);
-
-            Cursor cl = myDb.getDataName_LEK(nazwaLeku);
-            cl.moveToFirst();
-            double iloscLeku = Double.valueOf(cl.getString(2)) + Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
-            myDb.update_LEK(Integer.parseInt(cl.getString(0)), String.valueOf(iloscLeku));
-
-            myDb.update_HISTORIA(id_h, obecnyCzas, "NIEWZIETE");
-
-            finish();
-            goHome();
-
-        }
-
-        else if(coZrobic==1) {
-
-            Cursor cw = myDb.get_STATYSTYKI_WZIETE(0);
-            cw.moveToFirst();
-            myDb.update_STATYSTYKI_WZIETE(0, Integer.parseInt(cw.getString(0)) + 1);
-
-            myDb.update_HISTORIA(id_h, obecnyCzas, "WZIETE");
-
-            finish();
-            goHome();
-
-        }
+        Integer id_h = getIntent().getIntExtra("id_h", 0);
+        String obecnyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
         if(coPokazac==0) {
 
@@ -90,6 +47,9 @@ public class RepeatingActivityReminder extends AppCompatActivity{
             TextView tProfil = findViewById(R.id.textView12);
             TextView tData = findViewById(R.id.textView9);
             TextView tPozostalo = findViewById(R.id.textView10);
+
+            ImageView im = findViewById(R.id.imageView3);
+            im.setImageResource(R.drawable.logo);
 
             Button b3 = findViewById(R.id.button3);
             Button b4 = findViewById(R.id.button4);
@@ -114,6 +74,7 @@ public class RepeatingActivityReminder extends AppCompatActivity{
 
                 finish();
                 goHome();
+
             });
 
             b4.setOnClickListener(v -> {
@@ -126,6 +87,7 @@ public class RepeatingActivityReminder extends AppCompatActivity{
 
                 finish();
                 goHome();
+
             });
 
         }
@@ -138,6 +100,9 @@ public class RepeatingActivityReminder extends AppCompatActivity{
             TextView tIlosc = findViewById(R.id.textView6m);
             TextView tSuma = findViewById(R.id.textView6m2);
             Button update = findViewById(R.id.button5m);
+
+            ImageView im = findViewById(R.id.imageView6);
+            im.setImageResource(R.drawable.logo);
 
             String nazwa = getIntent().getStringExtra("nazwa");
             String sumujTypy = getIntent().getStringExtra("sumujTypy");

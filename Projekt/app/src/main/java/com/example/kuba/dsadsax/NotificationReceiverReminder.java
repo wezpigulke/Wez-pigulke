@@ -1,7 +1,6 @@
 package com.example.kuba.dsadsax;
 
 import android.app.AlarmManager;
-import android.app.IntentService;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,7 +37,7 @@ public class NotificationReceiverReminder extends BroadcastReceiver {
         Integer iloscDni = intent.getIntExtra("iloscDni", 0);
         Integer wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
 
-        myDb.insert_HISTORIA(uzytkownik, godzina, data, nazwaLeku, jakaDawka, "", "BRAK INFORMACJI");
+        myDb.insert_HISTORIA(uzytkownik, godzina, data, nazwaLeku, jakaDawka, "BRAK", "BRAK");
 
         Cursor cm = myDb.getMAXid_HISTORIA();
         cm.moveToFirst();
@@ -84,23 +82,22 @@ public class NotificationReceiverReminder extends BroadcastReceiver {
         else if (wybranyDzwiek == 9)
             alarmSound = Uri.parse("android.resource://com.example.kuba.dsadsax/" + R.raw.alarm9);
 
-        Intent yes = new Intent(context, RepeatingActivityReminder.class);
+        Intent yes = new Intent(context, ButtonIntent.class);
         yes.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        yes.putExtra("coZrobic", 1);
+        yes.putExtra("coZrobic", 0);
+        yes.putExtra("id_h", id_h);
         yes.putExtra("id_h", id_h);
         yes.putExtra("id", id_n);
-        yes.putExtra("nazwaLeku", nazwaLeku);
-        yes.putExtra("jakaDawka", jakaDawka);
-        PendingIntent yesIntent = PendingIntent.getActivity(context, id_n*10, yes, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent yesIntent = PendingIntent.getBroadcast(context, id_n*10, yes, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent no = new Intent(context, RepeatingActivityReminder.class);
+        Intent no = new Intent(context, ButtonIntent.class);
         no.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        no.putExtra("coZrobic", 0);
+        no.putExtra("coZrobic", 1);
         no.putExtra("id_h", id_h);
         no.putExtra("id", id_n);
         no.putExtra("nazwaLeku", nazwaLeku);
         no.putExtra("jakaDawka", jakaDawka);
-        PendingIntent noIntent = PendingIntent.getActivity(context, id_n*20, no, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent noIntent = PendingIntent.getBroadcast(context, id_n*20, no, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentIntent(pendingIntent)
@@ -117,14 +114,12 @@ public class NotificationReceiverReminder extends BroadcastReceiver {
 
         notificationManager.notify(id_n, builder.build());
 
-        Integer ilosc_dn;
         String dzisiaj = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
 
         /* SPRAWDZANIE ILE DNI POZOSTAŁO */
 
         Cursor cd = myDb.getDays_PRZYPOMNIENIE(id_p);
         cd.moveToFirst();
-        ilosc_dn = Integer.parseInt(cd.getString(0));
 
         Cursor cz = myDb.getCount_NOTYFIKACJA(id_p, dzisiaj);
         cz.moveToFirst();
@@ -180,7 +175,7 @@ public class NotificationReceiverReminder extends BroadcastReceiver {
 
         }
 
-        if ((ilosc_dn - 1) <= 0) {
+        if (iloscDni <= 0) {
 
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
             Intent myIntent = new Intent(context, NotificationReceiverReminder.class);
@@ -195,12 +190,14 @@ public class NotificationReceiverReminder extends BroadcastReceiver {
         } else {
 
             if (Integer.parseInt(cz.getString(0)) == 1)
-                myDb.updateDays_PRZYPOMNIENIE(id_p, ilosc_dn - 1);
+                myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
             myDb.remove_NOTYFIKACJA(id_n);
 
         }
 
         if (sumujTypy > iloscLeku) {
+
+            sumujTypy -= Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
 
             notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 

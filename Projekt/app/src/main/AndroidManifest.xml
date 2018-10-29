@@ -75,6 +75,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
 
+
         <activity
             android:name=".AddTypeMeasurement"
             android:label="Dodaj typ badania"
@@ -82,17 +83,15 @@
             android:screenOrientation="portrait"/>
 
         <activity android:name=".RepeatingActivityReminder"
-            android:label="Weź tabletkę"/>
+            android:label="Weź tabletkę"
+            android:launchMode="singleTop"/>
 
         <activity android:name=".RepeatingActivityVisit"
             android:label="Wizyta u lekarza"/>
 
-        <activity android:name=".RepeatingActivityMedicine"
-            android:label="Kończy sie zapas tabletek"/>
-
         <receiver android:name=".NotificationReceiverReminder"/>
 
-        <receiver android:name=".ButtonReceiver"/>
+        <receiver android:name=".ButtonIntent"/>
 
     </application>
 
