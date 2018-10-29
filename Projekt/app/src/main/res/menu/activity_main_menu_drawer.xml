@@ -26,8 +26,12 @@
             android:icon="@drawable/visit"
             android:title="Wizyty u lekarza" />
         <item
-        android:id="@+id/listOfTests"
+            android:id="@+id/listOfTestsType"
             android:icon="@drawable/measurement"
+            android:title="Typy pomiarów" />
+        <item
+        android:id="@+id/listOfTests"
+            android:icon="@drawable/syringe"
         android:title="Lista pomiarów" />
         <item
             android:id="@+id/listOfNotes"

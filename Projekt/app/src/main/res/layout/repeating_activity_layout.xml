@@ -87,11 +87,22 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/textView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="116dp"
+            android:layout_marginBottom="8dp"
+            android:text="Dawka:"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="158dp"
             android:layout_marginBottom="8dp"
             android:text="Godzina:"
             android:textSize="20sp"
@@ -102,7 +113,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="158dp"
+            android:layout_marginTop="200dp"
             android:layout_marginBottom="10dp"
             android:text="Data:"
             android:textSize="20sp"
@@ -115,7 +126,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="200dp"
+            android:layout_marginTop="242dp"
             android:text="Pozostało dni:"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
