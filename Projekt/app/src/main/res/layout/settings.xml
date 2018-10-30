@@ -82,4 +82,47 @@
         android:text="Progres: "
         android:textSize="24dp" />
 
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="62dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="49dp"
+        android:layout_marginBottom="173dp"
+        app:srcCompat="@drawable/pepe" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="63dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="173dp"
+        app:srcCompat="@drawable/bomb" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="229dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="95dp"
+        android:layout_marginTop="206dp"
+        android:layout_marginEnd="87dp"
+        android:layout_marginBottom="245dp"
+        android:textAlignment="center"
+        android:textSize="100dp" />
+
 </RelativeLayout>

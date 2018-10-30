@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -21,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,11 +51,15 @@ public class GoToSettings extends Fragment {
 
     DatabaseHelper myDb;
 
-    Integer progress;
-    TextView tProgres;
-    TextView tWziete;
-    TextView tZapomniane;
-    private int i = 0;
+    private Integer i = 0;
+
+    private Integer progress;
+
+    private ProgressBar myprogressbar;
+
+    private TextView tProgres;
+    private TextView tWziete;
+    private TextView tZapomniane;
 
     private File pdfFile;
     final private int REQUEST_CODE_ASK_PERMISSIONS = 111;
@@ -80,9 +86,76 @@ public class GoToSettings extends Fragment {
         final Button bt = v.findViewById(R.id.button2);
         final Button pdf = v.findViewById(R.id.button5);
 
+        myprogressbar = v.findViewById(R.id.myprogressbar);
+
+        tProgres = v.findViewById(R.id.textView8);
+        tWziete = v.findViewById(R.id.textView13);
+        tZapomniane = v.findViewById(R.id.textView14);
+
+        ImageView im7 = v.findViewById(R.id.imageView7);
+        ImageView im8 = v.findViewById(R.id.imageView8);
+        TextView tOdliczanie = v.findViewById(R.id.textView11);
+
+        im7.setVisibility(View.GONE);
+        im8.setVisibility(View.GONE);
+        tOdliczanie.setVisibility(View.GONE);
+
         bt.setOnClickListener(view -> {
-            myDb.removeData(getActivity());
-            System.exit(0);
+
+            bt.setVisibility(View.GONE);
+            pdf.setVisibility(View.GONE);
+            myprogressbar.setVisibility(View.GONE);
+            tProgres.setVisibility(View.GONE);
+            tWziete.setVisibility(View.GONE);
+            tZapomniane.setVisibility(View.GONE);
+            bt.setVisibility(View.GONE);
+
+            tOdliczanie.setVisibility(View.VISIBLE);
+
+            new CountDownTimer(4000, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    tOdliczanie.setText(String.valueOf(millisUntilFinished / 1000));
+                }
+
+                public void onFinish() {
+                    tOdliczanie.setVisibility(View.GONE);
+                    im7.setVisibility(View.VISIBLE);
+                    im7.setAlpha(0);
+                    new CountDownTimer(1275, 1) {
+
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            Integer val = Math.toIntExact((millisUntilFinished/10)*2);
+                            im7.setAlpha(val);
+                        }
+
+                        public void onFinish() {
+                            im7.setVisibility(View.GONE);
+                            im8.setVisibility(View.VISIBLE);
+                            im8.setAlpha(0);
+
+                            new CountDownTimer(1275, 1) {
+
+                                @Override
+                                public void onTick(long millisUntilFinished) {
+                                    Integer val = Math.toIntExact((255 -(millisUntilFinished/10))*2);
+                                    im8.setAlpha(val);
+                                }
+
+                                @Override
+                                public void onFinish() {
+                                    myDb.removeData(getActivity());
+                                    System.exit(0);
+                                }
+                            }.start();
+                        }
+
+                    }.start();
+                }
+
+            }.start();
+
         });
 
         pdf.setOnClickListener(v1 -> {
@@ -92,10 +165,6 @@ public class GoToSettings extends Fragment {
                 e.printStackTrace();
             }
         });
-
-        tProgres = v.findViewById(R.id.textView8);
-        tWziete = v.findViewById(R.id.textView13);
-        tZapomniane = v.findViewById(R.id.textView14);
 
         Cursor cw = myDb.get_STATYSTYKI_WZIETE(0);
         cw.moveToFirst();
@@ -117,7 +186,6 @@ public class GoToSettings extends Fragment {
         tZapomniane.setVisibility(View.INVISIBLE);
         tProgres.setVisibility(View.INVISIBLE);
 
-        ProgressBar myprogressbar = v.findViewById(R.id.myprogressbar);
         myprogressbar.setScaleY(10);
 
         if (progress < 50) myprogressbar.setProgressTintList(ColorStateList.valueOf(Color.RED));

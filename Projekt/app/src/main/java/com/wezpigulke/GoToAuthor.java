@@ -1,11 +1,14 @@
 package com.wezpigulke;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.Objects;
 
@@ -18,6 +21,24 @@ public class GoToAuthor extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Objects.requireNonNull(getActivity()).setTitle("Autor");
+
+        ImageView imageView = view.findViewById(R.id.imageView2);
+        imageView.setAlpha(0);
+
+        new CountDownTimer(2550, 1) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                Integer val = Math.toIntExact(255 -(millisUntilFinished/10));
+                imageView.setAlpha(val);
+            }
+
+            @Override
+            public void onFinish() {
+            }
+
+        }.start();
+
     }
 
     @Override
