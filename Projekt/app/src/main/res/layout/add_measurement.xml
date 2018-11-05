@@ -111,6 +111,8 @@
                 android:ems="10"
                 android:hint="Wynik pomiaru"
                 android:inputType="number"
+                android:gravity="center"
+                android:digits="0123456789-.,"
                 android:textCursorDrawable="@android:color/holo_blue_light"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"

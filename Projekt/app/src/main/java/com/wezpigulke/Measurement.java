@@ -6,13 +6,15 @@ public class Measurement {
     private String result;
     private String profile;
     private String date;
+    private String hour;
 
-    Measurement(int id, String type, String result, String profile, String date) {
+    Measurement(int id, String type, String result, String profile, String date, String hour) {
         this.id = id;
         this.type = type;
         this.result = result;
         this.profile = profile;
         this.date = date;
+        this.hour = hour;
     }
 
     public int getId() {
@@ -50,5 +52,11 @@ public class Measurement {
     }
 
     public void setDate(String date) { this.date = date; }
+
+    public String getHour() {
+        return hour;
+    }
+
+    public void setHour(String hour) { this.hour = hour; }
 
 }

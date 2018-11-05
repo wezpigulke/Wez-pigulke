@@ -45,11 +45,13 @@ public class MeasurementListAdapter extends BaseAdapter {
         TextView measurementResult = v.findViewById(R.id.resultMeasurement);
         TextView measurementProfile = v.findViewById(R.id.profileMeasurement);
         TextView measurementDate = v.findViewById(R.id.dateMeasurement);
+        TextView measurementHour = v.findViewById(R.id.dateMeasurement2);
 
         measurementType.setText(results.get(position).getType());
         measurementResult.setText(results.get(position).getResult());
         measurementProfile.setText(results.get(position).getProfile());
         measurementDate.setText(results.get(position).getDate());
+        measurementHour.setText(results.get(position).getHour());
 
         v.setTag(results.get(position).getId());
 

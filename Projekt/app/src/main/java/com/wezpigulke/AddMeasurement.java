@@ -155,7 +155,7 @@ public class AddMeasurement extends AppCompatActivity {
 
         add.setOnClickListener(v -> {
 
-            if (wynikPomiaru.getText().length() > 0 && !typBadania.getSelectedItem().toString().equals("Wybierz typ badania") && !typBadania.getSelectedItem().toString().equals("Dodaj nowy typ")) {
+            if (wynikPomiaru.getText().length() <= 16 && wynikPomiaru.getText().length() > 0 && !typBadania.getSelectedItem().toString().equals("Wybierz typ badania") && !typBadania.getSelectedItem().toString().equals("Dodaj nowy typ")) {
 
                 myDb.insert_POMIARY(
                         typBadania.getSelectedItem().toString(),
@@ -167,6 +167,7 @@ public class AddMeasurement extends AppCompatActivity {
 
                 onBackPressed();
             } else if (wynikPomiaru.getText().length() <= 0) openDialog("Wpisz wynik pomiaru");
+            else if(wynikPomiaru.getText().length() > 16) openDialog("Zbyt długi wynik pomiaru. Maksymalna ilość znaków wynosi 16.");
             else openDialog("Wybierz lub dodaj nowy typ badania");
         });
 

@@ -25,7 +25,7 @@
                 android:layout_marginEnd="85dp"
                 android:layout_marginRight="85dp"
                 android:ems="10"
-                android:gravity="center_horizontal"
+                android:gravity="center"
                 android:hint="Nazwa leku"
                 android:inputType="textPersonName"
                 android:backgroundTint="@android:color/holo_green_light"

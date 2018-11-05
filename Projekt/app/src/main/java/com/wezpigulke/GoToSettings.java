@@ -288,18 +288,32 @@ public class GoToSettings extends Fragment {
             document.add(pz);
             document.add(Chunk.NEWLINE);
 
+            PdfPCell cell;
+
             PdfPTable table = new PdfPTable(6);
-            table.addCell(new PdfPCell(new Paragraph("Godzina", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK))));
-            table.addCell(new PdfPCell(new Paragraph("Data", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK))));
-            table.addCell(new PdfPCell(new Paragraph("Lek", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK))));
-            table.addCell(new PdfPCell(new Paragraph("Dawka", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK))));
-            table.addCell(new PdfPCell(new Paragraph("Potw.", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK))));
-            table.addCell(new PdfPCell(new Paragraph("Status", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK))));
+            cell = new PdfPCell(new Paragraph("Godzina", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+            cell = new PdfPCell(new Paragraph("Data", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+            cell = new PdfPCell(new Paragraph("Lek", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+            cell = new PdfPCell(new Paragraph("Dawka", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+            cell = new PdfPCell(new Paragraph("Potw.", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+            cell = new PdfPCell(new Paragraph("Status", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table.addCell(cell);
+
             document.add(table);
 
             String statusHistorii;
 
-            PdfPCell cell;
 
             BaseColor greenColor = WebColors.getRGBColor("#00ff00");
             BaseColor redColor = WebColors.getRGBColor("#ff0000");
