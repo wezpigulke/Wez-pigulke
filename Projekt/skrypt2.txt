@@ -1,0 +1,49 @@
+# SKRYPT JAKO ROUTER
+
+#odpala skrypt w bashu czyli pow³odze systemu UNIX
+
+=============== #!/bin/bash =============== 
+
+# czyszczenie cache route 
+# tabela w j¹drze zawieraj¹ca niedawno u¿ywane routery
+# router najpierw zagl¹da do niej zanim zacznie przegl¹daæ tablice routingu
+# i jeœli znajdzie odpowiedni #wpis to wyœle pakiet i pominie przegl¹danie tablicy routingu
+# powinno sie j¹ czyœciæ przy zmienianiu tabeli routingu, ¿eby uwzglêdni³a nowe zmiany
+
+=============== ip route flush cache =============== 
+
+#czyszczenie tablicy main (tablicy routingu)
+
+=============== ip route flush table main =============== 
+
+#restartowanie interfejsów sieciowych
+
+=============== ifconfig eno1 up =============== 
+=============== ifconfig enx2 up =============== 
+=============== ifconfig enx3 up =============== 
+=============== ifconfig eno1 down =============== 
+=============== ifconfig enx2 down =============== 
+=============== ifconfig enx3 down =============== 
+
+#czyszczenie adresu interfejsu sieciowego (usuniêcie wszystkich przypisanych adresów IP)
+
+=============== ip address flush dev eno1 =============== 
+=============== ip address flush dev enx2 =============== 
+=============== ip address flush dev enx3 =============== 
+
+
+
+=============== ip addr add 192.168.11.37/30 dev eno1 =============== 
+=============== ip addr add 192.168.11.65/26 dev enx2 =============== 
+=============== ip addr add 192.168.11.4/27 dev enx3 =============== 
+
+
+
+=============== ip route add 192.168.11.128/26 via 192.168.11.38 =============== 
+=============== ip route add 192.168.28.192/26 via 192.168.11.38 =============== 
+=============== ip route add 192.168.11.64/26 via 192.168.11.38 =============== 
+=============== ip route add 192.168.11.32/30 via 192.168.11.38 =============== 
+
+#w³¹cza przekazywanie i odbieranie pakietów (potrzebne jeœli komputer s³u¿y jako router)
+
+=============== echo 1 > /proc/sys/net/ipv4/ip_forward =============== 

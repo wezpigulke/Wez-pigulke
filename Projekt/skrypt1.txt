@@ -1,0 +1,39 @@
+# SKRYPT JAKO HOST
+
+#odpala skrypt w bashu czyli pow³odze systemu UNIX
+
+=============== #!/bin/bash =============== 
+
+# czyszczenie cache route 
+# tabela w j¹drze zawieraj¹ca niedawno u¿ywane routery
+# router najpierw zagl¹da do niej zanim zacznie przegl¹daæ tablice routingu
+# i jeœli znajdzie odpowiedni #wpis to wyœle pakiet i pominie przegl¹danie tablicy routingu
+# powinno sie j¹ czyœciæ przy zmienianiu tabeli routingu, ¿eby uwzglêdni³a nowe zmiany
+
+=============== ip route flush cache =============== 
+
+#czyszczenie tablicy main (tablicy routingu)
+
+=============== ip route flush table main =============== 
+
+#restartowanie interfejsu sieciowego
+
+=============== ifconfig eno1 down =============== 
+=============== ifconfig eno1 up =============== 
+
+#czyszczenie adresu interfejsu sieciowego (usuniêcie wszystkich przypisanych adresów IP)
+=============== ip address flush dev eno1 =============== 
+
+#ustawienie ip wraz z mask¹ i podanym broadcastem tu akurat /24 czyli moze byc 256-2=254 komputerów
+#odejmujemy 2, poniewa¿ jeden jest zarezerwowany na adres podsieci a drugi na adres rozg³oszeniowy
+#czyli nasz broadcast wygl¹da tak: 192.168.11.255
+
+=============== ifconfig eno1 192.168.11.134 netmask 255.255.255.0 =============== 
+
+#domyslny gateway (router) rozdzielaj¹cy pakiety
+
+=============== ip route add default via 192.168.11.129 =============== 
+
+#w³¹cza przekazywanie i odbieranie pakietów (potrzebne jeœli komputer s³u¿y jako router)
+
+=============== echo 1 > /proc/sys/net/ipv4/ip_forward
