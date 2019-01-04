@@ -1,0 +1,23 @@
+1. Relacje i funkcje - definicje, klasyfikacje i przyk³ady
+2. Podstawowe techniki zliczania obiektów (metoda bijektywna, regu³a w³¹czania i wy³¹czania, rekurencja).
+4. Podstawowe algorytmy sekwencyjne: grafowe, geometryczne, tekstowe.
+6. Uk³ady pamiêci cyfrowych
+
+GOTOWE:
+
+5. Rozproszone bazy danych
+3. Hierarchia Chomsky’ego gramatyk.
+
+
+=======================================================================
+
+      - 06.01  - opracowanie tematów
+02.01 - 24.01 - napisanie pracy
+
+======================================================================
+
+tytu³
+-za³o¿enia
+-technologia (java, sqlite, android studio)
+-problemy
+
