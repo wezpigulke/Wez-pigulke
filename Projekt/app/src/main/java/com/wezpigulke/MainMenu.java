@@ -46,7 +46,13 @@ public class MainMenu extends AppCompatActivity implements NavigationView.OnNavi
         TextView twojeImie = headerView.findViewById(R.id.isName);
         twojeImie.setText("Witaj\n" + nazwaUzytkownika);
 
-        displaySelectedScreen(R.id.today);
+        Cursor ch = myDb.getAllData_HISTORIA();
+        Cursor cr = myDb.getAllData_PRZYPOMNIENIE();
+
+        if (ch.getCount()==0 && cr.getCount()==0) {
+            displaySelectedScreen(R.id.reminder);
+        }
+        else displaySelectedScreen(R.id.today);
         navigationView.setNavigationItemSelectedListener(this);
 
     }

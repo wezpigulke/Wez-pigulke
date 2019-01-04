@@ -149,6 +149,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
+    public Cursor getAllData_HISTORIA() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + HISTORIA, null);
+        return res;
+    }
+
     public Cursor getUserData_HISTORIA(String user) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + HISTORIA + " WHERE Profil='" + user + "'", null);
