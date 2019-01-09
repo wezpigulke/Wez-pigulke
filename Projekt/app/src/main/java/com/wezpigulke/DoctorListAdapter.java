@@ -41,11 +41,11 @@ public class DoctorListAdapter extends BaseAdapter {
 
         TextView doctorName = v.findViewById(R.id.specializationVisit);
         TextView specializationDoctor = v.findViewById(R.id.dateVisit);
-        TextView phoneDoctor = v.findViewById(R.id.addressVisit);
+        TextView address = v.findViewById(R.id.addressVisit);
 
         doctorName.setText(results.get(position).getName());
         specializationDoctor.setText(results.get(position).getSpecialization());
-        phoneDoctor.setText(results.get(position).getPhone());
+        address.setText(results.get(position).getAddress());
 
         v.setTag(results.get(position).getId());
 

@@ -1,18 +1,16 @@
 package com.wezpigulke;
 
-public class Doctor {
+public class LabelDoctor {
     private int id;
     private String name;
     private String specialization;
     private String phone;
-    private String address;
 
-    public Doctor(int id, String name, String specialization, String phone, String address) {
+    public LabelDoctor(int id, String name, String specialization, String phone) {
         this.id = id;
         this.name = name;
         this.specialization = specialization;
         this.phone = phone;
-        this.address = address;
     }
 
     public int getId() {
@@ -45,14 +43,6 @@ public class Doctor {
 
     public void setPhone(String phoneNumer) {
         this.phone = phoneNumer;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
 }

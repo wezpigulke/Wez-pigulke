@@ -15,29 +15,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="Nazwa profilu"
-        android:layout_alignParentLeft="true" />
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="35dp"
+        android:layout_toStartOf="@+id/imageView9"
+        android:text="Nazwa profilu" />
 
 
     <TextView
         android:id="@+id/typeMeasurement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/profileMeasurement"
         android:layout_below="@+id/profileMeasurement"
+        android:layout_alignLeft="@+id/profileMeasurement"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="35dp"
+        android:layout_toStartOf="@+id/imageView9"
         android:text="Typ badania"
         android:textColor="#8FBC8F"
-        android:textSize="18dp"
-        android:layout_alignLeft="@+id/profileMeasurement" />
+        android:textSize="18dp" />
 
     <TextView
         android:id="@+id/dateMeasurement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/typeMeasurement"
-        android:layout_alignStart="@+id/profileMeasurement"
         android:layout_alignLeft="@+id/profileMeasurement"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="100dp"
         android:text="Data"
         android:textColor="#00a7f5"
         android:textSize="16dp" />
@@ -47,15 +56,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/dateMeasurement"
-        android:layout_alignStart="@+id/dateMeasurement"
         android:layout_alignLeft="@+id/dateMeasurement"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="100dp"
+        android:layout_toStartOf="@+id/resultMeasurement"
         android:text="Godzina"
         android:textColor="#001260"
         android:textSize="20dp" />
 
     <TextView
         android:id="@+id/resultMeasurement"
-        android:layout_width="200dp"
+        android:layout_width="85dp"
         android:layout_height="wrap_content"
         android:layout_above="@+id/dateMeasurement"
         android:layout_alignParentEnd="true"
@@ -72,7 +84,7 @@
         android:layout_height="50dp"
         android:layout_above="@+id/dateMeasurement"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="70dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginBottom="-10dp"
         app:srcCompat="@drawable/measurement2" />
 

@@ -23,7 +23,7 @@ public class StartMenu extends AppCompatActivity {
         myDb.insert_STATYSTYKI(0, 0, 0);
 
         Cursor res = myDb.getAllData_UZYTKOWNICY();
-        if(res.getCount() > 0) {
+        if (res.getCount() > 0) {
             Intent cel = new Intent(this, MainMenu.class);
             startActivity(cel);
         }
@@ -32,7 +32,7 @@ public class StartMenu extends AppCompatActivity {
         yourName = findViewById(R.id.imie);
 
         idzDalej.setOnClickListener(v -> {
-            if(yourName.getText().toString().trim().length()>0) {
+            if (yourName.getText().toString().trim().length() > 0) {
 
                 myDb.insert_UZYTKOWNICY(yourName.getText().toString());
 

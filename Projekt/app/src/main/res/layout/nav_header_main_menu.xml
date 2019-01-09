@@ -17,12 +17,13 @@
         android:id="@+id/isName"
         android:layout_width="202dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_marginLeft="@android:dimen/notification_large_icon_height"
+        android:gravity="center"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="30sp"
         android:textStyle="bold"
-        tools:layout_marginLeft="160dp" />
+        tools:layout_marginLeft="160dp"
+        tools:layout_marginBottom="40dp" />
 
 </LinearLayout>

@@ -18,11 +18,11 @@ public class ButtonIntent extends BroadcastReceiver {
         DatabaseHelper myDb = new DatabaseHelper(context);
         Integer coZrobic = intent.getIntExtra("coZrobic", -1);
 
-        if(coZrobic == 0) {
+        if (coZrobic == 0) {
 
             Integer id_h = intent.getIntExtra("id_h", 0);
             Integer id = intent.getIntExtra("id", 0);
-            String obecnyCzas = new SimpleDateFormat("HH:mm",Locale.getDefault()).format(new Date());
+            String obecnyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
             Cursor cw = myDb.get_STATYSTYKI_WZIETE(0);
             cw.moveToFirst();
@@ -34,12 +34,11 @@ public class ButtonIntent extends BroadcastReceiver {
             manager.cancel(id);
             Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
             context.sendBroadcast(it);
-        }
-        else if(coZrobic == 1) {
+        } else if (coZrobic == 1) {
 
             Integer id_h = intent.getIntExtra("id_h", 0);
             Integer id = intent.getIntExtra("id", 0);
-            String obecnyCzas = new SimpleDateFormat("HH:mm",Locale.getDefault()).format(new Date());
+            String obecnyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
             String nazwaLeku = intent.getStringExtra("nazwaLeku");
             String jakaDawka = intent.getStringExtra("jakaDawka");
 

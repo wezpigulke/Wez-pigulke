@@ -18,6 +18,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp"
+        android:layout_toStartOf="@+id/imageView5"
         android:text="Nazwa leku"
         android:textColor="#f92a3f"
         android:textSize="20dp" />
@@ -26,13 +28,15 @@
         android:id="@+id/medQuantity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/medName"
+        android:layout_alignStart="@+id/medName"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="12dp"
         android:layout_marginTop="42dp"
+        android:layout_marginEnd="20dp"
+        android:layout_toStartOf="@+id/imageView5"
         android:text="Ilość tabletek"
-        android:layout_alignStart="@+id/medName"
-        android:layout_below="@+id/medName"
         android:textColor="#000"
         android:textSize="16dp" />
 

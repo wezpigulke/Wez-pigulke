@@ -11,6 +11,7 @@ import java.util.Objects;
 public class OpenDialog extends AppCompatDialogFragment {
 
     String warning;
+
     public void setValue(String warning) {
         this.warning = warning;
     }

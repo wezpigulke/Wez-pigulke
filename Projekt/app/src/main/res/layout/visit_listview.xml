@@ -16,14 +16,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginEnd="20dp"
+        android:layout_toStartOf="@+id/imageView4"
         android:text="Nazwa profilu" />
 
     <TextView
         android:id="@+id/nameVisit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/profileVisit"
         android:layout_below="@+id/specializationVisit"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="20dp"
+        android:layout_toStartOf="@+id/imageView4"
         android:text="Imie i nazwisko"
         android:textColor="#00a7f5"
         android:textSize="16dp" />
@@ -32,8 +37,11 @@
         android:id="@+id/specializationVisit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/addressVisit"
         android:layout_below="@+id/profileVisit"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="20dp"
+        android:layout_toStartOf="@+id/imageView4"
         android:text="Specializacja"
         android:textColor="#9DC183"
         android:textSize="20dp" />
@@ -42,29 +50,22 @@
         android:id="@+id/dateVisit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/profileVisit"
         android:layout_below="@+id/nameVisit"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="20dp"
+        android:layout_toStartOf="@+id/imageView4"
         android:text="Godzina i data"
         android:textColor="#f92a3f"
         android:textSize="18dp" />
-
-    <TextView
-        android:id="@+id/addressVisit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/dateVisit"
-        android:layout_below="@+id/dateVisit"
-        android:text="Adres"
-        android:textColor="#000"
-        android:textSize="16dp" />
 
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="89dp"
         android:layout_height="94dp"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="17dp"
-        android:layout_marginTop="13dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
         app:srcCompat="@drawable/visiticon" />
 </RelativeLayout>

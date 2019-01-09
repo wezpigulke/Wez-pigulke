@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -280,36 +281,37 @@ public class AddReminder extends AppCompatActivity {
                 dzwiek = position;
                 stopPlaying();
 
-                if (position == 9) {
-                    dzwiek = 1;
-                }
-                if (position == 0) {
-                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
-                    mp.start();
-                } else if (position == 1) {
-                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm2);
-                    mp.start();
-                } else if (position == 2) {
-                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm3);
-                    mp.start();
-                } else if (position == 3) {
-                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm4);
-                    mp.start();
-                } else if (position == 4) {
-                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm5);
-                    mp.start();
-                } else if (position == 5) {
-                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm6);
-                    mp.start();
-                } else if (position == 6) {
-                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm7);
-                    mp.start();
-                } else if (position == 7) {
-                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm8);
-                    mp.start();
-                } else if (position == 8) {
-                    mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm9);
-                    mp.start();
+                switch(position) {
+                    case 0:
+                        mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
+                        mp.start();
+                    case 1:
+                        mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm2);
+                        mp.start();
+                    case 2:
+                        mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm3);
+                        mp.start();
+                    case 3:
+                        mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm4);
+                        mp.start();
+                    case 4:
+                        mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm5);
+                        mp.start();
+                    case 5:
+                        mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm6);
+                        mp.start();
+                    case 6:
+                        mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm7);
+                        mp.start();
+                    case 7:
+                        mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm8);
+                        mp.start();
+                    case 8:
+                        mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm9);
+                        mp.start();
+                    case 9:
+                        mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
+                        mp.start();
                 }
 
             }
@@ -352,7 +354,6 @@ public class AddReminder extends AppCompatActivity {
                 coWybrane = 0;
                 dataTabletka.setVisibility(View.VISIBLE);
                 godzinaTabletka.setVisibility(View.VISIBLE);
-                ileDni.setVisibility(View.VISIBLE);
                 spinnerReminder.setVisibility(View.VISIBLE);
                 dodaj.setVisibility(View.VISIBLE);
 
@@ -453,70 +454,65 @@ public class AddReminder extends AppCompatActivity {
                     long diffInMillis = secondTime.getTime() - firstTime.getTime();
 
                     if (diffDays == 0 && diffInMillis < 0) {
-                        Calendar cx = Calendar.getInstance();
-                        try {
-                            cx.setTime(sdf.parse(dataPrzypomnienia));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        cx.add(Calendar.DATE, 1);
-                        dataPrzypomnienia = sdf.format(cx.getTime());
-                        cal.set(year, month - 1, day + 1, hour, minutes, 0);
-                        dataTabletka.getText().toString();
+                        openDialog("Godzina dzisiejszego powiadomienia minęła, wybierz inną godzinę lub ustaw przyszłą datę");
+                    }
+                    else {
 
-                        openDialog("Godzina dzisiejszego powiadomienia minęła, powiadomienie ustawione na kolejny dzień");
+                        Integer id = 0;
+                        Integer idd;
+
+                        Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
+
+                        if (c1.getCount() != 0) {
+                            while (c1.moveToNext()) {
+                                id = Integer.parseInt(c1.getString(0)) + 1;
+                            }
+                        }
+
+                        myDb.insert_PRZYPOMNIENIE(
+                                godzinaTabletka.getText().toString(),
+                                dataPrzypomnienia,
+                                nazwaLeku,
+                                jakaDawka,
+                                1,
+                                uzytkownik,
+                                1,
+                                "Jednorazowo: " + godzinaTabletka.getText().toString()
+                        );
+
+                        Cursor cc = myDb.getMAXid_PRZYPOMNIENIE();
+                        cc.moveToFirst();
+                        idd = Integer.parseInt(cc.getString(0));
+
+
+                        myDb.insert_NOTYFIKACJA(
+                                idd,
+                                godzinaPrzypomnienia,
+                                dataPrzypomnienia,
+                                true
+                        );
+
+                        Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
+
+                        intx.putExtra("coPokazac", 0);
+                        intx.putExtra("Value", uzytkownik + " |  " + godzinaTabletka.getText().toString() + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
+                        intx.putExtra("id", id);
+                        intx.putExtra("idd", idd);
+                        intx.putExtra("godzina", godzinaTabletka.getText().toString());
+                        intx.putExtra("data", dataPrzypomnienia);
+                        intx.putExtra("uzytkownik", uzytkownik);
+                        intx.putExtra("nazwaLeku", nazwaLeku);
+                        intx.putExtra("jakaDawka", jakaDawka);
+                        intx.putExtra("iloscDni", 0);
+                        intx.putExtra("wybranyDzwiek", dzwiek);
+
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intx, PendingIntent.FLAG_UPDATE_CURRENT);
+                        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+
+                        goBack();
 
                     }
-
-                    Integer id = null, idd;
-
-                    Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
-
-                    if (c1.getCount() != 0) {
-                        while (c1.moveToNext()) {
-                            id = Integer.parseInt(c1.getString(0)) + 1;
-                        }
-                    }
-
-                    myDb.insert_PRZYPOMNIENIE(
-                            godzinaTabletka.getText().toString(),
-                            dataPrzypomnienia,
-                            nazwaLeku,
-                            jakaDawka,
-                            1,
-                            uzytkownik,
-                            1,
-                            "Jednorazowo: " + godzinaTabletka.getText().toString()
-                    );
-
-                    Cursor cc = myDb.getMAXid_PRZYPOMNIENIE();
-                    cc.moveToFirst();
-                    idd = Integer.parseInt(cc.getString(0));
-
-                    myDb.insert_NOTYFIKACJA(
-                            id,
-                            idd,
-                            godzinaTabletka.getText().toString(),
-                            dataPrzypomnienia
-                    );
-
-                    Intent intx = new Intent(getApplicationContext(), NotificationReceiverReminder.class);
-                    intx.putExtra("Value", uzytkownik + " |  " + godzinaTabletka.getText().toString() + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
-                    intx.putExtra("id", id);
-                    intx.putExtra("idd", idd);
-                    intx.putExtra("godzina", godzinaTabletka.getText().toString());
-                    intx.putExtra("data", dataPrzypomnienia);
-                    intx.putExtra("uzytkownik", uzytkownik);
-                    intx.putExtra("nazwaLeku", nazwaLeku);
-                    intx.putExtra("jakaDawka", jakaDawka);
-                    intx.putExtra("iloscDni", 0);
-                    intx.putExtra("wybranyDzwiek", dzwiek);
-
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intx, PendingIntent.FLAG_UPDATE_CURRENT);
-                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-
-                    onBackPressed();
 
                 } else if (coWybrane == 1 || coWybrane == 3) {
 
@@ -570,106 +566,121 @@ public class AddReminder extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         cx.add(Calendar.DATE, 1);
-                        dataPrzypomnienia = sdf.format(cx.getTime());
                         cal.set(year, month - 1, day + coIleDni, hour, minutes, 0);
                         dataTabletka.getText().toString();
                         iloscDni--;
 
-                        openDialog("Godzina dzisiejszego powiadomienia minęła, powiadomienie ustawione na kolejny dzień");
+                        openDialog("Godzina dzisiejszego powiadomienia minęła, wybierz inną godzinę lub ustaw przyszłą datę");
 
                     }
+                    else {
 
-                    Integer id = null, idd = null;
+                        Integer id = null, idd = null;
 
-                    Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
+                        Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
 
-                    if (c1.getCount() != 0) {
-                        while (c1.moveToNext()) {
-                            id = Integer.parseInt(c1.getString(0)) + 1;
-                        }
-                    }
-
-                    if (coWybrane == 1 && iloscDni >= 1) {
-                        myDb.insert_PRZYPOMNIENIE(
-                                godzinaTabletka.getText().toString(),
-                                dataPrzypomnienia,
-                                nazwaLeku,
-                                jakaDawka,
-                                iloscDni,
-                                uzytkownik,
-                                1,
-                                "Codziennie: " + godzinaTabletka.getText().toString()
-                        );
-
-                        Cursor cc = myDb.getMAXid_PRZYPOMNIENIE();
-                        cc.moveToFirst();
-                        idd = Integer.parseInt(cc.getString(0));
-
-                        myDb.insert_NOTYFIKACJA(
-                                id,
-                                idd,
-                                godzinaTabletka.getText().toString(),
-                                dataPrzypomnienia
-                        );
-
-                    } else if (coWybrane == 3 && iloscDni >= 1) {
-
-                        myDb.insert_PRZYPOMNIENIE(
-                                godzinaTabletka.getText().toString(),
-                                dataPrzypomnienia,
-                                nazwaLeku,
-                                jakaDawka,
-                                iloscDni,
-                                uzytkownik,
-                                coIleDni,
-                                "Co " + String.valueOf(coIleDni) + " dni: " + godzinaTabletka.getText().toString()
-                        );
-
-
-                        Cursor czz = myDb.getMAXid_NOTYFIKACJA();
-
-                        if (czz.getCount() != 0) {
-                            while (czz.moveToNext()) {
-                                id = Integer.parseInt(czz.getString(0)) + 1;
+                        if (c1.getCount() != 0) {
+                            while (c1.moveToNext()) {
+                                id = Integer.parseInt(c1.getString(0)) + 1;
                             }
                         }
 
-                        Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
-                        cx.moveToFirst();
-                        idd = Integer.parseInt(cx.getString(0));
+                        if (coWybrane == 1 && iloscDni >= 1) {
+                            myDb.insert_PRZYPOMNIENIE(
+                                    godzinaTabletka.getText().toString(),
+                                    dataPrzypomnienia,
+                                    nazwaLeku,
+                                    jakaDawka,
+                                    iloscDni,
+                                    uzytkownik,
+                                    1,
+                                    "Codziennie: " + godzinaTabletka.getText().toString()
+                            );
 
-                        String dt = dataPrzypomnienia;
+                            Cursor cc = myDb.getMAXid_PRZYPOMNIENIE();
+                            cc.moveToFirst();
+                            idd = Integer.parseInt(cc.getString(0));
 
-                        myDb.insert_NOTYFIKACJA(
-                                id,
-                                idd,
-                                godzinaTabletka.getText().toString(),
-                                dataPrzypomnienia
-                        );
+                            myDb.insert_NOTYFIKACJA(
+                                    idd,
+                                    godzinaTabletka.getText().toString(),
+                                    dataPrzypomnienia,
+                                    true
+                            );
+
+                            Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
+                            intx.putExtra("coPokazac", 0);
+                            intx.putExtra("Value", uzytkownik + " |  " + godzinaTabletka.getText().toString() + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
+                            intx.putExtra("id", id);
+                            intx.putExtra("idd", idd);
+                            intx.putExtra("godzina", godzinaTabletka.getText().toString());
+                            intx.putExtra("data", dataPrzypomnienia);
+                            intx.putExtra("uzytkownik", uzytkownik);
+                            intx.putExtra("nazwaLeku", nazwaLeku);
+                            intx.putExtra("jakaDawka", jakaDawka);
+                            intx.putExtra("iloscDni", iloscDni - 1);
+                            intx.putExtra("wybranyDzwiek", dzwiek);
+
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intx, PendingIntent.FLAG_UPDATE_CURRENT);
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY * coIleDni, pendingIntent);
+
+                        } else if (coWybrane == 3 && iloscDni >= 1) {
+
+                            myDb.insert_PRZYPOMNIENIE(
+                                    godzinaTabletka.getText().toString(),
+                                    dataPrzypomnienia,
+                                    nazwaLeku,
+                                    jakaDawka,
+                                    iloscDni,
+                                    uzytkownik,
+                                    coIleDni,
+                                    "Co " + String.valueOf(coIleDni) + " dni: " + godzinaTabletka.getText().toString()
+                            );
+
+
+                            Cursor czz = myDb.getMAXid_NOTYFIKACJA();
+
+                            if (czz.getCount() != 0) {
+                                while (czz.moveToNext()) {
+                                    id = Integer.parseInt(czz.getString(0)) + 1;
+                                }
+                            }
+
+                            Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
+                            cx.moveToFirst();
+                            idd = Integer.parseInt(cx.getString(0));
+
+                            String dt = dataPrzypomnienia;
+                            myDb.insert_NOTYFIKACJA(
+                                    idd,
+                                    godzinaPrzypomnienia,
+                                    dataPrzypomnienia,
+                                    true
+                            );
+
+                            Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
+                            intx.putExtra("coPokazac", 0);
+                            intx.putExtra("Value", uzytkownik + " |  " + godzinaTabletka.getText().toString() + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
+                            intx.putExtra("id", id);
+                            intx.putExtra("idd", idd);
+                            intx.putExtra("godzina", godzinaTabletka.getText().toString());
+                            intx.putExtra("data", dataPrzypomnienia);
+                            intx.putExtra("uzytkownik", uzytkownik);
+                            intx.putExtra("nazwaLeku", nazwaLeku);
+                            intx.putExtra("jakaDawka", jakaDawka);
+                            intx.putExtra("iloscDni", iloscDni - 1);
+                            intx.putExtra("wybranyDzwiek", dzwiek);
+
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intx, PendingIntent.FLAG_UPDATE_CURRENT);
+                            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY * coIleDni, pendingIntent);
+
+                        }
+
+                        goBack();
 
                     }
-
-                    if (iloscDni >= 1) {
-
-                        Intent intx = new Intent(getApplicationContext(), NotificationReceiverReminder.class);
-                        intx.putExtra("Value", uzytkownik + " |  " + godzinaTabletka.getText().toString() + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
-                        intx.putExtra("id", id);
-                        intx.putExtra("idd", idd);
-                        intx.putExtra("godzina", godzinaTabletka.getText().toString());
-                        intx.putExtra("data", dataPrzypomnienia);
-                        intx.putExtra("uzytkownik", uzytkownik);
-                        intx.putExtra("nazwaLeku", nazwaLeku);
-                        intx.putExtra("jakaDawka", jakaDawka);
-                        intx.putExtra("iloscDni", iloscDni - 1);
-                        intx.putExtra("wybranyDzwiek", dzwiek);
-
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intx, PendingIntent.FLAG_UPDATE_CURRENT);
-                        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY * coIleDni, pendingIntent);
-
-                    }
-
-                    onBackPressed();
 
                 } else if (coWybrane == 2) {
 
@@ -752,7 +763,6 @@ public class AddReminder extends AppCompatActivity {
                             cx.add(Calendar.DATE, 1);
                             dataPrzypomnienia = sdf.format(cx.getTime());
                             cal.set(year, month - 1, day + 1, hour, minutes, 0);
-                            dataTabletka.getText().toString();
                             czyUsunacDzien = 1;
 
                         } else czyUsunacDzien = 0;
@@ -760,7 +770,7 @@ public class AddReminder extends AppCompatActivity {
                         String[] wszystkie = wszystkieGodziny.replaceAll(" ", "").split(",");
                         String najwyzszaGodzina = Stream.of(wszystkie).max(String::compareTo).get();
 
-                        if (i == ileRazyDziennie) {
+                        if (i.equals(ileRazyDziennie)) {
                             if (czyUsunacDzien == 1) {
                                 iloscDni--;
                             }
@@ -791,38 +801,29 @@ public class AddReminder extends AppCompatActivity {
 
                         if (cx.getCount() != 0) {
                             while (cx.moveToNext()) {
-                                idd = Integer.parseInt(cx.getString(0));
+                                idd = Integer.parseInt(cx.getString(0)) + 1;
+                                if(idd!=1 && i.equals(ileRazyDziennie)) idd--;
                             }
                         }
 
-                        if (czyUsunacDzien != 1 && iloscDni <= 1) {
+                        Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
+                        intx.putExtra("Value", uzytkownik + " |  " + godzinaPrzypomnienia + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
+                        intx.putExtra("coPokazac", 0);
+                        intx.putExtra("id", id);
+                        intx.putExtra("idd", idd);
+                        intx.putExtra("godzina", godzinaPrzypomnienia);
+                        intx.putExtra("data", dataPrzypomnienia);
+                        intx.putExtra("uzytkownik", uzytkownik);
+                        intx.putExtra("nazwaLeku", nazwaLeku);
+                        intx.putExtra("jakaDawka", jakaDawka);
+                        intx.putExtra("iloscDni", iloscDni - 1);
+                        intx.putExtra("wybranyDzwiek", dzwiek);
 
-                            myDb.insert_NOTYFIKACJA(
-                                    id,
-                                    idd,
-                                    godzinaPrzypomnienia,
-                                    dataPrzypomnienia
-                            );
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intx, PendingIntent.FLAG_UPDATE_CURRENT);
+                        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
-                            Intent intx = new Intent(getApplicationContext(), NotificationReceiverReminder.class);
-                            intx.putExtra("Value", uzytkownik + " |  " + godzinaPrzypomnienia + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + jakaDawka + ")");
-                            intx.putExtra("id", id);
-                            intx.putExtra("idd", idd);
-                            intx.putExtra("godzina", godzinaPrzypomnienia);
-                            intx.putExtra("data", dataPrzypomnienia);
-                            intx.putExtra("uzytkownik", uzytkownik);
-                            intx.putExtra("nazwaLeku", nazwaLeku);
-                            intx.putExtra("jakaDawka", jakaDawka);
-                            intx.putExtra("iloscDni", iloscDni - 1);
-                            intx.putExtra("wybranyDzwiek", dzwiek);
-
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intx, PendingIntent.FLAG_UPDATE_CURRENT);
-                            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-
-                        }
-
-                        onBackPressed();
+                        goBack();
 
                     }
                 }
@@ -846,10 +847,11 @@ public class AddReminder extends AppCompatActivity {
 
                     final EditText input = new EditText(getApplicationContext());
 
+                    input.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(5,2)});
+                    input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+
                     input.setText(ilosc);
                     input.setGravity(Gravity.CENTER_HORIZONTAL);
-
-                    input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
                     builder.setView(input);
 
                     builder.setPositiveButton("OK", (dialog, which) -> {
@@ -864,7 +866,7 @@ public class AddReminder extends AppCompatActivity {
 
                 builderw.setNegativeButton("Anuluj dodawanie", (dialogg, whichh) -> {
                     dialogg.cancel();
-                    onBackPressed();
+                    goBack();
                 });
 
                 builderw.show();
@@ -1038,20 +1040,21 @@ public class AddReminder extends AppCompatActivity {
             dialog.show();
         });
 
-        dataTabletkaListener = (view, yeear, moonth, dayOfMonth) -> {
-            moonth = moonth + 1;
-            String date1;
-            if (dayOfMonth < 10 && moonth < 10)
-                date1 = "0" + dayOfMonth + "/0" + moonth + "/" + yeear;
-            else if (dayOfMonth < 10) date1 = "0" + dayOfMonth + "/" + moonth + "/" + yeear;
-            else if (moonth < 10) date1 = dayOfMonth + "/0" + moonth + "/" + yeear;
-            else date1 = dayOfMonth + "/" + moonth + "/" + yeear;
+        dataTabletkaListener = (view, year, month, dayOfMonth) -> {
+            month = month + 1;
+            String dataTemp;
+            if (dayOfMonth < 10 && month < 10)
+                dataTemp = "0" + dayOfMonth + "/0" + month + "/" + year;
+            else if (dayOfMonth < 10) dataTemp = "0" + dayOfMonth + "/" + month + "/" + year;
+            else if (month < 10) dataTemp = dayOfMonth + "/0" + month + "/" + year;
+            else dataTemp = dayOfMonth + "/" + month + "/" + year;
 
-            year = yeear;
-            month = moonth;
+            this.year = year;
+            this.month = month;
             day = dayOfMonth;
 
-            dataTabletka.setText(date1);
+            dataTabletka.setText(dataTemp);
+
         };
     }
 
@@ -1134,6 +1137,7 @@ public class AddReminder extends AppCompatActivity {
         for (int i = 1; i <= 9; i++) {
             labelDzwiek.add("Alarm nr " + String.valueOf(i));
         }
+
         labelDzwiek.add("Dźwięk domyślny");
 
         final int labelSize = labelDzwiek.size() - 1;
@@ -1169,11 +1173,45 @@ public class AddReminder extends AppCompatActivity {
         openDialog.show(getSupportFragmentManager(), "AddReminder");
     }
 
-    @Override
-    public void onBackPressed() {
-        stopPlaying();
+    public void goBack() {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        stopPlaying();
+
+        if(dodaj.getVisibility()==View.GONE) {
+            super.onBackPressed();
+            finish();
+        } else {
+            dataTabletka.setVisibility(View.GONE);
+            godzinaTabletka.setVisibility(View.GONE);
+            ileDni.setVisibility(View.GONE);
+            spinnerCoIleGodzin.setVisibility(View.GONE);
+            edt.setVisibility(View.GONE);
+
+            for (int i = 0; i < 12; i++) {
+                array.get(i).setVisibility(View.GONE);
+            }
+
+            spinnerReminder.setVisibility(View.GONE);
+            dodaj.setVisibility(View.GONE);
+
+            dawka.setVisibility(View.VISIBLE);
+            spinnerNazwaLeku.setVisibility(View.VISIBLE);
+
+            Cursor cxz = myDb.getAllName_UZYTKOWNICY();
+            if (cxz.getCount() > 1) {
+                spinner.setVisibility(View.VISIBLE);
+            }
+
+            dalej.setVisibility(View.VISIBLE);
+            spinnerDzwiek.setVisibility(View.VISIBLE);
+
+        }
     }
 
     public void onResume() {
@@ -1194,11 +1232,10 @@ public class AddReminder extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                onBackPressed();
+                goBack();
 
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

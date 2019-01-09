@@ -12,7 +12,7 @@
         <item
             android:id="@+id/reminder"
             android:icon="@drawable/reminder"
-            android:title="Lista przypomnień"/>
+            android:title="Lista przypomnień" />
         <item
             android:id="@+id/listOfMedicine"
             android:icon="@drawable/medicine"
@@ -30,9 +30,9 @@
             android:icon="@drawable/measurement"
             android:title="Typy pomiarów" />
         <item
-        android:id="@+id/listOfTests"
+            android:id="@+id/listOfTests"
             android:icon="@drawable/syringe"
-        android:title="Lista pomiarów" />
+            android:title="Lista pomiarów" />
         <item
             android:id="@+id/listOfNotes"
             android:icon="@drawable/notes_icon"

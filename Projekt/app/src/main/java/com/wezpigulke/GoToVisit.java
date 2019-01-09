@@ -194,7 +194,7 @@ public class GoToVisit extends Fragment {
 
         if (c.getCount() != 0) {
             while (c.moveToNext()) {
-                results.add(new Visit(c.getInt(0), c.getString(7), c.getString(3) + " " + c.getString(4), c.getString(5), c.getString(1) + " | " + c.getString(2), c.getString(6)));
+                results.add(new Visit(c.getInt(0), c.getString(6), c.getString(3), c.getString(4), c.getString(1) + " | " + c.getString(2), c.getString(5)));
             }
         }
 
@@ -206,22 +206,14 @@ public class GoToVisit extends Fragment {
     private void usunDane() {
         AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
 
-        int usunID = (idd * 2) - 1;
+        int usunID = idd * 100000;
 
-        Intent myIntent1 = new Intent(getActivity(), NotificationReceiverVisit.class);
-        PendingIntent pendingIntent1 = PendingIntent.getBroadcast(
-                getActivity(), usunID, myIntent1,
+        Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                getActivity(), usunID, myIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
-
         assert alarmManager != null;
-        alarmManager.cancel(pendingIntent1);
-
-        Intent myIntent2 = new Intent(getActivity(), NotificationReceiverVisit.class);
-        PendingIntent pendingIntent2 = PendingIntent.getBroadcast(
-                getActivity(), usunID + 1, myIntent2,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        alarmManager.cancel(pendingIntent2);
+        alarmManager.cancel(pendingIntent);
 
         myDb.remove_WIZYTY(idd);
 
@@ -230,7 +222,7 @@ public class GoToVisit extends Fragment {
 
     public void dialogRemove() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()),R.style.AlertDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AlertDialog);
 
         builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
                 .setPositiveButton("Tak", (dialog, which) -> usunDane())

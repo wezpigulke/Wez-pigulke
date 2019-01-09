@@ -98,14 +98,13 @@ public class GoToDoctors extends Fragment {
     public void AktualizujBaze() {
 
         results.clear();
-        lv.setAdapter(adapter);
 
         myDb = new DatabaseHelper(getActivity());
         Cursor c = myDb.getAllData_DOKTORZY();
 
         if (c.getCount() != 0) {
             while (c.moveToNext()) {
-                results.add(new Doctor(c.getInt(0), c.getString(1), c.getString(2), c.getString(3)));
+                results.add(new Doctor(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4)));
             }
         }
 
@@ -116,7 +115,7 @@ public class GoToDoctors extends Fragment {
 
     public void dialogRemove() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()),R.style.AlertDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AlertDialog);
 
         builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
                 .setPositiveButton("Tak", (dialog, which) -> {
@@ -131,7 +130,7 @@ public class GoToDoctors extends Fragment {
 
     public void dialogCallOrSms() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()),R.style.AlertDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AlertDialog);
 
         builder.setMessage("Co chcesz zrobić?").setCancelable(false)
                 .setPositiveButton("Zadzwonić", (dialog, which) -> dialContactPhone(nrtel))

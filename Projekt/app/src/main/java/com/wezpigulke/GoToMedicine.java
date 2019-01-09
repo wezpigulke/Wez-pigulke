@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -98,10 +99,12 @@ public class GoToMedicine extends Fragment {
 
             final EditText input = new EditText(getContext());
 
+            input.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(5, 2)});
+            input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+
             input.setText(ilosc);
             input.setGravity(Gravity.CENTER_HORIZONTAL);
 
-            input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
             builder.setView(input);
 
             builder.setPositiveButton("OK", (dialog, which) -> {
@@ -140,7 +143,7 @@ public class GoToMedicine extends Fragment {
 
     public void dialogRemove() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()),R.style.AlertDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AlertDialog);
 
         builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
                 .setPositiveButton("Tak", (dialog, which) -> usunDane())
@@ -152,13 +155,13 @@ public class GoToMedicine extends Fragment {
 
     private void usunDane() {
 
-        Cursor cl = myDb.getDataName_LEK(id);
+        Cursor cl = myDb.getDataNameFromId_LEK(id);
         cl.moveToFirst();
         String nazwa = cl.getString(0);
 
         Cursor cp = myDb.getAllDataMedicine_PRZYPOMNIENIE(nazwa);
 
-        if(cp.getCount()==0) {
+        if (cp.getCount() == 0) {
             myDb.remove_LEK(id);
             AktualizujBaze();
         } else openDialog("Nie można usunąć. Posiadasz aktywne przypomnienie z tym lekiem");

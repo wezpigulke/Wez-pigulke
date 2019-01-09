@@ -29,7 +29,7 @@ public class GoToAuthor extends Fragment {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                Integer val = Math.toIntExact(255 -(millisUntilFinished/10));
+                Integer val = Math.toIntExact(255 - (millisUntilFinished / 10));
                 imageView.setAlpha(val);
             }
 

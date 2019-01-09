@@ -18,6 +18,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="20dp"
+        android:layout_toStartOf="@+id/imageView5"
         android:text="Nazwa profilu"
         android:textColor="#00a7f5"
         android:textSize="20dp" />

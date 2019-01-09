@@ -27,10 +27,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String NOTYFIKACJA = "Notyfikacja";
     private static final String NOTYFIKACJA_ID = "ID";
-    private static final String NOTYFIKACJA_ID_NOTYFIKACJA = "ID_notyfikacja";
     private static final String NOTYFIKACJA_PRZYPOMNIENIE = "ID_przypomnienie";
     private static final String NOTYFIKACJA_GODZINA = "Godzina";
     private static final String NOTYFIKACJA_OSTATNIADATA = "Data";
+    private static final String NOTYFIKACJA_CZYAKTYWNA = "Czy_aktywna";
 
     private static final String HISTORIA = "Historia";
     private static final String HISTORIA_ID = "ID";
@@ -55,8 +55,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String WIZYTY_DATA = "Data";
     private static final String WIZYTY_IMIE_I_NAZWISKO = "Imie_Nazwisko";
     private static final String WIZYTY_SPECJALIZACJA = "Specjalizacja";
-    private static final String WIZYTY_ADRES = "Adres";
     private static final String WIZYTY_PROFIL = "Profil";
+    private static final String WIZYTY_ALARMID = "Alarm";
 
     private static final String POMIARY = "Pomiary";
     private static final String POMIARY_ID = "ID";
@@ -100,9 +100,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + UZYTKOWNICY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Imie TEXT)");
         db.execSQL("CREATE TABLE " + PRZYPOMNIENIE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Lek Integer, Dawka TEXT, Ilosc_dni Integer, Profil TEXT, Typ INTEGER, Wszystkie_godziny TEXT)");
         db.execSQL("CREATE TABLE " + HISTORIA + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Profil TEXT, Godzina TEXT, Data TEXT, Lek TEXT, Dawka TEXT, Godzina_akceptacji TEXT, Status TEXT)");
-        db.execSQL("CREATE TABLE " + NOTYFIKACJA + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, ID_notyfikacja INTEGER, ID_przypomnienie INTEGER, Godzina TEXT, Data TEXT)");
+        db.execSQL("CREATE TABLE " + NOTYFIKACJA + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, ID_przypomnienie INTEGER, Godzina TEXT, Data TEXT, Czy_aktywna BOOLEAN)");
         db.execSQL("CREATE TABLE " + DOKTORZY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Imie_Nazwisko TEXT, Specjalizacja TEXT, Numer TEXT, Adres TEXT)");
-        db.execSQL("CREATE TABLE " + WIZYTY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Imie_Nazwisko TEXT, Specjalizacja TEXT, Adres TEXT, Profil TEXT)");
+        db.execSQL("CREATE TABLE " + WIZYTY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Imie_Nazwisko TEXT, Specjalizacja TEXT, Profil TEXT)");
         db.execSQL("CREATE TABLE " + POMIARY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Typ TEXT, Wynik TEXT, Profil TEXT, Godzina TEXT, Data TEXT)");
         db.execSQL("CREATE TABLE " + TYP_POMIAR + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Typ TEXT)");
         db.execSQL("CREATE TABLE " + NOTATKI + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Tytul TEXT, Tresc TEXT, Profil TEXT, Data TEXT)");
@@ -215,10 +215,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getDataName_LEK(Integer id) {
+    public Cursor getDataNameFromId_LEK(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT Nazwa " +
                         "FROM " + LEK + " WHERE ID=" + id
+                , null);
+        return res;
+    }
+
+    public Cursor getDataName_LEK(String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * " +
+                        "FROM " + LEK + " WHERE Nazwa='" + name + "'"
                 , null);
         return res;
     }
@@ -239,13 +247,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getDataName_LEK(String name) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * " +
-                        "FROM " + LEK + " WHERE Nazwa='" + name + "'"
-                , null);
-        return res;
-    }
+
     public boolean update_LEK(Integer id, String ilosc) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -332,14 +334,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * ============ NOTYFIKACJA ============
      **/
 
-    public boolean insert_NOTYFIKACJA(Integer notyfikacja, Integer przypomnienie, String godzina, String data) {
+    public boolean insert_NOTYFIKACJA(Integer przypomnienie, String godzina, String data, Boolean czyaktywna) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(NOTYFIKACJA_ID_NOTYFIKACJA, notyfikacja);
         contentValues.put(NOTYFIKACJA_PRZYPOMNIENIE, przypomnienie);
         contentValues.put(NOTYFIKACJA_GODZINA, godzina);
         contentValues.put(NOTYFIKACJA_OSTATNIADATA, data);
+        contentValues.put(NOTYFIKACJA_CZYAKTYWNA, czyaktywna);
 
         long result = db.insert(NOTYFIKACJA, null, contentValues);
         if (result == -1)
@@ -351,16 +353,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getAllData_NOTYFIKACJA() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, B.Profil " +
-                "FROM " + NOTYFIKACJA + " A " +
-                "INNER JOIN " + PRZYPOMNIENIE + " B " +
-                "ON " + "B.ID = A.ID_przypomnienie"
+                        "FROM " + NOTYFIKACJA + " A " +
+                        "INNER JOIN " + PRZYPOMNIENIE + " B " +
+                        "ON " + "B.ID = A.ID_przypomnienie"
                 , null);
         return res;
     }
 
     public Cursor getUserData_NOTYFIKACJA(String user) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, B.Profil " +
+        Cursor res = db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, A.Czy_aktywna B.Profil " +
                 "FROM " + NOTYFIKACJA + " A " +
                 "INNER JOIN " + PRZYPOMNIENIE + " B " +
                 "ON " + "B.ID = A.ID_przypomnienie " +
@@ -370,10 +372,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getCount_NOTYFIKACJA(Integer id, String data) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT COUNT(ID_notyfikacja) " +
+        Cursor res = db.rawQuery("SELECT COUNT(ID) " +
                 "FROM " + NOTYFIKACJA +
                 " WHERE " + "ID_przypomnienie" + "=" + "'" + id + "'" +
-                " AND " + "Data" + "=" + "'" + data + "'", null);
+                " AND " + "Data" + "=" + "'" + data + "'" +
+                " AND " + "Czy_aktywna" + "=" + 1, null);
         return res;
     }
 
@@ -381,31 +384,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT COUNT(ID) " +
                 "FROM " + NOTYFIKACJA +
-                " WHERE " + "ID_przypomnienie" + "=" + "'" + id + "'", null);
+                " WHERE " + "ID_przypomnienie" + "=" + "'" + id + "'" +
+                " AND " + "Czy_aktywna" + "=" + 1, null);
         return res;
     }
 
     public Cursor getdataID_NOTYFIKACJA(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, B.Profil, " +
-                "A.ID_notyfikacja, A.ID_przypomnienie, B.Typ, B.Ilosc_dni " +
+                "A.ID, A.ID_przypomnienie, B.Typ, B.Ilosc_dni " +
                 "FROM " + NOTYFIKACJA + " A " +
                 "INNER JOIN " + PRZYPOMNIENIE + " B " +
                 "ON " + "B.ID = A.ID_przypomnienie " +
-                "WHERE " + " A.ID" + "=" + id, null);
+                "WHERE " + " A.ID" + "=" + id +
+                " AND " + "Czy_aktywna" + "=" + 1, null);
         return res;
     }
 
 
     public Cursor getID_NOTYFIKACJA(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT ID_notyfikacja FROM " + NOTYFIKACJA + " WHERE " + NOTYFIKACJA_PRZYPOMNIENIE + "=" + id, null);
+        Cursor res = db.rawQuery("SELECT ID FROM " + NOTYFIKACJA +
+                " WHERE " + NOTYFIKACJA_PRZYPOMNIENIE + "=" + id +
+                " AND " + "Czy_aktywna" + "=" + 1, null);
         return res;
     }
 
     public Cursor getMAXid_NOTYFIKACJA() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID_notyfikacja), 0) FROM " + NOTYFIKACJA, null);
+        Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID), 0) FROM " + NOTYFIKACJA, null);
         return res;
     }
 
@@ -415,7 +422,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         contentValues.put(NOTYFIKACJA_OSTATNIADATA, days);
 
-        long result = db.update(NOTYFIKACJA, contentValues, "ID_notyfikacja=" + id, null);
+        long result = db.update(NOTYFIKACJA, contentValues, "ID=" + id, null);
 
         if (result == -1)
             return false;
@@ -423,9 +430,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public void remove_NOTYFIKACJA(Integer id) {
+    public boolean updateActivation_NOTYFIKACJA(Integer id, Boolean czyAktywna) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(NOTYFIKACJA, NOTYFIKACJA_ID_NOTYFIKACJA + "=" + id, null);
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(NOTYFIKACJA_CZYAKTYWNA, czyAktywna);
+
+        long result = db.update(NOTYFIKACJA, contentValues, "ID=" + id, null);
+
+        if (result == -1)
+            return false;
+        else
+            return true;
     }
 
     /**
@@ -507,13 +523,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getUserTypeData_POMIARY(String user, String type) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + POMIARY + " WHERE Profil='" + user + "' AND Typ='" + type + "'" , null);
+        Cursor res = db.rawQuery("SELECT * FROM " + POMIARY + " WHERE Profil='" + user + "' AND Typ='" + type + "'", null);
         return res;
     }
 
     public Cursor getUserType_POMIARY(String type) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + POMIARY + " WHERE Typ='" + type + "'" , null);
+        Cursor res = db.rawQuery("SELECT * FROM " + POMIARY + " WHERE Typ='" + type + "'", null);
         return res;
     }
 
@@ -735,7 +751,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getMAXid_PRZYPOMNIENIE() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID), 1) FROM " + PRZYPOMNIENIE, null);
+        Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID), 0) FROM " + PRZYPOMNIENIE, null);
         return res;
     }
 
@@ -768,15 +784,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      **/
 
 
-    public boolean insert_WIZYTY(String godzina, String data, String dane, String specjalizacja, String adres, String profile) {
+    public boolean insert_WIZYTY(String godzina, String data, String dane, String specjalizacja, String profile) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(WIZYTY_GODZINA, godzina);
         contentValues.put(WIZYTY_DATA, data);
         contentValues.put(WIZYTY_IMIE_I_NAZWISKO, dane);
         contentValues.put(WIZYTY_SPECJALIZACJA, specjalizacja);
-        contentValues.put(WIZYTY_ADRES, adres);
         contentValues.put(WIZYTY_PROFIL, profile);
+
         long result = db.insert(WIZYTY, null, contentValues);
         if (result == -1)
             return false;

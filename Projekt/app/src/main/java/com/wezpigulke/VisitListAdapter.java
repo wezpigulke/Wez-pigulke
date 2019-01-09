@@ -43,13 +43,11 @@ public class VisitListAdapter extends BaseAdapter {
         TextView nameVisit = v.findViewById(R.id.nameVisit);
         TextView specializationVisit = v.findViewById(R.id.specializationVisit);
         TextView dateVisit = v.findViewById(R.id.dateVisit);
-        TextView addressVisit = v.findViewById(R.id.addressVisit);
 
         profileVisit.setText(results.get(position).getProfile());
         nameVisit.setText(results.get(position).getName());
         specializationVisit.setText(results.get(position).getSpecialization());
         dateVisit.setText(results.get(position).getDate());
-        addressVisit.setText(results.get(position).getAddress());
 
         v.setTag(results.get(position).getId());
 

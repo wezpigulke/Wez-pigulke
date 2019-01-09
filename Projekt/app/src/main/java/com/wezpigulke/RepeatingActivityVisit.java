@@ -7,7 +7,7 @@ import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class RepeatingActivityVisit extends AppCompatActivity{
+public class RepeatingActivityVisit extends AppCompatActivity {
 
     DatabaseHelper myDb;
 
@@ -24,25 +24,21 @@ public class RepeatingActivityVisit extends AppCompatActivity{
         TextView tData = findViewById(R.id.textView14v);
         TextView tLekarz = findViewById(R.id.textView9v);
         TextView tSpecjalizacja = findViewById(R.id.textView10v);
-        TextView tAdres = findViewById(R.id.textView11v);
 
         ImageView im = findViewById(R.id.imageView3v);
         im.setImageResource(R.drawable.logo);
 
         String godzina = getIntent().getStringExtra("godzina");
         String data = getIntent().getStringExtra("data");
-        String imie = getIntent().getStringExtra("imie");
-        String nazwisko = getIntent().getStringExtra("nazwisko");
+        String imie_nazwisko = getIntent().getStringExtra("imie_nazwisko");
         String specjalizacja = getIntent().getStringExtra("specjalizacja");
-        String adres = getIntent().getStringExtra("adres");
         String uzytkownik = getIntent().getStringExtra("uzytkownik");
 
         tProfil.setText(Html.fromHtml("Profil: " + "<b>" + uzytkownik + "</b> "));
         tGodzina.setText(Html.fromHtml("Godzina: " + "<b>" + godzina + "</b> "));
         tData.setText(Html.fromHtml("Data: " + "<b>" + data + "</b> "));
-        tLekarz.setText(Html.fromHtml("Lekarz: " + "<b>" + imie + " " + nazwisko + "</b> "));
+        tLekarz.setText(Html.fromHtml("Lekarz: " + "<b>" + imie_nazwisko + "</b> "));
         tSpecjalizacja.setText(Html.fromHtml("Specjalizacja: " + "<b>" + specjalizacja + "</b> "));
-        tAdres.setText(Html.fromHtml("Adres: " + "<b>" + adres + "</b> "));
     }
 
 }

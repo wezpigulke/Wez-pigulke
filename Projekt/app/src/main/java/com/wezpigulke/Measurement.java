@@ -45,18 +45,24 @@ public class Measurement {
         return profile;
     }
 
-    public void setProfile(String profile) { this.profile = profile; }
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
 
     public String getDate() {
         return date;
     }
 
-    public void setDate(String date) { this.date = date; }
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public String getHour() {
         return hour;
     }
 
-    public void setHour(String hour) { this.hour = hour; }
+    public void setHour(String hour) {
+        this.hour = hour;
+    }
 
 }

@@ -92,69 +92,26 @@ public class GoToSettings extends Fragment {
         tWziete = v.findViewById(R.id.textView13);
         tZapomniane = v.findViewById(R.id.textView14);
 
-        ImageView im7 = v.findViewById(R.id.imageView7);
-        ImageView im8 = v.findViewById(R.id.imageView8);
-        TextView tOdliczanie = v.findViewById(R.id.textView11);
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    myDb.removeData(getActivity());
+                    System.exit(0);
+                    break;
 
-        im7.setVisibility(View.GONE);
-        im8.setVisibility(View.GONE);
-        tOdliczanie.setVisibility(View.GONE);
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
+        };
 
         bt.setOnClickListener(view -> {
 
-            bt.setVisibility(View.GONE);
-            pdf.setVisibility(View.GONE);
-            myprogressbar.setVisibility(View.GONE);
-            tProgres.setVisibility(View.GONE);
-            tWziete.setVisibility(View.GONE);
-            tZapomniane.setVisibility(View.GONE);
-            bt.setVisibility(View.GONE);
-
-            tOdliczanie.setVisibility(View.VISIBLE);
-
-            new CountDownTimer(4000, 1000) {
-
-                public void onTick(long millisUntilFinished) {
-                    tOdliczanie.setText(String.valueOf(millisUntilFinished / 1000));
-                }
-
-                public void onFinish() {
-                    tOdliczanie.setVisibility(View.GONE);
-                    im7.setVisibility(View.VISIBLE);
-                    im7.setAlpha(0);
-                    new CountDownTimer(1275, 1) {
-
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-                            Integer val = Math.toIntExact((millisUntilFinished/10)*2);
-                            im7.setAlpha(val);
-                        }
-
-                        public void onFinish() {
-                            im7.setVisibility(View.GONE);
-                            im8.setVisibility(View.VISIBLE);
-                            im8.setAlpha(0);
-
-                            new CountDownTimer(1275, 1) {
-
-                                @Override
-                                public void onTick(long millisUntilFinished) {
-                                    Integer val = Math.toIntExact((255 -(millisUntilFinished/10))*2);
-                                    im8.setAlpha(val);
-                                }
-
-                                @Override
-                                public void onFinish() {
-                                    myDb.removeData(getActivity());
-                                    System.exit(0);
-                                }
-                            }.start();
-                        }
-
-                    }.start();
-                }
-
-            }.start();
+            new AlertDialog.Builder(getActivity())
+                    .setMessage("Czy chcesz usunąć wszystkie dane?")
+                    .setPositiveButton("Tak", dialogClickListener)
+                    .setNegativeButton("Nie", dialogClickListener)
+                    .create()
+                    .show();
 
         });
 
@@ -319,7 +276,7 @@ public class GoToSettings extends Fragment {
             BaseColor redColor = WebColors.getRGBColor("#ff0000");
 
             Cursor cp = myDb.getUserData_HISTORIA(user);
-            if(cp.getCount()!=0) {
+            if (cp.getCount() != 0) {
                 while (cp.moveToNext()) {
 
                     PdfPTable table_result = new PdfPTable(6);
@@ -328,7 +285,7 @@ public class GoToSettings extends Fragment {
                     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                     table_result.addCell(cell);
 
-                    cell = new PdfPCell(new Paragraph(cp.getString(3).substring(0,5)));
+                    cell = new PdfPCell(new Paragraph(cp.getString(3).substring(0, 5)));
                     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                     table_result.addCell(cell);
 

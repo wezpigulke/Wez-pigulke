@@ -33,12 +33,13 @@ public class AddTypeMeasurement extends AppCompatActivity {
         dodajButton.setOnClickListener(v -> {
             if (typBadania.getText().length() > 0) {
                 Cursor cp = myDb.getDataID_TYP_POMIAR(typBadania.getText().toString());
-                if(cp.getCount()==0) {
+                if (cp.getCount() == 0) {
                     myDb.insert_TYP_POMIAR(
                             typBadania.getText().toString()
                     );
                     onBackPressed();
-                } else openDialog("Już istnieje typ badania o takiej samej nazwie w naszej bazie danych");
+                } else
+                    openDialog("Już istnieje typ badania o takiej samej nazwie w naszej bazie danych");
             } else openDialog("Wpisz typ badania");
         });
 

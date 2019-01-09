@@ -29,7 +29,9 @@ public class Visit {
         return profile;
     }
 
-    public void setProfile(String profile) { this.profile = profile; }
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
 
     public String getName() {
         return name;
@@ -51,13 +53,17 @@ public class Visit {
         return date;
     }
 
-    public void setDate(String date) { this.date = date; }
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address) { this.address = address; }
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
 
 }

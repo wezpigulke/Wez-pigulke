@@ -246,7 +246,7 @@ public class GoToToday extends Fragment {
         myDb.updateDate_NOTYFIKACJA(id, dataJutrzejsza);
 
         AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
-        Intent myIntent = new Intent(getActivity(), NotificationReceiverReminder.class);
+        Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 getActivity(), id, myIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -263,7 +263,7 @@ public class GoToToday extends Fragment {
 
         if (dni > 1) {
 
-            Intent intx = new Intent(getContext(), NotificationReceiverReminder.class);
+            Intent intx = new Intent(getContext(), NotificationReceiver.class);
             intx.putExtra("Value", uzytkownik + " " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + dawka + ")");
 
             pendingIntent = PendingIntent.getBroadcast(

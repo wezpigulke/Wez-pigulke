@@ -178,18 +178,20 @@ public class GoToReminder extends Fragment {
             while (c.moveToNext()) {
 
                 AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
-                Intent myIntent = new Intent(getActivity(), NotificationReceiverReminder.class);
+                Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
                         getActivity(), Integer.parseInt(c.getString(0)), myIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 assert alarmManager != null;
                 alarmManager.cancel(pendingIntent);
 
+                myDb.updateActivation_NOTYFIKACJA(Integer.parseInt(c.getString(0)), false);
+
+
             }
         }
 
         myDb.remove_PRZYPOMNIENIE(idd);
-        myDb.remove_NOTYFIKACJA(idd);
 
         AktualizujBaze();
 

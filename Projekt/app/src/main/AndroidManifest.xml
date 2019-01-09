@@ -2,10 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.wezpigulke">
-    <uses-permission android:name="android.permision.CALL_PHONE"/>
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permision.CALL_PHONE" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -31,66 +32,68 @@
             android:label="Dzisiaj"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.wezpigulke.AddReminder"
             android:label="Dodawanie przypomnienia"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.wezpigulke.AddDoctor"
             android:label="Dodaj lekarza"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.wezpigulke.AddProfile"
             android:label="Dodaj profil"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.wezpigulke.AddVisit"
             android:label="Dodaj wizytę"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.wezpigulke.AddMedicine"
             android:label="Dodaj lek"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.wezpigulke.AddNotes"
             android:configChanges="orientation"
             android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.wezpigulke.AddMeasurement"
             android:label="Dodaj pomiar"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.wezpigulke.AddTypeMeasurement"
             android:label="Dodaj typ badania"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
-        <activity android:name="com.wezpigulke.RepeatingActivityReminder"
+        <activity
+            android:name="com.wezpigulke.RepeatingActivityReminder"
             android:label="Weź tabletkę"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop" />
 
-        <activity android:name="com.wezpigulke.RepeatingActivityVisit"
-            android:label="Wizyta u lekarza"/>
+        <activity
+            android:name="com.wezpigulke.RepeatingActivityVisit"
+            android:label="Wizyta u lekarza" />
 
-        <receiver android:name="com.wezpigulke.NotificationReceiverReminder"/>
+        <receiver android:name="com.wezpigulke.NotificationReceiver" />
 
-        <receiver android:name="com.wezpigulke.ButtonIntent"/>
+        <receiver android:name="com.wezpigulke.ButtonIntent" />
 
     </application>
 

@@ -18,6 +18,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="20dp"
+        android:layout_toStartOf="@+id/imageView5mt"
         android:text="Typ badania"
         android:textColor="#f92a3f"
         android:textSize="20dp" />
@@ -29,9 +31,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="19dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginRight="19dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="10dp"
         app:srcCompat="@drawable/cardiogram" />
 
 </RelativeLayout>

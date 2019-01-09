@@ -43,16 +43,15 @@ public class MainMenu extends AppCompatActivity implements NavigationView.OnNavi
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-        TextView twojeImie = headerView.findViewById(R.id.isName);
-        twojeImie.setText("Witaj\n" + nazwaUzytkownika);
+        TextView headerName = headerView.findViewById(R.id.isName);
+        headerName.setText("Weź\npigułkę");
 
         Cursor ch = myDb.getAllData_HISTORIA();
         Cursor cr = myDb.getAllData_PRZYPOMNIENIE();
 
-        if (ch.getCount()==0 && cr.getCount()==0) {
+        if (ch.getCount() == 0 && cr.getCount() == 0) {
             displaySelectedScreen(R.id.reminder);
-        }
-        else displaySelectedScreen(R.id.today);
+        } else displaySelectedScreen(R.id.today);
         navigationView.setNavigationItemSelectedListener(this);
 
     }
@@ -78,7 +77,7 @@ public class MainMenu extends AppCompatActivity implements NavigationView.OnNavi
 
         Fragment fragment = null;
 
-        switch(id) {
+        switch (id) {
             case R.id.today:
                 fragment = new GoToToday();
                 break;
@@ -114,7 +113,7 @@ public class MainMenu extends AppCompatActivity implements NavigationView.OnNavi
                 break;
         }
 
-        if(fragment != null) {
+        if (fragment != null) {
 
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -126,7 +125,7 @@ public class MainMenu extends AppCompatActivity implements NavigationView.OnNavi
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
-        switch(id) {
+        switch (id) {
             case R.id.listOfProfiles:
 
                 break;

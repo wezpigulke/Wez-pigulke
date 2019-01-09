@@ -7,10 +7,11 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.Objects;
+
 public class AddProfile extends AppCompatActivity {
 
     DatabaseHelper myDb;
-    private Button add;
     private EditText txt;
 
     @Override
@@ -21,15 +22,15 @@ public class AddProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_profile);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        add = findViewById(R.id.adBut);
+        Button add = findViewById(R.id.adBut);
         txt = findViewById(R.id.namField);
 
         add.setOnClickListener(v -> {
-            if(txt.getText().length()>0) {
+            if (txt.getText().length() > 0) {
                 Cursor cp = myDb.getId_UZYTKOWNICY(txt.getText().toString());
-                if(cp.getCount()==0) {
+                if (cp.getCount() == 0) {
                     myDb.insert_UZYTKOWNICY(txt.getText().toString());
                     onBackPressed();
                 } else openDialog("Już istnieje osoba o takim imieniu w naszej bazie danych");

@@ -179,7 +179,8 @@ public class GoToMeasurement extends Fragment {
         if (uzytkownik.equals("Wszyscy") && typ.equals("Wszystko")) c = myDb.getAllData_POMIARY();
         else if (!uzytkownik.equals("Wszyscy") && typ.equals("Wszystko"))
             c = myDb.getUserData_POMIARY(uzytkownik);
-        else if (uzytkownik.equals("Wszyscy") && !typ.equals("Wszystko")) c = myDb.getUserType_POMIARY(typ);
+        else if (uzytkownik.equals("Wszyscy") && !typ.equals("Wszystko"))
+            c = myDb.getUserType_POMIARY(typ);
         else c = myDb.getUserTypeData_POMIARY(uzytkownik, typ);
 
         if (c.getCount() != 0) {

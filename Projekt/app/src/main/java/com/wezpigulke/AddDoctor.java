@@ -36,18 +36,18 @@ public class AddDoctor extends AppCompatActivity {
 
         add.setOnClickListener(v -> {
 
-            if(name.getText().length()>0 && specialization.getText().length()>0) {
+            if (name.getText().length() > 0 && specialization.getText().length() > 0) {
 
-                    myDb.insert_DOKTORZY(
-                            name.getText().toString(),
-                            specialization.getText().toString(),
-                            phone_number.getText().toString(),
-                            address.getText().toString()
-                    );
+                myDb.insert_DOKTORZY(
+                        name.getText().toString(),
+                        specialization.getText().toString(),
+                        phone_number.getText().toString(),
+                        address.getText().toString()
+                );
 
-                }
-            else if(name.getText().length()==0) openDialog("Wpisz imie i nazwisko lekarza");
-            else if(specialization.getText().length()==0) openDialog("Wpisz specjalizacje lekarza");
+            } else if (name.getText().length() == 0) openDialog("Wpisz imie i nazwisko lekarza");
+            else if (specialization.getText().length() == 0)
+                openDialog("Wpisz specjalizacje lekarza");
             onBackPressed();
         });
     }

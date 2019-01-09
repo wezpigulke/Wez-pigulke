@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class AddMeasurement extends AppCompatActivity {
 
@@ -69,7 +70,7 @@ public class AddMeasurement extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_measurement);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
@@ -125,7 +126,7 @@ public class AddMeasurement extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 typ_badania = typBadania.getItemAtPosition(position).toString();
-                if(typ_badania.equals("Dodaj nowy typ")) {
+                if (typ_badania.equals("Dodaj nowy typ")) {
                     Intent cel = new Intent(parentView.getContext(), AddTypeMeasurement.class);
                     startActivity(cel);
                 }
@@ -139,7 +140,8 @@ public class AddMeasurement extends AppCompatActivity {
 
         goThen.setOnClickListener(v -> {
 
-            if (typBadania.getSelectedItem().toString().equals("Wybierz typ badania")) openDialog("Wybierz typ badania lub dodaj nowy");
+            if (typBadania.getSelectedItem().toString().equals("Wybierz typ badania"))
+                openDialog("Wybierz typ badania lub dodaj nowy");
             else {
                 typProfilu.setVisibility(View.GONE);
                 typBadania.setVisibility(View.GONE);
@@ -167,7 +169,8 @@ public class AddMeasurement extends AppCompatActivity {
 
                 onBackPressed();
             } else if (wynikPomiaru.getText().length() <= 0) openDialog("Wpisz wynik pomiaru");
-            else if(wynikPomiaru.getText().length() > 16) openDialog("Zbyt długi wynik pomiaru. Maksymalna ilość znaków wynosi 16.");
+            else if (wynikPomiaru.getText().length() > 16)
+                openDialog("Zbyt długi wynik pomiaru. Maksymalna ilość znaków wynosi 16.");
             else openDialog("Wybierz lub dodaj nowy typ badania");
         });
 
@@ -205,8 +208,8 @@ public class AddMeasurement extends AppCompatActivity {
         label.clear();
         labelx.clear();
 
-        if(cxz.getCount() != 0) {
-            while(cxz.moveToNext()) {
+        if (cxz.getCount() != 0) {
+            while (cxz.moveToNext()) {
                 label.add(cxz.getString(0));
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, label);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -216,8 +219,8 @@ public class AddMeasurement extends AppCompatActivity {
 
         Cursor cxs = myDb.getPomiar_TYP_POMIAR();
 
-        if(cxs.getCount() != 0) {
-            while(cxs.moveToNext()) {
+        if (cxs.getCount() != 0) {
+            while (cxs.moveToNext()) {
                 labelx.add(cxs.getString(0));
             }
         }
@@ -226,16 +229,16 @@ public class AddMeasurement extends AppCompatActivity {
 
         labelSize = labelx.size() - 1;
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, labelx) {
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, labelx) {
             @Override
             public int getCount() {
-                return(labelSize);
+                return (labelSize);
             }
         };
 
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typBadania.setAdapter(dataAdapter);
-        if(labelSize!=labelSizeCopy) typBadania.setSelection(labelSize-2);
+        if (labelSize != labelSizeCopy) typBadania.setSelection(labelSize - 2);
         else typBadania.setSelection(labelSize);
 
     }

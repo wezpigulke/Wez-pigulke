@@ -10,14 +10,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,7 +133,7 @@ public class GoToProfiles extends Fragment {
                                     while (cn.moveToNext()) {
 
                                         AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
-                                        Intent myIntent = new Intent(getActivity(), NotificationReceiverReminder.class);
+                                        Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
                                         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                                                 getActivity(), Integer.parseInt(cn.getString(0)), myIntent,
                                                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -154,24 +152,16 @@ public class GoToProfiles extends Fragment {
 
                                 Integer id_w = Integer.parseInt(cw.getString(0));
 
-                                int usunID = (id_w * 2) - 1;
+                                int usunID = id_w * 100000;
 
                                 AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
-                                Intent myIntent1 = new Intent(getActivity(), NotificationReceiverVisit.class);
-                                PendingIntent pendingIntent1 = PendingIntent.getBroadcast(
-                                        getActivity(), usunID, myIntent1,
+                                Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                                        getActivity(), usunID, myIntent,
                                         PendingIntent.FLAG_UPDATE_CURRENT);
-
                                 assert alarmManager != null;
-                                alarmManager.cancel(pendingIntent1);
-
-                                Intent myIntent2 = new Intent(getActivity(), NotificationReceiverVisit.class);
-                                PendingIntent pendingIntent2 = PendingIntent.getBroadcast(
-                                        getActivity(), usunID + 1, myIntent2,
-                                        PendingIntent.FLAG_UPDATE_CURRENT);
-
-                                alarmManager.cancel(pendingIntent2);
+                                alarmManager.cancel(pendingIntent);
 
                             }
                         }

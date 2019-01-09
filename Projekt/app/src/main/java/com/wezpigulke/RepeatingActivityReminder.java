@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.view.Gravity;
 import android.widget.Button;
@@ -26,7 +27,7 @@ public class RepeatingActivityReminder extends Activity {
         super.onCreate(savedInstanceState);
         DatabaseHelper myDb = new DatabaseHelper(this);
 
-        Integer coPokazac = getIntent().getIntExtra("coPokazac",-1);
+        Integer coPokazac = getIntent().getIntExtra("coPokazac", -1);
         String godzina = getIntent().getStringExtra("godzina");
         String data = getIntent().getStringExtra("data");
         String uzytkownik = getIntent().getStringExtra("uzytkownik");
@@ -37,7 +38,7 @@ public class RepeatingActivityReminder extends Activity {
         Integer id_h = getIntent().getIntExtra("id_h", 0);
         String obecnyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
-        if(coPokazac==0) {
+        if (coPokazac == 0) {
 
             setContentView(R.layout.repeating_activity_layout);
 
@@ -92,9 +93,7 @@ public class RepeatingActivityReminder extends Activity {
 
             });
 
-        }
-
-        else if (coPokazac==1) {
+        } else if (coPokazac == 1) {
 
             setContentView(R.layout.medicine_activity_layout);
 
@@ -124,10 +123,12 @@ public class RepeatingActivityReminder extends Activity {
 
                 final EditText input = new EditText(this);
 
+                input.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(5, 2)});
+                input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+
                 input.setText(ilosc);
                 input.setGravity(Gravity.CENTER_HORIZONTAL);
 
-                input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
                 builder.setView(input);
 
                 builder.setNegativeButton("Anuluj", (dialog, which) -> {
@@ -148,6 +149,7 @@ public class RepeatingActivityReminder extends Activity {
         }
 
     }
+
     public void goHome() {
         Intent startMain = new Intent(Intent.ACTION_MAIN);
         startMain.addCategory(Intent.CATEGORY_HOME);

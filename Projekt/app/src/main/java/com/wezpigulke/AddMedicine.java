@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,15 +34,17 @@ public class AddMedicine extends AppCompatActivity {
         nazwaLeku = findViewById(R.id.nazwaLeku);
         iloscTabletek = findViewById(R.id.iloscTabletek);
 
+        iloscTabletek.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+        iloscTabletek.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(5, 2)});
+
         Cursor c = myDb.getMAXid_LEK();
         c.moveToFirst();
         int id = Integer.parseInt(c.getString(0)) + 1;
 
         dodajButton.setOnClickListener(v -> {
             if (nazwaLeku.getText().length() > 0 && iloscTabletek.getText().length() > 0) {
-
-                Cursor cl= myDb.getDataName_LEK(nazwaLeku.getText().toString());
-                if (cl.getCount()==0) {
+                Cursor cl = myDb.getDataName_LEK(nazwaLeku.getText().toString());
+                if (cl.getCount() == 0) {
                     myDb.insert_LEK(
                             id,
                             nazwaLeku.getText().toString(),
