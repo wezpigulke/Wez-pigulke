@@ -16,8 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="35dp"
         android:layout_marginEnd="20dp"
         android:layout_toStartOf="@+id/imageView5"
         android:text="Nazwa profilu"
@@ -26,14 +26,13 @@
 
     <ImageView
         android:id="@+id/imageView5"
-        android:layout_width="72dp"
-        android:layout_height="60dp"
+        android:layout_width="75dp"
+        android:layout_height="72dp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="19dp"
-        android:layout_marginRight="19dp"
         android:layout_marginTop="11dp"
-        app:srcCompat="@drawable/profilee" />
+        android:layout_marginEnd="19dp"
+        android:layout_marginRight="19dp" />
 
 </RelativeLayout>

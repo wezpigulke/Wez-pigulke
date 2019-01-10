@@ -5,7 +5,9 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -39,8 +41,12 @@ public class ProfileListAdapter extends BaseAdapter {
         @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.profile_listview, null);
 
         TextView profileName = v.findViewById(R.id.profileVisit);
+        ImageView profileImage = v.findViewById(R.id.imageView5);
 
         profileName.setText(results.get(position).getProfile());
+
+        if(results.get(position).getPicture()==1) profileImage.setImageResource(R.drawable.profilee);
+        else profileImage.setImageResource(R.drawable.profileee);
 
         v.setTag(results.get(position).getId());
 

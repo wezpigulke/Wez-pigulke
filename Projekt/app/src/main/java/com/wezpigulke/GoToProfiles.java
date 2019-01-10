@@ -96,7 +96,7 @@ public class GoToProfiles extends Fragment {
 
         if (c.getCount() != 0) {
             while (c.moveToNext()) {
-                results.add(new Profile(c.getInt(0), c.getString(1)));
+                results.add(new Profile(c.getInt(0), c.getString(1), c.getInt(2)));
             }
         }
 

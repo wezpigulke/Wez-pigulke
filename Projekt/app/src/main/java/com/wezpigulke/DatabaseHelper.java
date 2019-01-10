@@ -13,6 +13,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String UZYTKOWNICY = "Uzytkownicy";
     private static final String UZYTKOWNICY_ID = "ID";
     private static final String UZYTKOWNICY_IMIE = "Imie";
+    private static final String UZYTKOWNICY_OBRAZEK = "Obrazek";
 
     private static final String PRZYPOMNIENIE = "Przypomnienie";
     private static final String PRZYPOMNIENIE_ID = "ID";
@@ -56,7 +57,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String WIZYTY_IMIE_I_NAZWISKO = "Imie_Nazwisko";
     private static final String WIZYTY_SPECJALIZACJA = "Specjalizacja";
     private static final String WIZYTY_PROFIL = "Profil";
-    private static final String WIZYTY_ALARMID = "Alarm";
 
     private static final String POMIARY = "Pomiary";
     private static final String POMIARY_ID = "ID";
@@ -97,7 +97,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + UZYTKOWNICY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Imie TEXT)");
+        db.execSQL("CREATE TABLE " + UZYTKOWNICY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Imie TEXT, Obrazek INTEGER)");
         db.execSQL("CREATE TABLE " + PRZYPOMNIENIE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Lek Integer, Dawka TEXT, Ilosc_dni Integer, Profil TEXT, Typ INTEGER, Wszystkie_godziny TEXT)");
         db.execSQL("CREATE TABLE " + HISTORIA + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Profil TEXT, Godzina TEXT, Data TEXT, Lek TEXT, Dawka TEXT, Godzina_akceptacji TEXT, Status TEXT)");
         db.execSQL("CREATE TABLE " + NOTYFIKACJA + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, ID_przypomnienie INTEGER, Godzina TEXT, Data TEXT, Czy_aktywna BOOLEAN)");
@@ -596,10 +596,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * ============ UZYTKOWNICY ============
      **/
 
-    public boolean insert_UZYTKOWNICY(String name) {
+    public boolean insert_UZYTKOWNICY(String name, Integer obrazek) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(UZYTKOWNICY_IMIE, name);
+        contentValues.put(UZYTKOWNICY_OBRAZEK, obrazek);
         long result = db.insert(UZYTKOWNICY, null, contentValues);
         if (result == -1)
             return false;
