@@ -21,3 +21,10 @@ tytu³
 -technologia (java, sqlite, android studio)
 -problemy
 
+
+-custom spinner lekarz
+-czytelnosc kodu
+-typy danych w bazie danych
+-usunac zbedne rzeczy
+-testy aplikacji na koncu
+-ciemny motyw
