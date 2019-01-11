@@ -262,22 +262,35 @@ public class NotificationReceiver extends BroadcastReceiver {
             Uri alarmSound;
             alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
 
-            if (wybranyDzwiek == 1)
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
-            else if (wybranyDzwiek == 2)
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm3);
-            else if (wybranyDzwiek == 3)
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm4);
-            else if (wybranyDzwiek == 4)
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm5);
-            else if (wybranyDzwiek == 5)
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm6);
-            else if (wybranyDzwiek == 6)
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm7);
-            else if (wybranyDzwiek == 7)
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm8);
-            else if (wybranyDzwiek == 8)
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm9);
+            switch (wybranyDzwiek) {
+                case 1:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
+                    break;
+                case 2:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
+                    break;
+                case 3:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm3);
+                    break;
+                case 4:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm4);
+                    break;
+                case 5:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm5);
+                    break;
+                case 6:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm6);
+                    break;
+                case 7:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm7);
+                    break;
+                case 8:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm8);
+                    break;
+                case 9:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm9);
+                    break;
+            }
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setContentIntent(pendingIntent)

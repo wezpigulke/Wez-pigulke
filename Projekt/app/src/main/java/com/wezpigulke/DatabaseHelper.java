@@ -97,17 +97,79 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + UZYTKOWNICY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Imie TEXT, Obrazek INTEGER)");
-        db.execSQL("CREATE TABLE " + PRZYPOMNIENIE + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Lek Integer, Dawka TEXT, Ilosc_dni Integer, Profil TEXT, Typ INTEGER, Wszystkie_godziny TEXT)");
-        db.execSQL("CREATE TABLE " + HISTORIA + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Profil TEXT, Godzina TEXT, Data TEXT, Lek TEXT, Dawka TEXT, Godzina_akceptacji TEXT, Status TEXT)");
-        db.execSQL("CREATE TABLE " + NOTYFIKACJA + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, ID_przypomnienie INTEGER, Godzina TEXT, Data TEXT, Czy_aktywna BOOLEAN)");
-        db.execSQL("CREATE TABLE " + DOKTORZY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Imie_Nazwisko TEXT, Specjalizacja TEXT, Numer TEXT, Adres TEXT)");
-        db.execSQL("CREATE TABLE " + WIZYTY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Godzina TEXT, Data TEXT, Imie_Nazwisko TEXT, Specjalizacja TEXT, Profil TEXT)");
-        db.execSQL("CREATE TABLE " + POMIARY + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Typ TEXT, Wynik TEXT, Profil TEXT, Godzina TEXT, Data TEXT)");
-        db.execSQL("CREATE TABLE " + TYP_POMIAR + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Typ TEXT)");
-        db.execSQL("CREATE TABLE " + NOTATKI + " (ID INTEGER PRIMARY KEY AUTOINCREMENT, Tytul TEXT, Tresc TEXT, Profil TEXT, Data TEXT)");
-        db.execSQL("CREATE TABLE " + STATYSTYKI + " (ID INTEGER PRIMARY KEY, Wziete INTEGER, Niewziete INTEGER)");
-        db.execSQL("CREATE TABLE " + LEK + " (ID INTEGER PRIMARY KEY, Nazwa TEXT, Ilosc_tabletek TEXT)");
+        db.execSQL("CREATE TABLE " + UZYTKOWNICY + " (" +
+                "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Imie TEXT, " +
+                "Obrazek INTEGER)");
+
+        db.execSQL("CREATE TABLE " + PRZYPOMNIENIE + " (" +
+                "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Godzina TEXT, " +
+                "Data TEXT, " +
+                "Lek Integer, " +
+                "Dawka TEXT, " +
+                "Ilosc_dni Integer, " +
+                "Profil TEXT, " +
+                "Typ INTEGER, " +
+                "Wszystkie_godziny TEXT)");
+
+        db.execSQL("CREATE TABLE " + HISTORIA + " (" +
+                "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Profil TEXT, Godzina TEXT, " +
+                "Data TEXT, Lek TEXT, " +
+                "Dawka TEXT, " +
+                "Godzina_akceptacji TEXT, " +
+                "Status TEXT)");
+
+        db.execSQL("CREATE TABLE " + NOTYFIKACJA + " (" +
+                "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "ID_przypomnienie INTEGER, " +
+                "Godzina TEXT, " +
+                "Data TEXT, " +
+                "Czy_aktywna BOOLEAN)");
+
+        db.execSQL("CREATE TABLE " + DOKTORZY + " (" +
+                "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Imie_Nazwisko TEXT, " +
+                "Specjalizacja TEXT, " +
+                "Numer TEXT, " +
+                "Adres TEXT)");
+
+        db.execSQL("CREATE TABLE " + WIZYTY + " (" +
+                "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Godzina TEXT, Data TEXT, " +
+                "Imie_Nazwisko TEXT, " +
+                "Specjalizacja TEXT, " +
+                "Profil TEXT)");
+
+        db.execSQL("CREATE TABLE " + POMIARY + " (" +
+                "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Typ TEXT, " +
+                "Wynik TEXT, " +
+                "Profil TEXT, " +
+                "Godzina TEXT, " +
+                "Data TEXT)");
+
+        db.execSQL("CREATE TABLE " + TYP_POMIAR + " (" +
+                "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Typ TEXT)");
+
+        db.execSQL("CREATE TABLE " + NOTATKI + " (" +
+                "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Tytul TEXT, " +
+                "Tresc TEXT, " +
+                "Profil TEXT, " +
+                "Data TEXT)");
+
+        db.execSQL("CREATE TABLE " + STATYSTYKI + " (" +
+                "ID INTEGER PRIMARY KEY, " +
+                "Wziete INTEGER, " +
+                "Niewziete INTEGER)");
+
+        db.execSQL("CREATE TABLE " + LEK + " (" +
+                "ID INTEGER PRIMARY KEY, " +
+                "Nazwa TEXT, " +
+                "Ilosc_tabletek TEXT)");
     }
 
     @Override

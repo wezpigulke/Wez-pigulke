@@ -257,33 +257,43 @@ public class AddVisit extends AppCompatActivity {
                     case 0:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
                         mp.start();
+                        break;
                     case 1:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm2);
                         mp.start();
+                        break;
                     case 2:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm3);
                         mp.start();
+                        break;
                     case 3:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm4);
                         mp.start();
+                        break;
                     case 4:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm5);
                         mp.start();
+                        break;
                     case 5:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm6);
                         mp.start();
+                        break;
                     case 6:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm7);
                         mp.start();
+                        break;
                     case 7:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm8);
                         mp.start();
+                        break;
                     case 8:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm9);
                         mp.start();
+                        break;
                     case 9:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
                         mp.start();
+                        break;
                 }
 
             }

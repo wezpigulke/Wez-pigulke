@@ -285,33 +285,43 @@ public class AddReminder extends AppCompatActivity {
                     case 0:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
                         mp.start();
+                        break;
                     case 1:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm2);
                         mp.start();
+                        break;
                     case 2:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm3);
                         mp.start();
+                        break;
                     case 3:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm4);
                         mp.start();
+                        break;
                     case 4:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm5);
                         mp.start();
+                        break;
                     case 5:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm6);
                         mp.start();
+                        break;
                     case 6:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm7);
                         mp.start();
+                        break;
                     case 7:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm8);
                         mp.start();
+                        break;
                     case 8:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm9);
                         mp.start();
+                        break;
                     case 9:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
                         mp.start();
+                        break;
                 }
 
             }
@@ -375,31 +385,37 @@ public class AddReminder extends AppCompatActivity {
                     array.get(i).setVisibility(View.GONE);
                 }
 
-                if (position == 0) {
-                    coWybrane = 0;
-                    dataTabletka.setVisibility(View.VISIBLE);
-                    godzinaTabletka.setVisibility(View.VISIBLE);
-                } else if (position == 1) {
-                    coWybrane = 1;
-                    dataTabletka.setVisibility(View.VISIBLE);
-                    godzinaTabletka.setVisibility(View.VISIBLE);
-                    ileDni.setVisibility(View.VISIBLE);
-                } else if (position == 2) {
-                    coWybrane = 2;
-                    edt.setVisibility(View.GONE);
-                    spinnerCoIleGodzin.setVisibility(View.VISIBLE);
-                    setTime1.setVisibility(View.VISIBLE);
-                    setTime2.setVisibility(View.VISIBLE);
-                    ileDni.setVisibility(View.VISIBLE);
-                    dataTabletka.setVisibility(View.VISIBLE);
-                } else if (position == 3) {
-                    coWybrane = 3;
-                    edt.setVisibility(View.VISIBLE);
-                    dataTabletka.setVisibility(View.VISIBLE);
-                    godzinaTabletka.setVisibility(View.VISIBLE);
-                    ileDni.setVisibility(View.VISIBLE);
-                    spinnerCoIleGodzin.setVisibility(View.GONE);
+                switch(position) {
+                    case 0:
+                        coWybrane = 0;
+                        dataTabletka.setVisibility(View.VISIBLE);
+                        godzinaTabletka.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
+                        coWybrane = 1;
+                        dataTabletka.setVisibility(View.VISIBLE);
+                        godzinaTabletka.setVisibility(View.VISIBLE);
+                        ileDni.setVisibility(View.VISIBLE);
+                        break;
+                    case 2:
+                        coWybrane = 2;
+                        edt.setVisibility(View.GONE);
+                        spinnerCoIleGodzin.setVisibility(View.VISIBLE);
+                        setTime1.setVisibility(View.VISIBLE);
+                        setTime2.setVisibility(View.VISIBLE);
+                        ileDni.setVisibility(View.VISIBLE);
+                        dataTabletka.setVisibility(View.VISIBLE);
+                        break;
+                    case 3:
+                        coWybrane = 3;
+                        edt.setVisibility(View.VISIBLE);
+                        dataTabletka.setVisibility(View.VISIBLE);
+                        godzinaTabletka.setVisibility(View.VISIBLE);
+                        ileDni.setVisibility(View.VISIBLE);
+                        spinnerCoIleGodzin.setVisibility(View.GONE);
+                        break;
                 }
+
             }
 
             @Override
