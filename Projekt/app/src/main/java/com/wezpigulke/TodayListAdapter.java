@@ -39,9 +39,9 @@ public class TodayListAdapter extends BaseAdapter {
 
         @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.today_listview, null);
 
-        TextView medicineToday = v.findViewById(R.id.specializationVisit);
+        TextView medicineToday = v.findViewById(R.id.medicineReminder);
         TextView dateToday = v.findViewById(R.id.dateVisit);
-        TextView profileToday = v.findViewById(R.id.profileVisit);
+        TextView profileToday = v.findViewById(R.id.profileReminder);
 
         medicineToday.setText(results.get(position).getMedicine());
         dateToday.setText(results.get(position).getDate());

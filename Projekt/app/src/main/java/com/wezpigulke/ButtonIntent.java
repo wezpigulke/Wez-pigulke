@@ -22,6 +22,7 @@ public class ButtonIntent extends BroadcastReceiver {
 
             Integer id_h = intent.getIntExtra("id_h", 0);
             Integer id = intent.getIntExtra("id", 0);
+            Integer rand_val = intent.getIntExtra("rand_val", 0);
             String obecnyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
             Cursor cw = myDb.get_STATYSTYKI_WZIETE(0);
@@ -31,7 +32,8 @@ public class ButtonIntent extends BroadcastReceiver {
             myDb.update_HISTORIA(id_h, obecnyCzas, "WZIETE");
 
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.cancel(id);
+            assert manager != null;
+            manager.cancel(rand_val);
             Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
             context.sendBroadcast(it);
         } else if (coZrobic == 1) {
@@ -40,7 +42,8 @@ public class ButtonIntent extends BroadcastReceiver {
             Integer id = intent.getIntExtra("id", 0);
             String obecnyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
             String nazwaLeku = intent.getStringExtra("nazwaLeku");
-            String jakaDawka = intent.getStringExtra("jakaDawka");
+            Double jakaDawka = intent.getDoubleExtra("jakaDawka", 0);
+            Integer rand_val = intent.getIntExtra("rand_val", 0);
 
             Cursor cn = myDb.get_STATYSTYKI_NIEWZIETE(0);
             cn.moveToFirst();
@@ -48,13 +51,14 @@ public class ButtonIntent extends BroadcastReceiver {
 
             Cursor cl = myDb.getDataName_LEK(nazwaLeku);
             cl.moveToFirst();
-            double iloscLeku = Double.valueOf(cl.getString(2)) + Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
-            myDb.update_LEK(Integer.parseInt(cl.getString(0)), String.valueOf(iloscLeku));
+            double iloscLeku = cl.getDouble(2) + jakaDawka;
+            myDb.update_LEK(Integer.parseInt(cl.getString(0)), iloscLeku);
 
             myDb.update_HISTORIA(id_h, obecnyCzas, "NIEWZIETE");
 
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.cancel(id);
+            assert manager != null;
+            manager.cancel(rand_val);
             Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
             context.sendBroadcast(it);
 

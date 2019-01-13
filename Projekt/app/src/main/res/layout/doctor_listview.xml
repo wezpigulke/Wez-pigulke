@@ -11,7 +11,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/specializationVisit"
+        android:id="@+id/medicineReminder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -28,8 +28,8 @@
         android:id="@+id/dateVisit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/specializationVisit"
-        android:layout_alignLeft="@+id/profileVisit"
+        android:layout_below="@+id/medicineReminder"
+        android:layout_alignLeft="@+id/profileReminder"
         android:layout_alignParentStart="true"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="12dp"

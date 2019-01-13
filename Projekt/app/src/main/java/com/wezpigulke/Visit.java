@@ -8,13 +8,12 @@ public class Visit {
     private String date;
     private String address;
 
-    Visit(int id, String profile, String name, String specialization, String date, String address) {
+    Visit(int id, String profile, String name, String specialization, String date) {
         this.id = id;
         this.profile = profile;
         this.name = name;
         this.specialization = specialization;
         this.date = date;
-        this.address = address;
     }
 
     public int getId() {
@@ -55,14 +54,6 @@ public class Visit {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
 

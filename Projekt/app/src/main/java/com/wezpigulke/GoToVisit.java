@@ -194,7 +194,7 @@ public class GoToVisit extends Fragment {
 
         if (c.getCount() != 0) {
             while (c.moveToNext()) {
-                results.add(new Visit(c.getInt(0), c.getString(6), c.getString(3), c.getString(4), c.getString(1) + " | " + c.getString(2), c.getString(5)));
+                results.add(new Visit(c.getInt(0), c.getString(5), c.getString(3), c.getString(4), c.getString(1) + " | " + c.getString(2)));
             }
         }
 
@@ -206,11 +206,12 @@ public class GoToVisit extends Fragment {
     private void usunDane() {
         AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
 
-        int usunID = idd * 100000;
+        Cursor crand = myDb.getRand_WIZYTY(idd);
+        crand.moveToFirst();
 
         Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                getActivity(), usunID, myIntent,
+                getActivity(), crand.getInt(0), myIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         assert alarmManager != null;
         alarmManager.cancel(pendingIntent);

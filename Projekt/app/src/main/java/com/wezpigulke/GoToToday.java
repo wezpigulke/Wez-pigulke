@@ -172,7 +172,7 @@ public class GoToToday extends Fragment {
             long diffInMillis = Objects.requireNonNull(secondTime).getTime() - Objects.requireNonNull(firstTime).getTime();
 
             if (diffDays == 0 && diffInMillis >= 0) {
-                results.add(new Today(c.getInt(0), c.getString(1) + " (" + c.getString(2) + ")", "Godzina: " + c.getString(3), c.getString(4)));
+                results.add(new Today(c.getInt(0), c.getString(1) + " (Dawka: " + c.getString(2) + ")", "Godzina: " + c.getString(3), c.getString(4)));
             }
         }
 
@@ -245,10 +245,13 @@ public class GoToToday extends Fragment {
 
         myDb.updateDate_NOTYFIKACJA(id, dataJutrzejsza);
 
+        Cursor crand = myDb.getRand_NOTYFIKACJA(id);
+        crand.moveToFirst();
+
         AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
         Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                getActivity(), id, myIntent,
+                getActivity(), crand.getInt(0), myIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         assert alarmManager != null;
         alarmManager.cancel(pendingIntent);
@@ -266,8 +269,11 @@ public class GoToToday extends Fragment {
             Intent intx = new Intent(getContext(), NotificationReceiver.class);
             intx.putExtra("Value", uzytkownik + " " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + dawka + ")");
 
+            crand = myDb.getRand_NOTYFIKACJA(id);
+            crand.moveToFirst();
+
             pendingIntent = PendingIntent.getBroadcast(
-                    getContext(), id, intx,
+                    getContext(), crand.getInt(0), intx,
                     PendingIntent.FLAG_UPDATE_CURRENT);
 
             alarmManager = (AlarmManager) Objects.requireNonNull(getContext()).getSystemService(Context.ALARM_SERVICE);

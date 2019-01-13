@@ -39,7 +39,7 @@ public class DoctorListAdapter extends BaseAdapter {
 
         @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.doctor_listview, null);
 
-        TextView doctorName = v.findViewById(R.id.specializationVisit);
+        TextView doctorName = v.findViewById(R.id.medicineReminder);
         TextView specializationDoctor = v.findViewById(R.id.dateVisit);
         TextView address = v.findViewById(R.id.addressVisit);
 

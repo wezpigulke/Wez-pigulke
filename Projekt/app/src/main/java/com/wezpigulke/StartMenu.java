@@ -103,7 +103,7 @@ public class StartMenu extends AppCompatActivity {
             if (yourName.getText().toString().trim().length() > 0) {
 
                 if(ktoryObrazek == 0) {
-                    openDialog("Musisz wybrać jeden z avatarów(obrazków)");
+                    openDialog("Musisz wybrać jeden z avatarów");
                 } else {
                     myDb.insert_UZYTKOWNICY(yourName.getText().toString(), ktoryObrazek);
 

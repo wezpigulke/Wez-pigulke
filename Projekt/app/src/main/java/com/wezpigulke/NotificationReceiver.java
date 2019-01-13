@@ -37,9 +37,10 @@ public class NotificationReceiver extends BroadcastReceiver {
             String data = intent.getStringExtra("data");
             String uzytkownik = intent.getStringExtra("uzytkownik");
             String nazwaLeku = intent.getStringExtra("nazwaLeku");
-            String jakaDawka = intent.getStringExtra("jakaDawka");
+            Double jakaDawka = intent.getDoubleExtra("jakaDawka", 0);
             Integer iloscDni = intent.getIntExtra("iloscDni", 0);
             Integer wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
+            Integer rand_val = intent.getIntExtra("rand_val", 0);
 
             myDb.insert_HISTORIA(uzytkownik, godzina, data, nazwaLeku, jakaDawka, "BRAK", "BRAK");
 
@@ -61,10 +62,11 @@ public class NotificationReceiver extends BroadcastReceiver {
             repeating_intent.putExtra("nazwaLeku", nazwaLeku);
             repeating_intent.putExtra("jakaDawka", jakaDawka);
             repeating_intent.putExtra("iloscDni", iloscDni);
+            repeating_intent.putExtra("rand_val", rand_val);
 
             repeating_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, id_n, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, rand_val, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             Uri alarmSound;
             alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
@@ -91,7 +93,8 @@ public class NotificationReceiver extends BroadcastReceiver {
             yes.putExtra("coZrobic", 0);
             yes.putExtra("id_h", id_h);
             yes.putExtra("id", id_n);
-            PendingIntent yesIntent = PendingIntent.getBroadcast(context, id_n*100, yes, PendingIntent.FLAG_UPDATE_CURRENT);
+            yes.putExtra("rand_val", rand_val);
+            PendingIntent yesIntent = PendingIntent.getBroadcast(context, rand_val-1, yes, PendingIntent.FLAG_UPDATE_CURRENT);
 
             Intent no = new Intent(context, ButtonIntent.class);
             no.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -100,7 +103,8 @@ public class NotificationReceiver extends BroadcastReceiver {
             no.putExtra("id", id_n);
             no.putExtra("nazwaLeku", nazwaLeku);
             no.putExtra("jakaDawka", jakaDawka);
-            PendingIntent noIntent = PendingIntent.getBroadcast(context, id_n*101, no, PendingIntent.FLAG_UPDATE_CURRENT);
+            no.putExtra("rand_val", rand_val);
+            PendingIntent noIntent = PendingIntent.getBroadcast(context, rand_val-2, no, PendingIntent.FLAG_UPDATE_CURRENT);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setContentIntent(pendingIntent)
@@ -115,7 +119,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             builder.getNotification().flags |= NotificationCompat.FLAG_AUTO_CANCEL;
 
-            notificationManager.notify(id_n, builder.build());
+            notificationManager.notify(rand_val, builder.build());
 
             String dzisiaj = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
 
@@ -128,11 +132,11 @@ public class NotificationReceiver extends BroadcastReceiver {
             Cursor cl = myDb.getDataName_LEK(nazwaLeku);
             cl.moveToFirst();
 
-            double iloscLeku = Double.valueOf(cl.getString(2)) - Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
+            double iloscLeku = Double.valueOf(cl.getString(2)) - jakaDawka;
 
             if (iloscLeku < 0) iloscLeku = 0;
 
-            myDb.update_LEK(Integer.parseInt(cl.getString(0)), String.valueOf(iloscLeku));
+            myDb.update_LEK(Integer.parseInt(cl.getString(0)), iloscLeku);
             Integer id = Integer.parseInt(cl.getString(0));
 
             Cursor cp = myDb.getIDfromMedicine_PRZYPOMNIENIE(nazwaLeku);
@@ -153,8 +157,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                 Cursor csss = myDb.getDose_PRZYPOMNIENIE(cp.getInt(0));
                 csss.moveToFirst();
-                jakaDawkaS = csss.getString(0);
-                jakaDawkaTabletki = Double.valueOf(jakaDawkaS.substring(7, jakaDawkaS.length()));
+                jakaDawkaTabletki = csss.getDouble(0);
 
                 Cursor cssss = myDb.getDays_PRZYPOMNIENIE(cp.getInt(0));
                 cssss.moveToFirst();
@@ -182,25 +185,25 @@ public class NotificationReceiver extends BroadcastReceiver {
                 AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
                 Intent myIntent = new Intent(context, NotificationReceiver.class);
                 PendingIntent pendinIntent = PendingIntent.getBroadcast(
-                        context, id_n, myIntent,
+                        context, rand_val, myIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 assert alarmManager != null;
                 alarmManager.cancel(pendinIntent);
 
                 if (Integer.parseInt(cz.getString(0)) == 1) myDb.remove_PRZYPOMNIENIE(id_p);
-                myDb.updateActivation_NOTYFIKACJA(id_n, false);
+                myDb.remove_NOTYFIKACJA(id_n);
 
             } else {
 
                 if (Integer.parseInt(cz.getString(0)) == 1)
                     myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
-                myDb.updateActivation_NOTYFIKACJA(id_n, false);
+                myDb.remove_NOTYFIKACJA(id_n);
 
             }
 
             if (sumujTypy > iloscLeku) {
 
-                sumujTypy -= Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
+                sumujTypy -= jakaDawka;
 
                 notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -211,10 +214,11 @@ public class NotificationReceiver extends BroadcastReceiver {
                 repeating_intent.putExtra("nazwa", cl.getString(1));
                 repeating_intent.putExtra("ilosc", String.valueOf(iloscLeku));
                 repeating_intent.putExtra("sumujTypy", String.valueOf(sumujTypy));
+                repeating_intent.putExtra("rand_val", rand_val-3);
 
                 repeating_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                pendingIntent = PendingIntent.getActivity(context, id_n * 100, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                pendingIntent = PendingIntent.getActivity(context, rand_val-3, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
 
@@ -227,7 +231,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                         .setVibrate(new long[]{1000, 1000})
                         .setAutoCancel(true)
                         .setOnlyAlertOnce(true);
-                notificationManager.notify(id_n * 100, builder.build());
+                notificationManager.notify(rand_val-3, builder.build());
 
             }
         } else {
@@ -242,6 +246,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             String specjalizacja = intent.getStringExtra("specjalizacja");
             String uzytkownik = intent.getStringExtra("uzytkownik");
             Integer wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
+            Integer rand_val = intent.getIntExtra("rand_val", 0);
 
             notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -254,10 +259,11 @@ public class NotificationReceiver extends BroadcastReceiver {
             repeating_intent.putExtra("imie_nazwisko", imie_nazwisko);
             repeating_intent.putExtra("specjalizacja", specjalizacja);
             repeating_intent.putExtra("uzytkownik", uzytkownik);
+            repeating_intent.putExtra("rand_val", rand_val);
 
             repeating_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, id_v*100000, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, rand_val, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             Uri alarmSound;
             alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
@@ -301,7 +307,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                     .setVibrate(new long[]{1000, 1000})
                     .setAutoCancel(true)
                     .setOnlyAlertOnce(true);
-            notificationManager.notify(id_v*100000, builder.build());
+            notificationManager.notify(rand_val, builder.build());
 
         }
 

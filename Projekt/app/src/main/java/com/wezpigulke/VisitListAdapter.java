@@ -39,9 +39,9 @@ public class VisitListAdapter extends BaseAdapter {
 
         @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.visit_listview, null);
 
-        TextView profileVisit = v.findViewById(R.id.profileVisit);
+        TextView profileVisit = v.findViewById(R.id.profileReminder);
         TextView nameVisit = v.findViewById(R.id.nameVisit);
-        TextView specializationVisit = v.findViewById(R.id.specializationVisit);
+        TextView specializationVisit = v.findViewById(R.id.medicineReminder);
         TextView dateVisit = v.findViewById(R.id.dateVisit);
 
         profileVisit.setText(results.get(position).getProfile());

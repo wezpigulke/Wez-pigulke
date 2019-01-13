@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class ProfileListAdapter extends BaseAdapter {
 
         @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.profile_listview, null);
 
-        TextView profileName = v.findViewById(R.id.profileVisit);
+        TextView profileName = v.findViewById(R.id.profileReminder);
         ImageView profileImage = v.findViewById(R.id.imageView5);
 
         profileName.setText(results.get(position).getProfile());

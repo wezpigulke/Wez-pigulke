@@ -32,7 +32,7 @@ public class RepeatingActivityReminder extends Activity {
         String data = getIntent().getStringExtra("data");
         String uzytkownik = getIntent().getStringExtra("uzytkownik");
         String nazwaLeku = getIntent().getStringExtra("nazwaLeku");
-        String jakaDawka = getIntent().getStringExtra("jakaDawka");
+        Double jakaDawka = getIntent().getDoubleExtra("jakaDawka", 0);
         Integer iloscDni = getIntent().getIntExtra("iloscDni", 0);
         Integer id = getIntent().getIntExtra("id", 0);
         Integer id_h = getIntent().getIntExtra("id_h", 0);
@@ -60,7 +60,7 @@ public class RepeatingActivityReminder extends Activity {
             tProfil.setText(Html.fromHtml("Profil: " + "<b>" + uzytkownik + "</b> "));
             tData.setText(Html.fromHtml("Data: " + "<b>" + data + "</b> "));
             tPozostalo.setText(Html.fromHtml("Pozostało dni: " + "<b>" + iloscDni + "</b> "));
-            tDawka.setText(Html.fromHtml("Dawka: " + "<b>" + jakaDawka.substring(7, jakaDawka.length()) + "</b> "));
+            tDawka.setText(Html.fromHtml("Dawka: " + "<b>" + jakaDawka + "</b> "));
 
             b3.setOnClickListener(v -> {
 
@@ -70,8 +70,8 @@ public class RepeatingActivityReminder extends Activity {
 
                 Cursor cl = myDb.getDataName_LEK(nazwaLeku);
                 cl.moveToFirst();
-                double iloscLeku = Double.valueOf(cl.getString(2)) + Double.valueOf(jakaDawka.substring(7, jakaDawka.length()));
-                myDb.update_LEK(Integer.parseInt(cl.getString(0)), String.valueOf(iloscLeku));
+                double iloscLeku = cl.getDouble(2) + jakaDawka;
+                myDb.update_LEK(Integer.parseInt(cl.getString(0)), iloscLeku);
 
                 myDb.update_HISTORIA(id_h, obecnyCzas, "NIEWZIETE");
 
@@ -138,7 +138,7 @@ public class RepeatingActivityReminder extends Activity {
                 });
 
                 builder.setPositiveButton("OK", (dialog, which) -> {
-                    myDb.update_LEK(id, input.getText().toString());
+                    myDb.update_LEK(id, Double.valueOf(input.getText().toString()));
                     finish();
                     goHome();
                 });

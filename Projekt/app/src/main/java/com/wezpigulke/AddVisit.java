@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+import static java.lang.Integer.MAX_VALUE;
 import static java.util.Calendar.*;
 
 public class AddVisit extends AppCompatActivity {
@@ -208,12 +209,15 @@ public class AddVisit extends AppCompatActivity {
 
                 } else {
 
+                    Integer rand_val = random();
+
                     myDb.insert_WIZYTY(
                             godzina.getText().toString(),
                             data.getText().toString(),
                             name,
                             specialization,
-                            uzytkownik
+                            uzytkownik,
+                            rand_val
                     );
 
                     Cursor cw = myDb.getMAXid_WIZYTY();
@@ -233,8 +237,9 @@ public class AddVisit extends AppCompatActivity {
                     intxz.putExtra("specjalizacja", specialization);
                     intxz.putExtra("uzytkownik", uzytkownik);
                     intxz.putExtra("wybranyDzwiek", dzwiek);
+                    intxz.putExtra("rand_val", rand_val);
 
-                    PendingIntent pendingIntentt = PendingIntent.getBroadcast(getApplicationContext(), id, intxz, PendingIntent.FLAG_UPDATE_CURRENT);
+                    PendingIntent pendingIntentt = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intxz, PendingIntent.FLAG_UPDATE_CURRENT);
                     AlarmManager alarmManagerr = (AlarmManager) getSystemService(ALARM_SERVICE);
                     alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
 
@@ -288,10 +293,6 @@ public class AddVisit extends AppCompatActivity {
                         break;
                     case 8:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm9);
-                        mp.start();
-                        break;
-                    case 9:
-                        mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
                         mp.start();
                         break;
                 }
@@ -441,6 +442,9 @@ public class AddVisit extends AppCompatActivity {
         }
     }
 
-    ;
+    public static int random()
+    {
+        return (int) (Math.random() * (MAX_VALUE));
+    }
 
 }

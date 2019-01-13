@@ -31,7 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String NOTYFIKACJA_PRZYPOMNIENIE = "ID_przypomnienie";
     private static final String NOTYFIKACJA_GODZINA = "Godzina";
     private static final String NOTYFIKACJA_OSTATNIADATA = "Data";
-    private static final String NOTYFIKACJA_CZYAKTYWNA = "Czy_aktywna";
+    private static final String NOTYFIKACJA_RANDID = "Rand_ID";
 
     private static final String HISTORIA = "Historia";
     private static final String HISTORIA_ID = "ID";
@@ -57,6 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String WIZYTY_IMIE_I_NAZWISKO = "Imie_Nazwisko";
     private static final String WIZYTY_SPECJALIZACJA = "Specjalizacja";
     private static final String WIZYTY_PROFIL = "Profil";
+    private static final String WIZYTY_RAND = "Rand_ID";
 
     private static final String POMIARY = "Pomiary";
     private static final String POMIARY_ID = "ID";
@@ -106,18 +107,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "Godzina TEXT, " +
                 "Data TEXT, " +
-                "Lek Integer, " +
-                "Dawka TEXT, " +
-                "Ilosc_dni Integer, " +
+                "Lek TEXT, " +
+                "Dawka REAL, " +
+                "Ilosc_dni INTEGER, " +
                 "Profil TEXT, " +
                 "Typ INTEGER, " +
                 "Wszystkie_godziny TEXT)");
 
         db.execSQL("CREATE TABLE " + HISTORIA + " (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "Profil TEXT, Godzina TEXT, " +
-                "Data TEXT, Lek TEXT, " +
-                "Dawka TEXT, " +
+                "Profil TEXT, " +
+                "Godzina TEXT, " +
+                "Data TEXT, " +
+                "Lek TEXT, " +
+                "Dawka REAL, " +
                 "Godzina_akceptacji TEXT, " +
                 "Status TEXT)");
 
@@ -126,7 +129,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "ID_przypomnienie INTEGER, " +
                 "Godzina TEXT, " +
                 "Data TEXT, " +
-                "Czy_aktywna BOOLEAN)");
+                "Rand_ID INTEGER, " +
+                "FOREIGN KEY(ID_przypomnienie) REFERENCES Przypomnienie(ID))");
 
         db.execSQL("CREATE TABLE " + DOKTORZY + " (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -137,10 +141,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE " + WIZYTY + " (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "Godzina TEXT, Data TEXT, " +
+                "Godzina TEXT, " +
+                "Data TEXT, " +
                 "Imie_Nazwisko TEXT, " +
                 "Specjalizacja TEXT, " +
-                "Profil TEXT)");
+                "Profil TEXT, " +
+                "Rand_ID INTEGER)");
 
         db.execSQL("CREATE TABLE " + POMIARY + " (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -169,7 +175,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + LEK + " (" +
                 "ID INTEGER PRIMARY KEY, " +
                 "Nazwa TEXT, " +
-                "Ilosc_tabletek TEXT)");
+                "Ilosc_tabletek REAL)");
     }
 
     @Override
@@ -192,7 +198,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * ============ HISTORIA =============
      **/
 
-    public boolean insert_HISTORIA(String profil, String godzina, String data, String lek, String dawka, String godzinaAkceptacji, String status) {
+    public boolean insert_HISTORIA(String profil, String godzina, String data, String lek, Double dawka, String godzinaAkceptacji, String status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -245,7 +251,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * ============ STATYSTYKI =============
+     * ============ LEK =============
      **/
 
     public boolean insert_LEK(Integer id, String nazwa, String ilosc) {
@@ -310,7 +316,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean update_LEK(Integer id, String ilosc) {
+    public boolean update_LEK(Integer id, Double ilosc) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -396,14 +402,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * ============ NOTYFIKACJA ============
      **/
 
-    public boolean insert_NOTYFIKACJA(Integer przypomnienie, String godzina, String data, Boolean czyaktywna) {
+    public boolean insert_NOTYFIKACJA(Integer przypomnienie, String godzina, String data, Integer rand) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(NOTYFIKACJA_PRZYPOMNIENIE, przypomnienie);
         contentValues.put(NOTYFIKACJA_GODZINA, godzina);
         contentValues.put(NOTYFIKACJA_OSTATNIADATA, data);
-        contentValues.put(NOTYFIKACJA_CZYAKTYWNA, czyaktywna);
+        contentValues.put(NOTYFIKACJA_RANDID, rand);
 
         long result = db.insert(NOTYFIKACJA, null, contentValues);
         if (result == -1)
@@ -424,7 +430,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getUserData_NOTYFIKACJA(String user) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, A.Czy_aktywna B.Profil " +
+        Cursor res = db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, B.Profil " +
                 "FROM " + NOTYFIKACJA + " A " +
                 "INNER JOIN " + PRZYPOMNIENIE + " B " +
                 "ON " + "B.ID = A.ID_przypomnienie " +
@@ -437,8 +443,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("SELECT COUNT(ID) " +
                 "FROM " + NOTYFIKACJA +
                 " WHERE " + "ID_przypomnienie" + "=" + "'" + id + "'" +
-                " AND " + "Data" + "=" + "'" + data + "'" +
-                " AND " + "Czy_aktywna" + "=" + 1, null);
+                " AND " + "Data" + "=" + "'" + data + "'", null);
         return res;
     }
 
@@ -446,8 +451,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT COUNT(ID) " +
                 "FROM " + NOTYFIKACJA +
-                " WHERE " + "ID_przypomnienie" + "=" + "'" + id + "'" +
-                " AND " + "Czy_aktywna" + "=" + 1, null);
+                " WHERE " + "ID_przypomnienie" + "=" + "'" + id + "'", null);
         return res;
     }
 
@@ -458,8 +462,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "FROM " + NOTYFIKACJA + " A " +
                 "INNER JOIN " + PRZYPOMNIENIE + " B " +
                 "ON " + "B.ID = A.ID_przypomnienie " +
-                "WHERE " + " A.ID" + "=" + id +
-                " AND " + "Czy_aktywna" + "=" + 1, null);
+                "WHERE " + " A.ID" + "=" + id, null);
         return res;
     }
 
@@ -467,14 +470,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getID_NOTYFIKACJA(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT ID FROM " + NOTYFIKACJA +
-                " WHERE " + NOTYFIKACJA_PRZYPOMNIENIE + "=" + id +
-                " AND " + "Czy_aktywna" + "=" + 1, null);
+                " WHERE " + NOTYFIKACJA_PRZYPOMNIENIE + "=" + id, null);
         return res;
     }
 
     public Cursor getMAXid_NOTYFIKACJA() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID), 0) FROM " + NOTYFIKACJA, null);
+        return res;
+    }
+
+    public Cursor getRand_NOTYFIKACJA(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT Rand_ID FROM " + NOTYFIKACJA + " WHERE ID=" + id, null);
         return res;
     }
 
@@ -492,18 +500,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public boolean updateActivation_NOTYFIKACJA(Integer id, Boolean czyAktywna) {
+    public void remove_NOTYFIKACJA(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-
-        contentValues.put(NOTYFIKACJA_CZYAKTYWNA, czyAktywna);
-
-        long result = db.update(NOTYFIKACJA, contentValues, "ID=" + id, null);
-
-        if (result == -1)
-            return false;
-        else
-            return true;
+        db.delete(NOTYFIKACJA, NOTYFIKACJA_ID + "=" + id, null);
     }
 
     /**
@@ -723,12 +722,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getIdData_DOKTORZY(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + DOKTORZY + " WHERE ID=" + id, null);
-        return res;
-    }
-
     public Cursor getNumer_DOKTORZY(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT " + DOKTORZY_NUMER + " FROM " + DOKTORZY + " WHERE " + DOKTORZY_ID + "=" + id, null);
@@ -744,7 +737,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * ============ PRZYPOMNIENIE ============
      **/
 
-    public boolean insert_PRZYPOMNIENIE(String hour, String date, String medicine, String dawka, Integer days, String profile, Integer type, String alltime) {
+    public boolean insert_PRZYPOMNIENIE(String hour, String date, String medicine, Double dawka, Integer days, String profile, Integer type, String alltime) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -847,7 +840,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      **/
 
 
-    public boolean insert_WIZYTY(String godzina, String data, String dane, String specjalizacja, String profile) {
+    public boolean insert_WIZYTY(String godzina, String data, String dane, String specjalizacja, String profile, Integer rand) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(WIZYTY_GODZINA, godzina);
@@ -855,6 +848,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(WIZYTY_IMIE_I_NAZWISKO, dane);
         contentValues.put(WIZYTY_SPECJALIZACJA, specjalizacja);
         contentValues.put(WIZYTY_PROFIL, profile);
+        contentValues.put(WIZYTY_RAND, rand);
 
         long result = db.insert(WIZYTY, null, contentValues);
         if (result == -1)
@@ -881,15 +875,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getSelectedData_WIZYTY(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + WIZYTY + " WHERE id=" + id, null);
-        return res;
-    }
-
     public Cursor getMAXid_WIZYTY() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT MAX(ID) FROM " + WIZYTY, null);
+        return res;
+    }
+
+    public Cursor getRand_WIZYTY(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT Rand_ID FROM " + WIZYTY + " WHERE ID=" + id, null);
         return res;
     }
 

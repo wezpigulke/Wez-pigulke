@@ -129,13 +129,16 @@ public class GoToProfiles extends Fragment {
                                 Integer id_p = Integer.valueOf(cp.getString(0));
                                 final Cursor cn = myDb.getID_NOTYFIKACJA(id_p);
 
+                                Cursor crand = myDb.getRand_NOTYFIKACJA(cn.getInt(0));
+                                crand.moveToFirst();
+
                                 if (cn.getCount() != 0) {
                                     while (cn.moveToNext()) {
 
                                         AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
                                         Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
                                         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                                getActivity(), Integer.parseInt(cn.getString(0)), myIntent,
+                                                getActivity(), crand.getInt(0), myIntent,
                                                 PendingIntent.FLAG_UPDATE_CURRENT);
                                         assert alarmManager != null;
                                         alarmManager.cancel(pendingIntent);
@@ -150,15 +153,14 @@ public class GoToProfiles extends Fragment {
                         if (cw.getCount() != 0) {
                             while (cw.moveToNext()) {
 
-                                Integer id_w = Integer.parseInt(cw.getString(0));
-
-                                int usunID = id_w * 100000;
+                                Cursor crand = myDb.getRand_NOTYFIKACJA(cw.getInt(0));
+                                crand.moveToFirst();
 
                                 AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
                                 Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                        getActivity(), usunID, myIntent,
+                                        getActivity(), crand.getInt(0), myIntent,
                                         PendingIntent.FLAG_UPDATE_CURRENT);
                                 assert alarmManager != null;
                                 alarmManager.cancel(pendingIntent);

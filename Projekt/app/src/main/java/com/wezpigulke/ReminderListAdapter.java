@@ -39,10 +39,10 @@ public class ReminderListAdapter extends BaseAdapter {
 
         @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.reminder_listview, null);
 
-        TextView medicineName = v.findViewById(R.id.specializationVisit);
+        TextView medicineName = v.findViewById(R.id.medicineReminder);
         TextView dateMedicine = v.findViewById(R.id.dateVisit);
         TextView howManyDays = v.findViewById(R.id.howManyDays);
-        TextView profileName = v.findViewById(R.id.profileVisit);
+        TextView profileName = v.findViewById(R.id.profileReminder);
 
         medicineName.setText(results.get(position).getMedicine());
         dateMedicine.setText(results.get(position).getDate());

@@ -108,7 +108,7 @@ public class GoToMedicine extends Fragment {
             builder.setView(input);
 
             builder.setPositiveButton("OK", (dialog, which) -> {
-                myDb.update_LEK(id_l, input.getText().toString());
+                myDb.update_LEK(id_l, Double.valueOf(input.getText().toString()));
                 AktualizujBaze();
             });
             builder.setNegativeButton("Anuluj", (dialog, which) -> {

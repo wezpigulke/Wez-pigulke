@@ -11,7 +11,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/profileVisit"
+        android:id="@+id/profileReminder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -23,10 +23,10 @@
         android:text="Nazwa profilu" />
 
     <TextView
-        android:id="@+id/specializationVisit"
+        android:id="@+id/medicineReminder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/profileVisit"
+        android:layout_below="@+id/profileReminder"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginStart="00dp"
@@ -40,8 +40,8 @@
         android:id="@+id/dateVisit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/specializationVisit"
-        android:layout_alignLeft="@+id/profileVisit"
+        android:layout_below="@+id/medicineReminder"
+        android:layout_alignLeft="@+id/profileReminder"
         android:layout_alignParentStart="true"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="20dp"

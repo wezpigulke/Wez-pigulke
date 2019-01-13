@@ -148,7 +148,7 @@ public class GoToReminder extends Fragment {
                 if (Integer.parseInt(c.getString(5)) <= 0) {
                     myDb.remove_PRZYPOMNIENIE(c.getInt(0));
                 }
-                results.add(new Reminder(c.getInt(0), c.getString(3) + " (" + c.getString(4) + ")", c.getString(8), "Pozostało dni: " + c.getString(5), c.getString(6)));
+                results.add(new Reminder(c.getInt(0), c.getString(3) + " (Dawka: " + c.getString(4) + ")", c.getString(8), "Pozostało dni: " + c.getString(5), c.getString(6)));
             }
         }
 
@@ -177,16 +177,18 @@ public class GoToReminder extends Fragment {
         if (c.getCount() != 0) {
             while (c.moveToNext()) {
 
+                Cursor crand = myDb.getRand_NOTYFIKACJA(c.getInt(0));
+                crand.moveToFirst();
+
                 AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
                 Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                        getActivity(), Integer.parseInt(c.getString(0)), myIntent,
+                        getActivity(), crand.getInt(0), myIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 assert alarmManager != null;
                 alarmManager.cancel(pendingIntent);
 
-                myDb.updateActivation_NOTYFIKACJA(Integer.parseInt(c.getString(0)), false);
-
+                myDb.remove_NOTYFIKACJA(c.getInt(0));
 
             }
         }
