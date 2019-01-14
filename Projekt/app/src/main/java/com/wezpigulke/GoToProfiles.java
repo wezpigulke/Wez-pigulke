@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,6 +144,9 @@ public class GoToProfiles extends Fragment {
                                         assert alarmManager != null;
                                         alarmManager.cancel(pendingIntent);
 
+                                        Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
+
+
                                     }
                                 }
                             }
@@ -164,6 +168,9 @@ public class GoToProfiles extends Fragment {
                                         PendingIntent.FLAG_UPDATE_CURRENT);
                                 assert alarmManager != null;
                                 alarmManager.cancel(pendingIntent);
+
+                                Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
+
 
                             }
                         }

@@ -104,7 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Obrazek INTEGER)");
 
         db.execSQL("CREATE TABLE " + PRZYPOMNIENIE + " (" +
-                "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "ID INTEGER PRIMARY KEY, " +
                 "Godzina TEXT, " +
                 "Data TEXT, " +
                 "Lek TEXT, " +
@@ -136,7 +136,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "Imie_Nazwisko TEXT, " +
                 "Specjalizacja TEXT, " +
-                "Numer TEXT, " +
+                "Numer INTEGER, " +
                 "Adres TEXT)");
 
         db.execSQL("CREATE TABLE " + WIZYTY + " (" +
@@ -476,7 +476,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getMAXid_NOTYFIKACJA() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID), 0) FROM " + NOTYFIKACJA, null);
+        Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID), -1) FROM " + NOTYFIKACJA, null);
         return res;
     }
 
@@ -503,6 +503,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void remove_NOTYFIKACJA(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(NOTYFIKACJA, NOTYFIKACJA_ID + "=" + id, null);
+    }
+
+    public void removeIDprz_NOTYFIKACJA(Integer id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(NOTYFIKACJA, NOTYFIKACJA_PRZYPOMNIENIE + "=" + id, null);
     }
 
     /**
@@ -702,7 +707,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * ============ DOKTORZY ============
      **/
 
-    public boolean insert_DOKTORZY(String name, String specialization, String phone_number, String address) {
+    public boolean insert_DOKTORZY(String name, String specialization, Integer phone_number, String address) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(DOKTORZY_IMIE_I_NAZWISKO, name);
@@ -737,10 +742,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * ============ PRZYPOMNIENIE ============
      **/
 
-    public boolean insert_PRZYPOMNIENIE(String hour, String date, String medicine, Double dawka, Integer days, String profile, Integer type, String alltime) {
+    public boolean insert_PRZYPOMNIENIE(Integer id, String hour, String date, String medicine, Double dawka, Integer days, String profile, Integer type, String alltime) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
+        contentValues.put(PRZYPOMNIENIE_ID, id);
         contentValues.put(PRZYPOMNIENIE_GODZINA, hour);
         contentValues.put(PRZYPOMNIENIE_DATA, date);
         contentValues.put(PRZYPOMNIENIE_LEK, medicine);
@@ -807,7 +813,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getMAXid_PRZYPOMNIENIE() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID), 0) FROM " + PRZYPOMNIENIE, null);
+        Cursor res = db.rawQuery("SELECT IFNULL(MAX(ID), -1) FROM " + PRZYPOMNIENIE, null);
         return res;
     }
 

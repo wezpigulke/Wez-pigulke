@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -187,6 +188,8 @@ public class GoToReminder extends Fragment {
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 assert alarmManager != null;
                 alarmManager.cancel(pendingIntent);
+
+                Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
 
                 myDb.remove_NOTYFIKACJA(c.getInt(0));
 

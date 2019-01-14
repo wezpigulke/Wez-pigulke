@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -213,8 +214,17 @@ public class GoToVisit extends Fragment {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 getActivity(), crand.getInt(0), myIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
-        assert alarmManager != null;
         alarmManager.cancel(pendingIntent);
+
+        Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
+
+        myIntent = new Intent(getActivity(), NotificationReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(
+                getActivity(), crand.getInt(0)+1, myIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(pendingIntent);
+
+        Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)+1), Toast.LENGTH_LONG).show();
 
         myDb.remove_WIZYTY(idd);
 

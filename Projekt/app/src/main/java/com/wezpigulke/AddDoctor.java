@@ -36,19 +36,20 @@ public class AddDoctor extends AppCompatActivity {
 
         add.setOnClickListener(v -> {
 
-            if (name.getText().length() > 0 && specialization.getText().length() > 0) {
+            if (name.getText().length() > 0 && specialization.getText().length() > 0 && phone_number.getText().length()==9) {
 
                 myDb.insert_DOKTORZY(
                         name.getText().toString(),
                         specialization.getText().toString(),
-                        phone_number.getText().toString(),
+                        Integer.valueOf(phone_number.getText().toString()),
                         address.getText().toString()
                 );
 
+                onBackPressed();
+
             } else if (name.getText().length() == 0) openDialog("Wpisz imie i nazwisko lekarza");
-            else if (specialization.getText().length() == 0)
-                openDialog("Wpisz specjalizacje lekarza");
-            onBackPressed();
+            else if (specialization.getText().length() == 0) openDialog("Wpisz specjalizacje lekarza");
+            else if (phone_number.getText().length() != 9) openDialog("Wpisz prawidłowy numer telefonu, który zawiera 9 cyfr");
         });
     }
 

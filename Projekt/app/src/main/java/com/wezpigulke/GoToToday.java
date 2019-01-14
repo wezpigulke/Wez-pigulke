@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,7 +40,7 @@ public class GoToToday extends Fragment {
     private ArrayList<String> label;
     private String uzytkownik;
     private String nazwaLeku;
-    private String dawka;
+    private Double dawka;
     private String godzina;
     private String data;
     private Integer idd;
@@ -183,7 +184,6 @@ public class GoToToday extends Fragment {
 
     }
 
-    @SuppressLint("ShortAlarm")
     private void usunDane() throws ParseException {
 
         myDb = new DatabaseHelper(getActivity());
@@ -198,10 +198,9 @@ public class GoToToday extends Fragment {
         if (ccc.getCount() != 0) {
             while (ccc.moveToNext()) {
                 nazwaLeku = ccc.getString(1);
-                dawka = ccc.getString(2);
+                dawka = ccc.getDouble(2);
                 godzina = ccc.getString(3);
                 data = ccc.getString(4);
-                String profil = ccc.getString(5);
                 id = Integer.parseInt(ccc.getString(6));
                 id_p = Integer.parseInt(ccc.getString(7));
                 typ = Integer.parseInt(ccc.getString(8));
@@ -243,10 +242,11 @@ public class GoToToday extends Fragment {
 
         cz.add(Calendar.DATE, typ);
 
-        myDb.updateDate_NOTYFIKACJA(id, dataJutrzejsza);
-
         Cursor crand = myDb.getRand_NOTYFIKACJA(id);
         crand.moveToFirst();
+
+        if(dni > 1) myDb.updateDate_NOTYFIKACJA(id, dataJutrzejsza);
+        else myDb.remove_NOTYFIKACJA(id);
 
         AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
         Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
@@ -255,6 +255,8 @@ public class GoToToday extends Fragment {
                 PendingIntent.FLAG_UPDATE_CURRENT);
         assert alarmManager != null;
         alarmManager.cancel(pendingIntent);
+
+        Toast.makeText(getContext(), "Anulacja: " + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
 
         Cursor policz = myDb.getCount_NOTYFIKACJA(id_p, dzisiejszaData);
         int ile = 0;
@@ -279,6 +281,8 @@ public class GoToToday extends Fragment {
             alarmManager = (AlarmManager) Objects.requireNonNull(getContext()).getSystemService(Context.ALARM_SERVICE);
             assert alarmManager != null;
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cz.getTimeInMillis(), AlarmManager.INTERVAL_DAY * typ, pendingIntent);
+
+            Toast.makeText(getContext(), "Dodanie: " + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
 
             if (ile == 0) myDb.updateDays_PRZYPOMNIENIE(id_p, dni - 1);
 

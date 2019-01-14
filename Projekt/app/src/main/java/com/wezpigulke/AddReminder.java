@@ -80,6 +80,7 @@ public class AddReminder extends AppCompatActivity {
     private Integer labelSizeCopy;
     private Boolean czyWlasnaDawka;
     private String wlasnaDawka;
+    private Integer czyPetlaPoszla;
 
     private TextView setTime1;
     private TimePickerDialog.OnTimeSetListener setTime1Listener;
@@ -119,6 +120,7 @@ public class AddReminder extends AppCompatActivity {
 
         coWybrane = 0;
         ileRazyDziennie = 2;
+        czyPetlaPoszla = 0;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_reminder);
@@ -531,7 +533,13 @@ public class AddReminder extends AppCompatActivity {
                             }
                         }
 
+                        Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
+                        cx.moveToFirst();
+                        idd = Integer.parseInt(cx.getString(0));
+                        idd++;
+
                         myDb.insert_PRZYPOMNIENIE(
+                                idd,
                                 godzinaTabletka.getText().toString(),
                                 dataPrzypomnienia,
                                 nazwaLeku,
@@ -573,6 +581,8 @@ public class AddReminder extends AppCompatActivity {
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
                         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+
+                        Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
 
                         goBack();
 
@@ -650,7 +660,14 @@ public class AddReminder extends AppCompatActivity {
                         }
 
                         if (coWybrane == 1 && iloscDni >= 1) {
+
+                            Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
+                            cx.moveToFirst();
+                            idd = Integer.parseInt(cx.getString(0));
+                            idd++;
+
                             myDb.insert_PRZYPOMNIENIE(
+                                    idd,
                                     godzinaTabletka.getText().toString(),
                                     dataPrzypomnienia,
                                     nazwaLeku,
@@ -660,10 +677,6 @@ public class AddReminder extends AppCompatActivity {
                                     1,
                                     "Codziennie: " + godzinaTabletka.getText().toString()
                             );
-
-                            Cursor cc = myDb.getMAXid_PRZYPOMNIENIE();
-                            cc.moveToFirst();
-                            idd = Integer.parseInt(cc.getString(0));
 
                             Integer rand_val = random();
 
@@ -692,9 +705,18 @@ public class AddReminder extends AppCompatActivity {
                             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY * coIleDni, pendingIntent);
 
+                            Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
+
                         } else if (coWybrane == 3 && iloscDni >= 1) {
 
+
+                            Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
+                            cx.moveToFirst();
+                            idd = Integer.parseInt(cx.getString(0));
+                            idd++;
+
                             myDb.insert_PRZYPOMNIENIE(
+                                    idd,
                                     godzinaTabletka.getText().toString(),
                                     dataPrzypomnienia,
                                     nazwaLeku,
@@ -713,10 +735,6 @@ public class AddReminder extends AppCompatActivity {
                                     id = Integer.parseInt(czz.getString(0)) + 1;
                                 }
                             }
-
-                            Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
-                            cx.moveToFirst();
-                            idd = Integer.parseInt(cx.getString(0));
 
                             Integer rand_val = random();
 
@@ -746,6 +764,8 @@ public class AddReminder extends AppCompatActivity {
                             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY * coIleDni, pendingIntent);
 
+                            Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
+
                         }
 
                         goBack();
@@ -753,6 +773,8 @@ public class AddReminder extends AppCompatActivity {
                     }
 
                 } else if (coWybrane == 2) {
+
+                    czyPetlaPoszla = 0;
 
                     for (Integer i = 1; i <= ileRazyDziennie; i++) {
 
@@ -840,11 +862,21 @@ public class AddReminder extends AppCompatActivity {
                         String[] wszystkie = wszystkieGodziny.replaceAll(" ", "").split(",");
                         String najwyzszaGodzina = Stream.of(wszystkie).max(String::compareTo).get();
 
+                        Integer id = -1;
+                        Integer idd = -1;
+
                         if (i.equals(ileRazyDziennie)) {
                             if (czyUsunacDzien == 1) {
                                 iloscDni--;
                             }
+
+                            Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
+                            cx.moveToFirst();
+                            idd = Integer.parseInt(cx.getString(0));
+                            idd++;
+
                             myDb.insert_PRZYPOMNIENIE(
+                                    idd,
                                     najwyzszaGodzina,
                                     dataPrzypomnienia,
                                     nazwaLeku,
@@ -854,29 +886,20 @@ public class AddReminder extends AppCompatActivity {
                                     1,
                                     String.valueOf(ileRazyDziennie) + " razy dziennie: " + wszystkieGodziny
                             );
+                            czyPetlaPoszla = 1;
                         }
-
-                        Integer id = -1;
-                        Integer idd = -1;
 
                         Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
-
-                        if (c1.getCount() != 0) {
-                            while (c1.moveToNext()) {
-                                id = Integer.parseInt(c1.getString(0)) + 1;
-                            }
-                        }
+                        c1.moveToFirst();
+                        id = Integer.parseInt(c1.getString(0)) + 1;
 
                         Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
+                        cx.moveToFirst();
+                        idd = Integer.parseInt(cx.getString(0));
 
-                        if (cx.getCount() != 0) {
-                            while (cx.moveToNext()) {
-                                idd = Integer.parseInt(cx.getString(0)) + 1;
-                                if(idd!=1 && i.equals(ileRazyDziennie)) idd--;
-                            }
-                        }
+                        if(czyPetlaPoszla!=1) idd++;
 
-                        if (czyUsunacDzien != 1 && iloscDni <= 1) {
+                        if (czyUsunacDzien != 1 && iloscDni >= 1) {
 
                             Integer rand_val = random();
 
@@ -904,6 +927,8 @@ public class AddReminder extends AppCompatActivity {
                             PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
                             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
+                            Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
 
                         }
 

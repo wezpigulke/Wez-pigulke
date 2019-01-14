@@ -4,10 +4,10 @@ public class Doctor {
     private int id;
     private String name;
     private String specialization;
-    private String phone;
+    private Integer phone;
     private String address;
 
-    public Doctor(int id, String name, String specialization, String phone, String address) {
+    public Doctor(int id, String name, String specialization, Integer phone, String address) {
         this.id = id;
         this.name = name;
         this.specialization = specialization;
@@ -39,11 +39,11 @@ public class Doctor {
         this.specialization = specialize;
     }
 
-    public String getPhone() {
+    public Integer getPhone() {
         return phone;
     }
 
-    public void setPhone(String phoneNumer) {
+    public void setPhone(Integer phoneNumer) {
         this.phone = phoneNumer;
     }
 

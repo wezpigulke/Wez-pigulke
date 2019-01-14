@@ -144,8 +144,6 @@ public class AddVisit extends AppCompatActivity {
                     name = listTemp[0];
                     specialization = listTemp[1];
 
-                    Toast.makeText(getApplicationContext(), name + specialization, Toast.LENGTH_LONG).show();
-
                 }
 
             }
@@ -167,27 +165,19 @@ public class AddVisit extends AppCompatActivity {
 
                 cal.set(year, month - 1, day, hour, minutes, 0);
 
-                String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-                String dzisiejszyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                SimpleDateFormat tdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                String dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
 
                 Date firstDate = null;
                 Date secondDate = null;
 
-                Date firstTime = null;
-                Date secondTime = null;
-
                 try {
                     firstDate = sdf.parse(dzisiejszaData);
-                    firstTime = tdf.parse(dzisiejszyCzas);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 try {
-                    secondDate = sdf.parse(data.getText().toString());
-                    secondTime = tdf.parse(godzina.getText().toString());
+                    secondDate = sdf.parse(godzina.getText().toString() + " " + data.getText().toString());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -196,14 +186,8 @@ public class AddVisit extends AppCompatActivity {
                 assert firstDate != null;
 
                 long diff = secondDate.getTime() - firstDate.getTime();
-                long diffDays = diff / (24 * 60 * 60 * 1000);
 
-                assert secondTime != null;
-                assert firstTime != null;
-
-                long diffInMillis = secondTime.getTime() - firstTime.getTime();
-
-                if (diffDays == 0 && diffInMillis < 0) {
+                if (diff < 0) {
 
                     openDialog("Godzina dzisiejszego powiadomienia minęła, wybierz inną godzinę lub ustaw przyszłą datę");
 
@@ -220,16 +204,15 @@ public class AddVisit extends AppCompatActivity {
                             rand_val
                     );
 
+
                     Cursor cw = myDb.getMAXid_WIZYTY();
                     cw.moveToFirst();
                     Integer id = Integer.valueOf(cw.getString(0));
 
                     Intent intxz = new Intent(getApplicationContext(), NotificationReceiver.class);
 
-                    cal.add(Calendar.HOUR_OF_DAY, -6);
-
                     intxz.putExtra("coPokazac", 1);
-                    intxz.putExtra("Value", uzytkownik + "  |  wizyta u " + name + " o " + godzina.getText().toString());
+                    intxz.putExtra("Value", uzytkownik + "  |  wizyta u " + name + " jutro o " + godzina.getText().toString());
                     intxz.putExtra("id", id);
                     intxz.putExtra("godzina", godzina.getText().toString());
                     intxz.putExtra("data", data.getText().toString());
@@ -239,9 +222,30 @@ public class AddVisit extends AppCompatActivity {
                     intxz.putExtra("wybranyDzwiek", dzwiek);
                     intxz.putExtra("rand_val", rand_val);
 
+                    cal.add(Calendar.DATE, -1);
+
+                    if(diff > 86400000) {
+
+                        PendingIntent pendingIntentt = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intxz, PendingIntent.FLAG_UPDATE_CURRENT);
+                        AlarmManager alarmManagerr = (AlarmManager) getSystemService(ALARM_SERVICE);
+                        alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
+
+                        Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
+
+                    }
+
+                    rand_val++;
+                    intxz.putExtra("Value", uzytkownik + "  |  wizyta u " + name + " o " + godzina.getText().toString());
+                    intxz.putExtra("rand_val", rand_val);
+
+                    cal.add(Calendar.DATE, +1);
+                    cal.add(Calendar.HOUR_OF_DAY, -3);
+
                     PendingIntent pendingIntentt = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intxz, PendingIntent.FLAG_UPDATE_CURRENT);
                     AlarmManager alarmManagerr = (AlarmManager) getSystemService(ALARM_SERVICE);
                     alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
+
+                    Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
 
                     onBackPressed();
 

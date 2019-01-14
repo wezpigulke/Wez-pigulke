@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -132,7 +133,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             Cursor cl = myDb.getDataName_LEK(nazwaLeku);
             cl.moveToFirst();
 
-            double iloscLeku = Double.valueOf(cl.getString(2)) - jakaDawka;
+            double iloscLeku = cl.getDouble(2) - jakaDawka;
 
             if (iloscLeku < 0) iloscLeku = 0;
 
@@ -141,7 +142,6 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             Cursor cp = myDb.getIDfromMedicine_PRZYPOMNIENIE(nazwaLeku);
             Double ileNotyfikacji, typPrzypomnienia, pozostalaIloscDni;
-            String jakaDawkaS;
             Double sumujTypy = 0.0;
             Double jakaDawkaTabletki = 0.0;
 
@@ -190,6 +190,8 @@ public class NotificationReceiver extends BroadcastReceiver {
                 assert alarmManager != null;
                 alarmManager.cancel(pendinIntent);
 
+                Toast.makeText(context, "Anulacja:" + String.valueOf(rand_val), Toast.LENGTH_LONG).show();
+
                 if (Integer.parseInt(cz.getString(0)) == 1) myDb.remove_PRZYPOMNIENIE(id_p);
                 myDb.remove_NOTYFIKACJA(id_n);
 
@@ -212,7 +214,6 @@ public class NotificationReceiver extends BroadcastReceiver {
                 repeating_intent.putExtra("coPokazac", 1);
                 repeating_intent.putExtra("id", id);
                 repeating_intent.putExtra("nazwa", cl.getString(1));
-                repeating_intent.putExtra("ilosc", String.valueOf(iloscLeku));
                 repeating_intent.putExtra("sumujTypy", String.valueOf(sumujTypy));
                 repeating_intent.putExtra("rand_val", rand_val-3);
 

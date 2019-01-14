@@ -66,6 +66,7 @@
                 android:gravity="center"
                 android:ems="10"
                 android:hint="Numer telefonu"
+                android:maxLength="9"
                 android:inputType="number"
                 android:textCursorDrawable="@android:color/holo_blue_light"
                 app:layout_constraintBottom_toTopOf="@+id/button"
