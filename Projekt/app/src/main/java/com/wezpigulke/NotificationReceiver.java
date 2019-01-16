@@ -49,7 +49,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             String godzina = intent.getStringExtra("godzina");
 
             Cursor col = myDb.getdataID_NOTYFIKACJA(id_n);
-            if(col.getCount() !=0 ) {
+            if (col.getCount() != 0) {
                 col.moveToNext();
                 data = col.getString(4);
                 iloscDni = col.getInt(9);
@@ -79,7 +79,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             long diff = 0;
             long diffCopy = 0;
 
-            if(secondDate!=null && firstDate!=null) {
+            if (secondDate != null && firstDate != null) {
                 diff = secondDate.getTime() - firstDate.getTime();
                 diffCopy = diff;
             }
@@ -111,10 +111,10 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                     while (diff <= 0) {
 
-                        if (iloscDni <= 0) {
+                        if (iloscDni == 0) {
 
                             Cursor crand = myDb.getRand_NOTYFIKACJA(id_n);
-                            if(crand.getCount() != 0) {
+                            if (crand.getCount() != 0) {
 
                                 crand.moveToFirst();
 
@@ -135,7 +135,9 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                             myDb.remove_NOTYFIKACJA(id_n);
 
-                            if(cw.getInt(0) == 1) myDb.remove_PRZYPOMNIENIE(id_p);
+                            if (cw.getInt(0) == 1) myDb.remove_PRZYPOMNIENIE(id_p);
+
+                            return;
 
                         } else {
 
@@ -183,7 +185,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                         cee.moveToNext();
                         Cursor ceee = myDb.getCountType_NOTYFIKACJA(id_p);
                         ceee.moveToNext();
-                        if(cee.getInt(0)==ceee.getInt(0)) {
+                        if (cee.getInt(0) == ceee.getInt(0)) {
                             myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
                         }
                     }
@@ -192,7 +194,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             }
 
-            if(diffCopy >= 0) {
+            if (diffCopy >= 0) {
 
                 myDb.insert_HISTORIA(uzytkownik, godzina, data, nazwaLeku, jakaDawka, "BRAK", "BRAK");
 
@@ -273,170 +275,169 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                 notificationManager.notify(rand_val, builder.build());
 
-            }
+                Cursor cd = myDb.getDays_PRZYPOMNIENIE(id_p);
+                cd.moveToFirst();
 
-            Cursor cd = myDb.getDays_PRZYPOMNIENIE(id_p);
-            cd.moveToFirst();
+                Cursor cl = myDb.getDataName_LEK(nazwaLeku);
+                cl.moveToFirst();
 
-            Cursor cl = myDb.getDataName_LEK(nazwaLeku);
-            cl.moveToFirst();
+                double iloscLeku = cl.getDouble(2) - jakaDawka;
 
-            double iloscLeku = cl.getDouble(2) - jakaDawka;
+                if (iloscLeku < 0) iloscLeku = 0;
 
-            if (iloscLeku < 0) iloscLeku = 0;
+                myDb.update_LEK(cl.getInt(0), iloscLeku);
+                Integer id = Integer.parseInt(cl.getString(0));
 
-            myDb.update_LEK(cl.getInt(0), iloscLeku);
-            Integer id = Integer.parseInt(cl.getString(0));
+                Cursor cp = myDb.getIDfromMedicine_PRZYPOMNIENIE(nazwaLeku);
+                Double ileNotyfikacji, typPrzypomnienia, pozostalaIloscDni;
+                Double sumujTypy = 0.0;
+                Double jakaDawkaTabletki = 0.0;
 
-            Cursor cp = myDb.getIDfromMedicine_PRZYPOMNIENIE(nazwaLeku);
-            Double ileNotyfikacji, typPrzypomnienia, pozostalaIloscDni;
-            Double sumujTypy = 0.0;
-            Double jakaDawkaTabletki = 0.0;
+                while (cp.moveToNext()) {
 
-            while (cp.moveToNext()) {
+                    Cursor csa = myDb.getCountType_NOTYFIKACJA(cp.getInt(0));
+                    csa.moveToFirst();
+                    ileNotyfikacji = Double.parseDouble(csa.getString(0));
 
-                Cursor csa = myDb.getCountType_NOTYFIKACJA(cp.getInt(0));
-                csa.moveToFirst();
-                ileNotyfikacji = Double.parseDouble(csa.getString(0));
+                    Cursor css = myDb.getType_PRZYPOMNIENIE(cp.getInt(0));
+                    css.moveToFirst();
+                    typPrzypomnienia = Double.parseDouble(css.getString(0));
 
-                Cursor css = myDb.getType_PRZYPOMNIENIE(cp.getInt(0));
-                css.moveToFirst();
-                typPrzypomnienia = Double.parseDouble(css.getString(0));
+                    Cursor cssss = myDb.getDays_PRZYPOMNIENIE(cp.getInt(0));
+                    cssss.moveToFirst();
+                    pozostalaIloscDni = Double.parseDouble(cssss.getString(0));
 
-                Cursor cssss = myDb.getDays_PRZYPOMNIENIE(cp.getInt(0));
-                cssss.moveToFirst();
-                pozostalaIloscDni = Double.parseDouble(cssss.getString(0));
+                    if (typPrzypomnienia > 1) {
 
-                if (typPrzypomnienia > 1) {
+                        if (pozostalaIloscDni <= 7)
+                            sumujTypy += ((1 / typPrzypomnienia) * jakaDawkaTabletki) * pozostalaIloscDni;
+                        else sumujTypy += ((1 / typPrzypomnienia) * jakaDawkaTabletki) * 7;
 
-                    if (pozostalaIloscDni <= 7)
-                        sumujTypy += ((1 / typPrzypomnienia) * jakaDawkaTabletki) * pozostalaIloscDni;
-                    else sumujTypy += ((1 / typPrzypomnienia) * jakaDawkaTabletki) * 7;
+                    } else {
 
-                } else {
+                        if (pozostalaIloscDni <= 7)
+                            sumujTypy += (typPrzypomnienia * ileNotyfikacji * jakaDawkaTabletki) * pozostalaIloscDni;
+                        else
+                            sumujTypy += (typPrzypomnienia * ileNotyfikacji * jakaDawkaTabletki) * 7;
+                    }
 
-                    if (pozostalaIloscDni <= 7)
-                        sumujTypy += (typPrzypomnienia * ileNotyfikacji * jakaDawkaTabletki) * pozostalaIloscDni;
-                    else sumujTypy += (typPrzypomnienia * ileNotyfikacji * jakaDawkaTabletki) * 7;
+                }
+
+                sumujTypy -= jakaDawkaTabletki;
+
+                if (sumujTypy > iloscLeku) {
+
+                    sumujTypy -= jakaDawka;
+
+                    notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                    repeating_intent = new Intent(context, RepeatingActivityReminder.class);
+
+                    repeating_intent.putExtra("coPokazac", 1);
+                    repeating_intent.putExtra("id", id);
+                    repeating_intent.putExtra("nazwa", cl.getString(1));
+                    repeating_intent.putExtra("sumujTypy", String.valueOf(sumujTypy));
+                    repeating_intent.putExtra("rand_val", rand_val - 3);
+
+                    repeating_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                    pendingIntent = PendingIntent.getActivity(context, rand_val - 3, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
+
+                    builder = new NotificationCompat.Builder(context)
+                            .setContentIntent(pendingIntent)
+                            .setSmallIcon(R.drawable.logo)
+                            .setContentTitle("Weź pigułke")
+                            .setContentText("UWAGA | Pozostało tylko " + String.valueOf(iloscLeku) + " tabletek leku " + cl.getString(1))
+                            .setSound(alarmSound)
+                            .setVibrate(new long[]{1000, 1000})
+                            .setAutoCancel(true)
+                            .setOnlyAlertOnce(true);
+                    notificationManager.notify(rand_val - 3, builder.build());
+
                 }
 
             }
 
-            sumujTypy -= jakaDawkaTabletki;
+        } else {
 
-        if (sumujTypy > iloscLeku) {
+            String powiadomienie = intent.getStringExtra("Value");
 
-            sumujTypy -= jakaDawka;
+            Integer id_v = intent.getIntExtra("id", 0);
+            Integer war = intent.getIntExtra("war", 0);
+            String godzina = intent.getStringExtra("godzina");
+            String data = intent.getStringExtra("data");
+            String imie_nazwisko = intent.getStringExtra("imie_nazwisko");
+            String specjalizacja = intent.getStringExtra("specjalizacja");
+            String uzytkownik = intent.getStringExtra("uzytkownik");
+            Integer wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
+            Integer rand_val = intent.getIntExtra("rand_val", 0);
 
             notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            Intent repeating_intent = new Intent(context, RepeatingActivityReminder.class);
+            Intent repeating_intent = new Intent(context, RepeatingActivityVisit.class);
 
-            repeating_intent.putExtra("coPokazac", 1);
-            repeating_intent.putExtra("id", id);
-            repeating_intent.putExtra("nazwa", cl.getString(1));
-            repeating_intent.putExtra("sumujTypy", String.valueOf(sumujTypy));
-            repeating_intent.putExtra("rand_val", rand_val - 3);
+            repeating_intent.putExtra("id", id_v);
+            repeating_intent.putExtra("war", war);
+            repeating_intent.putExtra("godzina", godzina);
+            repeating_intent.putExtra("data", data);
+            repeating_intent.putExtra("imie_nazwisko", imie_nazwisko);
+            repeating_intent.putExtra("specjalizacja", specjalizacja);
+            repeating_intent.putExtra("uzytkownik", uzytkownik);
+            repeating_intent.putExtra("rand_val", rand_val);
 
             repeating_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, rand_val - 3, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, rand_val, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            Uri alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
+            Uri alarmSound;
+            alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
+
+            switch (wybranyDzwiek) {
+                case 1:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
+                    break;
+                case 2:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
+                    break;
+                case 3:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm3);
+                    break;
+                case 4:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm4);
+                    break;
+                case 5:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm5);
+                    break;
+                case 6:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm6);
+                    break;
+                case 7:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm7);
+                    break;
+                case 8:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm8);
+                    break;
+                case 9:
+                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm9);
+                    break;
+            }
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setContentIntent(pendingIntent)
                     .setSmallIcon(R.drawable.logo)
                     .setContentTitle("Weź pigułke")
-                    .setContentText("UWAGA | Pozostało tylko " + String.valueOf(iloscLeku) + " tabletek leku " + cl.getString(1))
+                    .setContentText(powiadomienie)
                     .setSound(alarmSound)
                     .setVibrate(new long[]{1000, 1000})
                     .setAutoCancel(true)
                     .setOnlyAlertOnce(true);
-            notificationManager.notify(rand_val - 3, builder.build());
+            notificationManager.notify(rand_val, builder.build());
 
         }
-    }
-    else
-    {
-
-        String powiadomienie = intent.getStringExtra("Value");
-
-        Integer id_v = intent.getIntExtra("id", 0);
-        Integer war = intent.getIntExtra("war", 0);
-        String godzina = intent.getStringExtra("godzina");
-        String data = intent.getStringExtra("data");
-        String imie_nazwisko = intent.getStringExtra("imie_nazwisko");
-        String specjalizacja = intent.getStringExtra("specjalizacja");
-        String uzytkownik = intent.getStringExtra("uzytkownik");
-        Integer wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
-        Integer rand_val = intent.getIntExtra("rand_val", 0);
-
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        Intent repeating_intent = new Intent(context, RepeatingActivityVisit.class);
-
-        repeating_intent.putExtra("id", id_v);
-        repeating_intent.putExtra("war", war);
-        repeating_intent.putExtra("godzina", godzina);
-        repeating_intent.putExtra("data", data);
-        repeating_intent.putExtra("imie_nazwisko", imie_nazwisko);
-        repeating_intent.putExtra("specjalizacja", specjalizacja);
-        repeating_intent.putExtra("uzytkownik", uzytkownik);
-        repeating_intent.putExtra("rand_val", rand_val);
-
-        repeating_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, rand_val, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Uri alarmSound;
-        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
-
-        switch (wybranyDzwiek) {
-            case 1:
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
-                break;
-            case 2:
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
-                break;
-            case 3:
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm3);
-                break;
-            case 4:
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm4);
-                break;
-            case 5:
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm5);
-                break;
-            case 6:
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm6);
-                break;
-            case 7:
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm7);
-                break;
-            case 8:
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm8);
-                break;
-            case 9:
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm9);
-                break;
-        }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setContentIntent(pendingIntent)
-                .setSmallIcon(R.drawable.logo)
-                .setContentTitle("Weź pigułke")
-                .setContentText(powiadomienie)
-                .setSound(alarmSound)
-                .setVibrate(new long[]{1000, 1000})
-                .setAutoCancel(true)
-                .setOnlyAlertOnce(true);
-        notificationManager.notify(rand_val, builder.build());
 
     }
-
-
-}
 
 }
 
