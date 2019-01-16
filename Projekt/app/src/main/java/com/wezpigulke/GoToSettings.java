@@ -1,7 +1,10 @@
 package com.wezpigulke;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -95,7 +98,51 @@ public class GoToSettings extends Fragment {
         DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
+
+                    Cursor c = myDb.getAllData_NOTYFIKACJA();
+
+                    if(c.getCount() != 0) {
+                        while(c.moveToNext()) {
+                            Cursor crand = myDb.getRand_NOTYFIKACJA(c.getInt(0));
+                            crand.moveToFirst();
+
+                            AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
+                            Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                                    getActivity(), crand.getInt(0), myIntent,
+                                    PendingIntent.FLAG_UPDATE_CURRENT);
+                            assert alarmManager != null;
+                            alarmManager.cancel(pendingIntent);
+                        }
+                    }
+
+                    Cursor cw = myDb.getAllData_WIZYTY();
+
+                    if(cw.getCount() != 0) {
+                        while(cw.moveToNext()) {
+                            AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
+
+                            Cursor crand = myDb.getRand_WIZYTY(cw.getInt(0));
+                            crand.moveToFirst();
+
+                            Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                                    getActivity(), crand.getInt(0), myIntent,
+                                    PendingIntent.FLAG_UPDATE_CURRENT);
+                            alarmManager.cancel(pendingIntent);
+
+                            Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
+
+                            myIntent = new Intent(getActivity(), NotificationReceiver.class);
+                            pendingIntent = PendingIntent.getBroadcast(
+                                    getActivity(), crand.getInt(0)+1, myIntent,
+                                    PendingIntent.FLAG_UPDATE_CURRENT);
+                            alarmManager.cancel(pendingIntent);
+                        }
+                    }
+
                     myDb.removeData(getActivity());
+
                     System.exit(0);
                     break;
 

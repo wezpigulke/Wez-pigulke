@@ -245,7 +245,7 @@ public class GoToToday extends Fragment {
         Cursor crand = myDb.getRand_NOTYFIKACJA(id);
         crand.moveToFirst();
 
-        if(dni > 1) myDb.updateDate_NOTYFIKACJA(id, dataJutrzejsza);
+        if (dni > 1) myDb.updateDate_NOTYFIKACJA(id, dataJutrzejsza);
         else myDb.remove_NOTYFIKACJA(id);
 
         AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);

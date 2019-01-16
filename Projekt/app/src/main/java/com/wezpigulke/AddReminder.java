@@ -523,15 +523,7 @@ public class AddReminder extends AppCompatActivity {
                     else {
 
                         Integer id = 0;
-                        Integer idd;
-
-                        Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
-
-                        if (c1.getCount() != 0) {
-                            while (c1.moveToNext()) {
-                                id = Integer.parseInt(c1.getString(0)) + 1;
-                            }
-                        }
+                        Integer idd = 0;
 
                         Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
                         cx.moveToFirst();
@@ -562,6 +554,13 @@ public class AddReminder extends AppCompatActivity {
                                 dataPrzypomnienia,
                                 rand_val
                         );
+
+                        Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
+
+                        if (c1.getCount() != 0) {
+                            c1.moveToNext();
+                            id = Integer.parseInt(c1.getString(0));
+                        }
 
                         Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
 
@@ -649,15 +648,8 @@ public class AddReminder extends AppCompatActivity {
                     }
                     else {
 
-                        Integer id = null, idd = null;
-
-                        Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
-
-                        if (c1.getCount() != 0) {
-                            while (c1.moveToNext()) {
-                                id = Integer.parseInt(c1.getString(0)) + 1;
-                            }
-                        }
+                        Integer id = 0;
+                        Integer idd = 0;
 
                         if (coWybrane == 1 && iloscDni >= 1) {
 
@@ -686,6 +678,13 @@ public class AddReminder extends AppCompatActivity {
                                     dataPrzypomnienia,
                                     rand_val
                             );
+
+                            Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
+
+                            if (c1.getCount() != 0) {
+                                c1.moveToNext();
+                                id = Integer.parseInt(c1.getString(0));
+                            }
 
                             Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
                             intx.putExtra("coPokazac", 0);
@@ -727,6 +726,16 @@ public class AddReminder extends AppCompatActivity {
                                     "Co " + String.valueOf(coIleDni) + " dni: " + godzinaTabletka.getText().toString()
                             );
 
+                            Integer rand_val = random();
+
+                            String dt = dataPrzypomnienia;
+
+                            myDb.insert_NOTYFIKACJA(
+                                    idd,
+                                    godzinaPrzypomnienia,
+                                    dataPrzypomnienia,
+                                    rand_val
+                            );
 
                             Cursor czz = myDb.getMAXid_NOTYFIKACJA();
 
@@ -735,16 +744,6 @@ public class AddReminder extends AppCompatActivity {
                                     id = Integer.parseInt(czz.getString(0)) + 1;
                                 }
                             }
-
-                            Integer rand_val = random();
-
-                            String dt = dataPrzypomnienia;
-                            myDb.insert_NOTYFIKACJA(
-                                    idd,
-                                    godzinaPrzypomnienia,
-                                    dataPrzypomnienia,
-                                    rand_val
-                            );
 
                             Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
                             intx.putExtra("coPokazac", 0);
@@ -889,10 +888,6 @@ public class AddReminder extends AppCompatActivity {
                             czyPetlaPoszla = 1;
                         }
 
-                        Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
-                        c1.moveToFirst();
-                        id = Integer.parseInt(c1.getString(0)) + 1;
-
                         Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
                         cx.moveToFirst();
                         idd = Integer.parseInt(cx.getString(0));
@@ -909,6 +904,10 @@ public class AddReminder extends AppCompatActivity {
                                     dataPrzypomnienia,
                                     rand_val
                             );
+
+                            Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
+                            c1.moveToFirst();
+                            id = Integer.parseInt(c1.getString(0));
 
                             Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
                             intx.putExtra("Value", uzytkownik + " |  " + godzinaPrzypomnienia + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");

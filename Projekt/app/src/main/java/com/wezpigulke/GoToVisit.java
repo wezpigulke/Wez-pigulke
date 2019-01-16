@@ -97,48 +97,45 @@ public class GoToVisit extends Fragment {
     public void onResume() {
 
         super.onResume();
-        AktualizujBaze();
 
         myDb = new DatabaseHelper(getActivity());
         Cursor c = myDb.getAllData_WIZYTY();
 
-        String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-        String dzisiejszyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        SimpleDateFormat tdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-
-        Date firstDate = null;
-        Date secondDate = null;
-
-        Date firstTime = null;
-        Date secondTime = null;
+        String dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
 
         if (c.getCount() != 0) {
             while (c.moveToNext()) {
+
+                Date firstDate = null;
+                Date secondDate = null;
+
                 try {
                     firstDate = sdf.parse(dzisiejszaData);
-                    firstTime = tdf.parse(dzisiejszyCzas);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 try {
-                    secondDate = sdf.parse(c.getString(2));
-                    secondTime = tdf.parse(c.getString(1));
+                    secondDate = sdf.parse(c.getString(1) + " " + c.getString(2));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                long diff = Objects.requireNonNull(secondDate).getTime() - Objects.requireNonNull(firstDate).getTime();
-                long diffDays = diff / (24 * 60 * 60 * 1000);
-                long diffInMillis = Objects.requireNonNull(secondTime).getTime() - Objects.requireNonNull(firstTime).getTime();
 
-                if (diffDays <= 0 && diffInMillis < 0) {
+                assert secondDate != null;
+                assert firstDate != null;
+
+                long diff = secondDate.getTime() - firstDate.getTime();
+
+                if (diff < 0) {
+
                     myDb.remove_WIZYTY(c.getInt(0));
-                    AktualizujBaze();
+
                 }
+
             }
         }
 
+        AktualizujBaze();
 
         loadSpinnerData();
 

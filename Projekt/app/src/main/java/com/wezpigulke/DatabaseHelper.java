@@ -420,7 +420,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getAllData_NOTYFIKACJA() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, B.Profil " +
+        Cursor res = db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, B.Profil, A.ID_przypomnienie " +
                         "FROM " + NOTYFIKACJA + " A " +
                         "INNER JOIN " + PRZYPOMNIENIE + " B " +
                         "ON " + "B.ID = A.ID_przypomnienie"
