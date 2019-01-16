@@ -62,13 +62,13 @@ public class AddReminder extends AppCompatActivity {
     private Spinner spinnerNazwaLeku;
     private ArrayList<String> labelDawka;
     private ArrayList<String> labelReminder;
-    private ArrayList<String> labelCoIleGodzin;
+    private ArrayList<String> labelIleRazyDziennie;
     private ArrayList<String> labelDzwiek;
     private ArrayList<String> labelNazwaLeku;
     ArrayList<TextView> array;
     private Double jakaDawka;
     private Integer iloscDni;
-    private Spinner spinnerCoIleGodzin;
+    private Spinner spinnerIleRazyDziennie;
     private Integer coWybrane;
     private Integer ileRazyDziennie;
     private Integer coIleDni;
@@ -114,7 +114,7 @@ public class AddReminder extends AppCompatActivity {
         label = new ArrayList<>();
         labelDawka = new ArrayList<>();
         labelReminder = new ArrayList<>();
-        labelCoIleGodzin = new ArrayList<>();
+        labelIleRazyDziennie = new ArrayList<>();
         labelDzwiek = new ArrayList<>();
         labelNazwaLeku = new ArrayList<>();
 
@@ -196,7 +196,7 @@ public class AddReminder extends AppCompatActivity {
         dataTabletka.setText(date);
         godzinaTabletka.setText(time);
 
-        spinnerCoIleGodzin = findViewById(R.id.spinnerCoIleGodzin);
+        spinnerIleRazyDziennie = findViewById(R.id.spinnerCoIleGodzin);
 
         for (int i = 0; i < 12; i++) {
             array.get(i).setText("00:00");
@@ -211,7 +211,7 @@ public class AddReminder extends AppCompatActivity {
         loadSpinnerData();
         loadSpinnerDawka();
         loadSpinnerReminder();
-        loadSpinnerCoIleGodzin();
+        loadSpinnerIleRazyDziennie();
         loadSpinnerDzwiek();
         loadSpinnerNazwaLeku();
 
@@ -220,7 +220,7 @@ public class AddReminder extends AppCompatActivity {
         dataTabletka.setVisibility(View.GONE);
         godzinaTabletka.setVisibility(View.GONE);
         ileDni.setVisibility(View.GONE);
-        spinnerCoIleGodzin.setVisibility(View.GONE);
+        spinnerIleRazyDziennie.setVisibility(View.GONE);
         edt.setVisibility(View.GONE);
 
         for (int i = 0; i < 12; i++) {
@@ -249,7 +249,7 @@ public class AddReminder extends AppCompatActivity {
             }
         });
 
-        spinnerCoIleGodzin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerIleRazyDziennie.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
@@ -409,11 +409,54 @@ public class AddReminder extends AppCompatActivity {
                 spinner.setVisibility(View.GONE);
                 dalej.setVisibility(View.GONE);
                 spinnerDzwiek.setVisibility(View.GONE);
-                coWybrane = 0;
-                dataTabletka.setVisibility(View.VISIBLE);
-                godzinaTabletka.setVisibility(View.VISIBLE);
+
                 spinnerReminder.setVisibility(View.VISIBLE);
                 dodaj.setVisibility(View.VISIBLE);
+
+                for (int i = 0; i < 12; i++) {
+                    array.get(i).setVisibility(View.GONE);
+                }
+
+                int position = spinnerReminder.getSelectedItemPosition();
+
+                switch(position) {
+                    case 0:
+                        coWybrane = 0;
+                        dataTabletka.setVisibility(View.VISIBLE);
+                        godzinaTabletka.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
+                        coWybrane = 1;
+                        dataTabletka.setVisibility(View.VISIBLE);
+                        godzinaTabletka.setVisibility(View.VISIBLE);
+                        ileDni.setVisibility(View.VISIBLE);
+                        break;
+                    case 2:
+                        coWybrane = 2;
+                        edt.setVisibility(View.GONE);
+                        spinnerIleRazyDziennie.setVisibility(View.VISIBLE);
+                        setTime1.setVisibility(View.VISIBLE);
+                        setTime2.setVisibility(View.VISIBLE);
+                        ileDni.setVisibility(View.VISIBLE);
+                        dataTabletka.setVisibility(View.VISIBLE);
+
+                        Integer positionHowManyTimes = spinnerIleRazyDziennie.getSelectedItemPosition();
+
+                        for (int i = 0; i < positionHowManyTimes + 2; i++) {
+                            ileRazyDziennie = positionHowManyTimes + 2;
+                            array.get(i).setVisibility(View.VISIBLE);
+                        }
+
+                        break;
+                    case 3:
+                        coWybrane = 3;
+                        edt.setVisibility(View.VISIBLE);
+                        dataTabletka.setVisibility(View.VISIBLE);
+                        godzinaTabletka.setVisibility(View.VISIBLE);
+                        ileDni.setVisibility(View.VISIBLE);
+                        spinnerIleRazyDziennie.setVisibility(View.GONE);
+                        break;
+                }
 
             }
 
@@ -426,7 +469,7 @@ public class AddReminder extends AppCompatActivity {
                 dataTabletka.setVisibility(View.GONE);
                 godzinaTabletka.setVisibility(View.GONE);
                 ileDni.setVisibility(View.GONE);
-                spinnerCoIleGodzin.setVisibility(View.GONE);
+                spinnerIleRazyDziennie.setVisibility(View.GONE);
                 edt.setVisibility(View.GONE);
 
                 for (int i = 0; i < 12; i++) {
@@ -447,8 +490,9 @@ public class AddReminder extends AppCompatActivity {
                         break;
                     case 2:
                         coWybrane = 2;
+                        spinnerIleRazyDziennie.setSelection(0);
                         edt.setVisibility(View.GONE);
-                        spinnerCoIleGodzin.setVisibility(View.VISIBLE);
+                        spinnerIleRazyDziennie.setVisibility(View.VISIBLE);
                         setTime1.setVisibility(View.VISIBLE);
                         setTime2.setVisibility(View.VISIBLE);
                         ileDni.setVisibility(View.VISIBLE);
@@ -460,7 +504,7 @@ public class AddReminder extends AppCompatActivity {
                         dataTabletka.setVisibility(View.VISIBLE);
                         godzinaTabletka.setVisibility(View.VISIBLE);
                         ileDni.setVisibility(View.VISIBLE);
-                        spinnerCoIleGodzin.setVisibility(View.GONE);
+                        spinnerIleRazyDziennie.setVisibility(View.GONE);
                         break;
                 }
 
@@ -1215,15 +1259,15 @@ public class AddReminder extends AppCompatActivity {
 
     }
 
-    private void loadSpinnerCoIleGodzin() {
+    private void loadSpinnerIleRazyDziennie() {
 
         for (int i = 2; i <= 12; i++) {
-            labelCoIleGodzin.add(String.valueOf(i) + " razy dziennie");
+            labelIleRazyDziennie.add(String.valueOf(i) + " razy dziennie");
         }
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, labelCoIleGodzin);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, labelIleRazyDziennie);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCoIleGodzin.setAdapter(dataAdapter);
+        spinnerIleRazyDziennie.setAdapter(dataAdapter);
 
     }
 
@@ -1303,10 +1347,11 @@ public class AddReminder extends AppCompatActivity {
             super.onBackPressed();
             finish();
         } else {
+
             dataTabletka.setVisibility(View.GONE);
             godzinaTabletka.setVisibility(View.GONE);
             ileDni.setVisibility(View.GONE);
-            spinnerCoIleGodzin.setVisibility(View.GONE);
+            spinnerIleRazyDziennie.setVisibility(View.GONE);
             edt.setVisibility(View.GONE);
 
             for (int i = 0; i < 12; i++) {

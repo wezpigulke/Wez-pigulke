@@ -362,6 +362,12 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         } else {
 
+            String dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
+
+            Date firstDate = null;
+            Date secondDate = null;
+
             String powiadomienie = intent.getStringExtra("Value");
 
             Integer id_v = intent.getIntExtra("id", 0);
@@ -374,66 +380,115 @@ public class NotificationReceiver extends BroadcastReceiver {
             Integer wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
             Integer rand_val = intent.getIntExtra("rand_val", 0);
 
-            notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-            Intent repeating_intent = new Intent(context, RepeatingActivityVisit.class);
-
-            repeating_intent.putExtra("id", id_v);
-            repeating_intent.putExtra("war", war);
-            repeating_intent.putExtra("godzina", godzina);
-            repeating_intent.putExtra("data", data);
-            repeating_intent.putExtra("imie_nazwisko", imie_nazwisko);
-            repeating_intent.putExtra("specjalizacja", specjalizacja);
-            repeating_intent.putExtra("uzytkownik", uzytkownik);
-            repeating_intent.putExtra("rand_val", rand_val);
-
-            repeating_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, rand_val, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            Uri alarmSound;
-            alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
-
-            switch (wybranyDzwiek) {
-                case 1:
-                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
-                    break;
-                case 2:
-                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
-                    break;
-                case 3:
-                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm3);
-                    break;
-                case 4:
-                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm4);
-                    break;
-                case 5:
-                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm5);
-                    break;
-                case 6:
-                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm6);
-                    break;
-                case 7:
-                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm7);
-                    break;
-                case 8:
-                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm8);
-                    break;
-                case 9:
-                    alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm9);
-                    break;
+            try {
+                firstDate = sdf.parse(dzisiejszaData);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            try {
+                secondDate = sdf.parse(godzina + " " + data);
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                    .setContentIntent(pendingIntent)
-                    .setSmallIcon(R.drawable.logo)
-                    .setContentTitle("Weź pigułke")
-                    .setContentText(powiadomienie)
-                    .setSound(alarmSound)
-                    .setVibrate(new long[]{1000, 1000})
-                    .setAutoCancel(true)
-                    .setOnlyAlertOnce(true);
-            notificationManager.notify(rand_val, builder.build());
+            long diff = 0;
+
+            if (secondDate != null && firstDate != null) {
+                diff = secondDate.getTime() - firstDate.getTime();
+            }
+
+            if (diff < 0) {
+
+                Cursor crand = myDb.getRand_WIZYTY(id_v);
+                if (crand.getCount() != 0) {
+
+                    crand.moveToFirst();
+
+                    AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(context).getSystemService(Context.ALARM_SERVICE);
+                    Intent myIntent = new Intent(context, NotificationReceiver.class);
+                    PendingIntent removeIntent = PendingIntent.getBroadcast(
+                            context, crand.getInt(0), myIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+                    assert alarmManager != null;
+                    alarmManager.cancel(removeIntent);
+
+                    Toast.makeText(context, "Anulacja: " + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
+
+                    removeIntent = PendingIntent.getBroadcast(
+                            context, crand.getInt(0) + 1, myIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+                    alarmManager.cancel(removeIntent);
+
+                    Toast.makeText(context, "Anulacja: " + String.valueOf(crand.getInt(0) + 1), Toast.LENGTH_LONG).show();
+
+                    myDb.remove_WIZYTY(id_v);
+
+                }
+
+            } else {
+
+                notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                Intent repeating_intent = new Intent(context, RepeatingActivityVisit.class);
+
+                repeating_intent.putExtra("id", id_v);
+                repeating_intent.putExtra("war", war);
+                repeating_intent.putExtra("godzina", godzina);
+                repeating_intent.putExtra("data", data);
+                repeating_intent.putExtra("imie_nazwisko", imie_nazwisko);
+                repeating_intent.putExtra("specjalizacja", specjalizacja);
+                repeating_intent.putExtra("uzytkownik", uzytkownik);
+                repeating_intent.putExtra("rand_val", rand_val);
+
+                repeating_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, rand_val, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                Uri alarmSound;
+                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
+
+                switch (wybranyDzwiek) {
+                    case 1:
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
+                        break;
+                    case 2:
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
+                        break;
+                    case 3:
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm3);
+                        break;
+                    case 4:
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm4);
+                        break;
+                    case 5:
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm5);
+                        break;
+                    case 6:
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm6);
+                        break;
+                    case 7:
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm7);
+                        break;
+                    case 8:
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm8);
+                        break;
+                    case 9:
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm9);
+                        break;
+                }
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                        .setContentIntent(pendingIntent)
+                        .setSmallIcon(R.drawable.logo)
+                        .setContentTitle("Weź pigułke")
+                        .setContentText(powiadomienie)
+                        .setSound(alarmSound)
+                        .setVibrate(new long[]{1000, 1000})
+                        .setAutoCancel(true)
+                        .setOnlyAlertOnce(true);
+                notificationManager.notify(rand_val, builder.build());
+
+            }
 
         }
 
