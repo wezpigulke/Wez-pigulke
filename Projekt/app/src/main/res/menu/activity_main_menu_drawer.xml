@@ -19,7 +19,7 @@
             android:title="Baza leków" />
         <item
             android:id="@+id/listOfDoctors"
-            android:icon="@drawable/doctor"
+            android:icon="@drawable/doctor_menu"
             android:title="Lista lekarzy" />
         <item
             android:id="@+id/listOfVisit"

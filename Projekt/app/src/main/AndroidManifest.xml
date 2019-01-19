@@ -17,7 +17,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name="com.wezpigulke.StartMenu"
+            android:name="com.wezpigulke.Welcome.GoToWelcome"
             android:label="Weź pigułkę"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
@@ -28,72 +28,72 @@
         </activity>
 
         <activity
-            android:name="com.wezpigulke.MainMenu"
+            android:name="com.wezpigulke.SideMenu.SideMenu"
             android:label="Dzisiaj"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.AddReminder"
+            android:name="com.wezpigulke.Reminder.AddReminder"
             android:label="Dodawanie przypomnienia"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.AddDoctor"
+            android:name="com.wezpigulke.Doctor.AddDoctor"
             android:label="Dodaj lekarza"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.AddProfile"
+            android:name="com.wezpigulke.Profiles.AddProfile"
             android:label="Dodaj profil"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.AddVisit"
+            android:name="com.wezpigulke.Visit.AddVisit"
             android:label="Dodaj wizytę"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.AddMedicine"
+            android:name="com.wezpigulke.Medicine.AddMedicine"
             android:label="Dodaj lek"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.AddNotes"
+            android:name="com.wezpigulke.Notes.AddNotes"
             android:configChanges="orientation"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.AddMeasurement"
+            android:name="com.wezpigulke.Measurement.AddMeasurement"
             android:label="Dodaj pomiar"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.AddTypeMeasurement"
+            android:name="com.wezpigulke.TypeMeasurement.AddTypeMeasurement"
             android:label="Dodaj typ badania"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.RepeatingActivityReminder"
+            android:name="com.wezpigulke.NotificationSystem.RepeatingActivityReminder"
             android:label="Weź tabletkę"
             android:launchMode="singleTop" />
 
         <activity
-            android:name="com.wezpigulke.RepeatingActivityVisit"
+            android:name="com.wezpigulke.NotificationSystem.RepeatingActivityVisit"
             android:label="Wizyta u lekarza" />
 
-        <receiver android:name="com.wezpigulke.NotificationReceiver" />
+        <receiver android:name="com.wezpigulke.NotificationSystem.NotificationReceiver" />
 
-        <receiver android:name="com.wezpigulke.ButtonIntent" />
+        <receiver android:name="com.wezpigulke.NotificationSystem.ButtonIntent" />
 
     </application>
 

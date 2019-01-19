@@ -53,13 +53,13 @@
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="74dp"
-        android:layout_height="77dp"
-        android:layout_alignParentEnd="true"
+        android:layout_width="77dp"
+        android:layout_height="80dp"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="5dp"
-        android:layout_marginTop="5dp"
-        app:srcCompat="@drawable/doctor"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="14dp" />
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="14dp"
+        app:srcCompat="@drawable/doctor" />
 </RelativeLayout>

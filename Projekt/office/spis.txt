@@ -1,30 +1,29 @@
-1. Relacje i funkcje - definicje, klasyfikacje i przyk³ady
-2. Podstawowe techniki zliczania obiektów (metoda bijektywna, regu³a w³¹czania i wy³¹czania, rekurencja).
-4. Podstawowe algorytmy sekwencyjne: grafowe, geometryczne, tekstowe.
-6. Uk³ady pamiêci cyfrowych
-
 GOTOWE:
 
-5. Rozproszone bazy danych
+1. Relacje i funkcje - definicje, klasyfikacje i przyk³ady
+2. Podstawowe techniki zliczania obiektów (metoda bijektywna, regu³a w³¹czania i wy³¹czania, rekurencja).
 3. Hierarchia Chomsky’ego gramatyk.
-
+4. Podstawowe algorytmy sekwencyjne: grafowe, geometryczne, tekstowe.
+5. Rozproszone bazy danych
+6. Uk³ady pamiêci cyfrowych
 
 =======================================================================
 
-      - 06.01  - opracowanie tematów
-02.01 - 24.01 - napisanie pracy
+do 27.01 - napisanie pracy
 
 ======================================================================
 
-tytu³
+schemat pracy z zajêæ:
+-tytu³
 -za³o¿enia
 -technologia (java, sqlite, android studio)
 -problemy
 
-
--custom spinner lekarz
+warto by³oby popracowaæ nad:
 -czytelnosc kodu
--typy danych w bazie danych
 -usunac zbedne rzeczy
 -testy aplikacji na koncu
+
+opcjonalnie:
+-custom spinner lekarz
 -ciemny motyw

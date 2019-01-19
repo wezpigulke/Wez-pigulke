@@ -32,7 +32,7 @@
         android:layout_width="180dp"
         android:layout_height="57dp"
         android:layout_marginTop="42dp"
-        android:layout_marginEnd="38dp"
+        android:layout_marginEnd="28dp"
         app:cardBackgroundColor="@color/cardview_dark_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -41,7 +41,6 @@
         tools:ignore="MissingConstraints">
 
         <TextView
-            android:id="@+id/textView5m"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginLeft="0dp"
@@ -59,13 +58,12 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView2m"
-        android:layout_width="360dp"
-        android:layout_height="335dp"
+        android:layout_width="320dp"
+        android:layout_height="270dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardViewm"
         tools:ignore="MissingConstraints">
@@ -75,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:text="Nazwa leku:"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent" />
@@ -85,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="54dp"
             android:text="Ilość tabletek:"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent" />
@@ -95,17 +93,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="130dp"
-            android:text="Tygodniowo zajadasz:"
+            android:layout_marginTop="92dp"
+            android:text="Tygodniowo zażywasz:"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/textView14m"
             android:layout_width="246dp"
             android:layout_height="118dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="190dp"
+            android:layout_marginTop="140dp"
             android:gravity="center"
             android:text="Kończy sie zapas tabletek! Pamiętaj o uzupełnieniu apteczki i zaktualizowaniu ilości w aplikacji. "
             android:textSize="20sp"

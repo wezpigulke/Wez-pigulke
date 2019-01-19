@@ -35,7 +35,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_gravity="right"
-                    android:src="@android:drawable/ic_menu_send"
+                    android:src="@drawable/save"
                     tools:layout_editor_absoluteX="352dp"
                     tools:layout_editor_absoluteY="12dp" />
             </android.support.v7.widget.Toolbar>

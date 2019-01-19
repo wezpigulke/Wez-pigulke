@@ -52,9 +52,9 @@
 
     <ImageView
         android:id="@+id/imageToday"
-        android:layout_width="74dp"
-        android:layout_height="74dp"
-        android:layout_alignParentEnd="true"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         app:srcCompat="@drawable/todayicon" />
 </RelativeLayout>
