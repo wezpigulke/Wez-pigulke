@@ -3,6 +3,7 @@ package com.wezpigulke.notification;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -15,7 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.other.DecimalDigitsInputFilter;
 import com.wezpigulke.R;
 
@@ -29,7 +30,7 @@ public class RepeatingActivityReminder extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        Database myDb = new Database(this);
+        DatabaseHelper myDb = new DatabaseHelper(this);
 
         int coPokazac = getIntent().getIntExtra("coPokazac", -1);
         String godzina = getIntent().getStringExtra("godzina");
@@ -59,12 +60,21 @@ public class RepeatingActivityReminder extends Activity {
             Button b3 = findViewById(R.id.button3);
             Button b4 = findViewById(R.id.button4);
 
-            tNazwa.setText(Html.fromHtml("Nazwa tabletki: " + "<b>" + nazwaLeku + "</b> ", 0));
-            tGodzina.setText(Html.fromHtml("Godzina: " + "<b>" + godzina + "</b> ", 0));
-            tProfil.setText(Html.fromHtml("Profil: " + "<b>" + uzytkownik + "</b> ", 0));
-            tData.setText(Html.fromHtml("Data: " + "<b>" + data + "</b> ", 0));
-            tPozostalo.setText(Html.fromHtml("Pozostało dni: " + "<b>" + iloscDni + "</b> ", 0));
-            tDawka.setText(Html.fromHtml("Dawka: " + "<b>" + jakaDawka + "</b> ", 0));
+            if (Build.VERSION.SDK_INT >= 24) {
+                tNazwa.setText(Html.fromHtml("Nazwa tabletki: " + "<b>" + nazwaLeku + "</b> ", 0));
+                tGodzina.setText(Html.fromHtml("Godzina: " + "<b>" + godzina + "</b> ", 0));
+                tProfil.setText(Html.fromHtml("Profil: " + "<b>" + uzytkownik + "</b> ", 0));
+                tData.setText(Html.fromHtml("Data: " + "<b>" + data + "</b> ", 0));
+                tPozostalo.setText(Html.fromHtml("Pozostało dni: " + "<b>" + iloscDni + "</b> ", 0));
+                tDawka.setText(Html.fromHtml("Dawka: " + "<b>" + jakaDawka + "</b> ", 0));
+            } else {
+                tNazwa.setText(Html.fromHtml("Nazwa tabletki: " + "<b>" + nazwaLeku + "</b> "));
+                tGodzina.setText(Html.fromHtml("Godzina: " + "<b>" + godzina + "</b> "));
+                tProfil.setText(Html.fromHtml("Profil: " + "<b>" + uzytkownik + "</b> "));
+                tData.setText(Html.fromHtml("Data: " + "<b>" + data + "</b> "));
+                tPozostalo.setText(Html.fromHtml("Pozostało dni: " + "<b>" + iloscDni + "</b> "));
+                tDawka.setText(Html.fromHtml("Dawka: " + "<b>" + jakaDawka + "</b> "));
+            }
 
             b3.setOnClickListener(v -> {
 
@@ -116,9 +126,18 @@ public class RepeatingActivityReminder extends Activity {
             cl.moveToFirst();
             String ilosc = cl.getString(0);
 
-            tNazwa.setText(Html.fromHtml("Nazwa leku: " + "<b>" + nazwa + "</b> ", 0));
-            tIlosc.setText(Html.fromHtml("Ilość tabletek: " + "<b>" + ilosc + "</b> ",0));
-            tSuma.setText(Html.fromHtml("Tygodniowo zajadasz: " + "<b>" + sumujTypy + "</b> ",0));
+
+            if (Build.VERSION.SDK_INT >= 24) {
+                tNazwa.setText(Html.fromHtml("Nazwa leku: " + "<b>" + nazwa + "</b> ", 0));
+                tIlosc.setText(Html.fromHtml("Ilość tabletek: " + "<b>" + ilosc + "</b> ",0));
+                tSuma.setText(Html.fromHtml("Tygodniowo zajadasz: " + "<b>" + sumujTypy + "</b> ",0));
+            } else {
+                tNazwa.setText(Html.fromHtml("Nazwa leku: " + "<b>" + nazwa + "</b> "));
+                tIlosc.setText(Html.fromHtml("Ilość tabletek: " + "<b>" + ilosc + "</b> "));
+                tSuma.setText(Html.fromHtml("Tygodniowo zajadasz: " + "<b>" + sumujTypy + "</b> "));
+            }
+
+
 
             update.setOnClickListener(v -> {
 

@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class Database extends SQLiteOpenHelper {
+public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "database.db";
 
@@ -25,6 +25,8 @@ public class Database extends SQLiteOpenHelper {
     private static final String PRZYPOMNIENIE_PROFIL = "Profil";
     private static final String PRZYPOMNIENIE_TYP = "Typ";
     private static final String PRZYPOMNIENIE_WSZYSTKIEGODZINY = "Wszystkie_godziny";
+    private static final String PRZYPOMNIENIE_DZWIEK = "Dzwiek";
+    private static final String PRZYPOMNIENIE_WIBRACJA = "Wibracja";
 
     private static final String NOTYFIKACJA = "Notyfikacja";
     private static final String NOTYFIKACJA_ID = "ID";
@@ -58,6 +60,8 @@ public class Database extends SQLiteOpenHelper {
     private static final String WIZYTY_SPECJALIZACJA = "Specjalizacja";
     private static final String WIZYTY_PROFIL = "Profil";
     private static final String WIZYTY_RAND = "Rand_ID";
+    private static final String WIZYTY_DZWIEK = "Dzwiek";
+    private static final String WIZYTY_WIBRACJA = "Wibracja";
 
     private static final String POMIARY = "Pomiary";
     private static final String POMIARY_ID = "ID";
@@ -88,7 +92,7 @@ public class Database extends SQLiteOpenHelper {
     private static final String LEK_NAZWA = "Nazwa";
     private static final String LEK_ILOSC_TABLETEK = "Ilosc_tabletek";
 
-    public Database(Context context) {
+    public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
 
@@ -112,7 +116,9 @@ public class Database extends SQLiteOpenHelper {
                 "Ilosc_dni INTEGER, " +
                 "Profil TEXT, " +
                 "Typ INTEGER, " +
-                "Wszystkie_godziny TEXT)");
+                "Wszystkie_godziny TEXT, " +
+                "Dzwiek INTEGER, " +
+                "Wibracja BOOLEAN)");
 
         db.execSQL("CREATE TABLE " + HISTORIA + " (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -146,7 +152,9 @@ public class Database extends SQLiteOpenHelper {
                 "Imie_Nazwisko TEXT, " +
                 "Specjalizacja TEXT, " +
                 "Profil TEXT, " +
-                "Rand_ID INTEGER)");
+                "Rand_ID INTEGER, " +
+                "Dzwiek INTEGER, " +
+                "Wibracja BOOLEAN)");
 
         db.execSQL("CREATE TABLE " + POMIARY + " (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -371,7 +379,7 @@ public class Database extends SQLiteOpenHelper {
 
     public Cursor getAllData_NOTYFIKACJA() {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, B.Profil, A.ID_przypomnienie " +
+        return db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, B.Profil, A.ID_przypomnienie, B.Ilosc_dni, B.Typ, A.Rand_ID, B.Dzwiek " +
                         "FROM " + NOTYFIKACJA + " A " +
                         "INNER JOIN " + PRZYPOMNIENIE + " B " +
                         "ON " + "B.ID = A.ID_przypomnienie"
@@ -648,7 +656,7 @@ public class Database extends SQLiteOpenHelper {
      * ============ PRZYPOMNIENIE ============
      **/
 
-    public void insert_PRZYPOMNIENIE(Integer id, String hour, String date, String medicine, Double dawka, Integer days, String profile, Integer type, String alltime) {
+    public void insert_PRZYPOMNIENIE(Integer id, String hour, String date, String medicine, Double dawka, Integer days, String profile, Integer type, String alltime, Integer dzwiek, Boolean wibracja) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -661,6 +669,8 @@ public class Database extends SQLiteOpenHelper {
         contentValues.put(PRZYPOMNIENIE_PROFIL, profile);
         contentValues.put(PRZYPOMNIENIE_TYP, type);
         contentValues.put(PRZYPOMNIENIE_WSZYSTKIEGODZINY, alltime);
+        contentValues.put(PRZYPOMNIENIE_DZWIEK, dzwiek);
+        contentValues.put(PRZYPOMNIENIE_WIBRACJA, wibracja);
 
         long result = db.insert(PRZYPOMNIENIE, null, contentValues);
     }
@@ -730,7 +740,7 @@ public class Database extends SQLiteOpenHelper {
      **/
 
 
-    public void insert_WIZYTY(String godzina, String data, String dane, String specjalizacja, String profile, Integer rand) {
+    public void insert_WIZYTY(String godzina, String data, String dane, String specjalizacja, String profile, Integer rand, Integer dzwiek, Boolean wibracja) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(WIZYTY_GODZINA, godzina);
@@ -739,6 +749,8 @@ public class Database extends SQLiteOpenHelper {
         contentValues.put(WIZYTY_SPECJALIZACJA, specjalizacja);
         contentValues.put(WIZYTY_PROFIL, profile);
         contentValues.put(WIZYTY_RAND, rand);
+        contentValues.put(WIZYTY_DZWIEK, dzwiek);
+        contentValues.put(WIZYTY_WIBRACJA, wibracja);
 
         long result = db.insert(WIZYTY, null, contentValues);
     }

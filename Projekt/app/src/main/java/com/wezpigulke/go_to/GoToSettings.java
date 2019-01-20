@@ -12,6 +12,7 @@ import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -40,7 +41,7 @@ import com.itextpdf.text.html.WebColors;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.R;
 
@@ -53,7 +54,7 @@ import java.util.Objects;
 
 public class GoToSettings extends Fragment {
 
-    Database myDb;
+    DatabaseHelper myDb;
 
     private Integer i = 0;
 
@@ -79,7 +80,7 @@ public class GoToSettings extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
 
         View v = inflater.inflate(R.layout.settings, container, false);
 
@@ -180,9 +181,15 @@ public class GoToSettings extends Fragment {
         else if (wziete >= 0 && niewziete == 0) progress = 100;
         else progress = ((wziete * 100) / (wziete + niewziete));
 
-        tWziete.setText(Html.fromHtml("Wzięte: " + "<b>" + wziete + "</b> ", 0));
-        tZapomniane.setText(Html.fromHtml("Zapomniane: " + "<b>" + niewziete + "</b> ", 0));
-        tProgres.setText(Html.fromHtml("Progres: " + "<b>" + progress + "%" + "</b>", 0));
+        if (Build.VERSION.SDK_INT >= 24) {
+            tWziete.setText(Html.fromHtml("Wzięte: " + "<b>" + wziete + "</b> ", 0));
+            tZapomniane.setText(Html.fromHtml("Zapomniane: " + "<b>" + niewziete + "</b> ", 0));
+            tProgres.setText(Html.fromHtml("Progres: " + "<b>" + progress + "%" + "</b>", 0));
+        } else {
+            tWziete.setText(Html.fromHtml("Wzięte: " + "<b>" + wziete + "</b> "));
+            tZapomniane.setText(Html.fromHtml("Zapomniane: " + "<b>" + niewziete + "</b> "));
+            tProgres.setText(Html.fromHtml("Progres: " + "<b>" + progress + "%" + "</b>"));
+        }
 
         tWziete.setVisibility(View.INVISIBLE);
         tZapomniane.setVisibility(View.INVISIBLE);
@@ -190,8 +197,12 @@ public class GoToSettings extends Fragment {
 
         myprogressbar.setScaleY(10);
 
-        if (progress < 50) myprogressbar.setProgressTintList(ColorStateList.valueOf(Color.RED));
-        else myprogressbar.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
+        if (Build.VERSION.SDK_INT >= 21) {
+            if (progress < 50) myprogressbar.setProgressTintList(ColorStateList.valueOf(Color.RED));
+           else myprogressbar.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
+        } else {
+            myprogressbar.setVisibility(View.INVISIBLE);
+        }
 
         new Thread(() -> {
             while (i <= progress) {

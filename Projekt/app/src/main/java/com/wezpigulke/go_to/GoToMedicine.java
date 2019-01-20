@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.other.DecimalDigitsInputFilter;
 import com.wezpigulke.classes.Medicine;
 import com.wezpigulke.list_adapter.MedicineListAdapter;
@@ -33,7 +33,7 @@ import java.util.Objects;
 
 public class GoToMedicine extends Fragment {
 
-    Database myDb;
+    DatabaseHelper myDb;
     private MedicineListAdapter adapter;
     private List<Medicine> results;
     private ListView lv;
@@ -134,7 +134,7 @@ public class GoToMedicine extends Fragment {
         results.clear();
         lv.setAdapter(adapter);
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
         Cursor c;
 
         c = myDb.getData_LEK();

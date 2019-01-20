@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.support.v7.widget.Toolbar;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.R;
 
@@ -25,7 +25,7 @@ import java.util.Objects;
 
 public class AddNotes extends AppCompatActivity {
 
-    Database myDb;
+    DatabaseHelper myDb;
 
     private EditText nazwaNotatki;
     private EditText trescNotatki;
@@ -40,7 +40,7 @@ public class AddNotes extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         label = new ArrayList<>();
-        myDb = new Database(this);
+        myDb = new DatabaseHelper(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_notes);

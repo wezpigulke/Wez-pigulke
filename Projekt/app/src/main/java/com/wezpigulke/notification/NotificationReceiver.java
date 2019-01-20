@@ -5,15 +5,17 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
 import android.widget.Toast;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
 
 import java.text.ParseException;
@@ -21,19 +23,21 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 
 import static android.content.Context.ALARM_SERVICE;
 
-public class NotificationReceiver extends BroadcastReceiver {
+public class NotificationReceiver extends WakefulBroadcastReceiver {
 
-    Database myDb;
+    DatabaseHelper myDb;
     NotificationManager notificationManager;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        myDb = new Database(context);
+        Toast.makeText(context, "ODPALONY ALARM", Toast.LENGTH_LONG).show();
+        Log.d("========ALARM==========", "Alarm odpalony");
+
+        myDb = new DatabaseHelper(context);
 
         int coPokazac = intent.getIntExtra("coPokazac", 0);
 
@@ -68,6 +72,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             Double jakaDawka = intent.getDoubleExtra("jakaDawka", 0);
 
             int wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
+            boolean czyWibracja = intent.getBooleanExtra("czyWibracja", false);
             Integer rand_val = intent.getIntExtra("rand_val", 0);
 
             Cursor cs = myDb.getdataID_NOTYFIKACJA(id_n);
@@ -92,16 +97,6 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             if (iloscDni <= 0) {
 
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-                Intent myIntent = new Intent(context, NotificationReceiver.class);
-                PendingIntent pendinIntent = PendingIntent.getBroadcast(
-                        context, rand_val, myIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-                assert alarmManager != null;
-                alarmManager.cancel(pendinIntent);
-
-                Toast.makeText(context, "Anulacja:" + String.valueOf(rand_val), Toast.LENGTH_LONG).show();
-
                 myDb.remove_PRZYPOMNIENIE(id_p);
                 myDb.removeIdPrz_NOTYFIKACJA(id_p);
 
@@ -119,23 +114,6 @@ public class NotificationReceiver extends BroadcastReceiver {
                             iloscDni--;
 
                             if (iloscDni <= 0) {
-
-                                Cursor crand = myDb.getRand_NOTYFIKACJA(id_n);
-                                if (crand.getCount() != 0) {
-
-                                    crand.moveToFirst();
-
-                                    AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(context).getSystemService(Context.ALARM_SERVICE);
-                                    Intent myIntent = new Intent(context, NotificationReceiver.class);
-                                    PendingIntent removeIntent = PendingIntent.getBroadcast(
-                                            context, crand.getInt(0), myIntent,
-                                            PendingIntent.FLAG_UPDATE_CURRENT);
-                                    assert alarmManager != null;
-                                    alarmManager.cancel(removeIntent);
-
-                                    Toast.makeText(context, "Anulacja: " + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
-
-                                }
 
                                 Cursor cw = myDb.getCountType_NOTYFIKACJA(id_p);
                                 cw.moveToNext();
@@ -213,16 +191,6 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                     if (iloscDni < 0) {
 
-                        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-                        Intent myIntent = new Intent(context, NotificationReceiver.class);
-                        PendingIntent pendinIntent = PendingIntent.getBroadcast(
-                                context, rand_val, myIntent,
-                                PendingIntent.FLAG_UPDATE_CURRENT);
-                        assert alarmManager != null;
-                        alarmManager.cancel(pendinIntent);
-
-                        Toast.makeText(context, "Anulacja: " + String.valueOf(rand_val), Toast.LENGTH_LONG).show();
-
                         if (Integer.parseInt(cz.getString(0)) == 1) {
 
                             myDb.remove_PRZYPOMNIENIE(id_p);
@@ -286,32 +254,34 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                         PendingIntent pendingIntent = PendingIntent.getActivity(context, rand_val, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                        Uri alarmSound;
-                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
+                        Uri alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
 
                         switch (wybranyDzwiek) {
                             case 1:
-                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
+                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
                                 break;
                             case 2:
-                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm3);
+                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
                                 break;
                             case 3:
-                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm4);
+                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm3);
                                 break;
                             case 4:
-                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm5);
+                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm4);
                                 break;
                             case 5:
-                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm6);
+                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm5);
                                 break;
                             case 6:
-                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm7);
+                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm6);
                                 break;
                             case 7:
-                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm8);
+                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm7);
                                 break;
                             case 8:
+                                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm8);
+                                break;
+                            case 9:
                                 alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm9);
                                 break;
                         }
@@ -339,31 +309,17 @@ public class NotificationReceiver extends BroadcastReceiver {
                                 .setSmallIcon(R.drawable.logo)
                                 .setContentTitle("Weź pigułke")
                                 .setContentText(powiadomienie)
-                                .setSound(alarmSound)
                                 .setAutoCancel(true)
                                 .addAction(R.drawable.yes, "Wziąłem", yesIntent)
-                                .addAction(R.drawable.no, "Zapomniałem", noIntent)
-                                .setVibrate(new long[]{1000, 1000});
+                                .addAction(R.drawable.no, "Zapomniałem", noIntent);
+
+                        if(wybranyDzwiek!=0) builder.setSound(alarmSound);
+                        if(czyWibracja) builder.setVibrate(new long[]{1000, 1000});
 
                         Notification notification = builder.build();
                         notification.flags |= NotificationCompat.FLAG_AUTO_CANCEL;
 
                         notificationManager.notify(rand_val, notification);
-
-                        Intent intx = new Intent(context, NotificationReceiver.class);
-                        intx.putExtra("coPokazac", 0);
-                        intx.putExtra("czyPowtarzanyAlarm", true);
-                        intx.putExtra("tresc", uzytkownik + " |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
-                        intx.putExtra("id", id_n);
-                        intx.putExtra("idd", id_p);
-                        intx.putExtra("godzina", godzina);
-                        intx.putExtra("data", data);
-                        intx.putExtra("uzytkownik", uzytkownik);
-                        intx.putExtra("nazwaLeku", nazwaLeku);
-                        intx.putExtra("jakaDawka", jakaDawka);
-                        intx.putExtra("iloscDni", iloscDni - 1);
-                        intx.putExtra("wybranyDzwiek", wybranyDzwiek);
-                        intx.putExtra("rand_val", rand_val);
 
                         if(iloscDni >= 1) {
 
@@ -391,12 +347,33 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                             myDb.updateDate_NOTYFIKACJA(id_n, sdfzx.format(dateTemp));
 
+                            Intent intx = new Intent(context, NotificationReceiver.class);
+                            intx.putExtra("coPokazac", 0);
+                            intx.putExtra("czyPowtarzanyAlarm", true);
+                            intx.putExtra("tresc", uzytkownik + " |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
+                            intx.putExtra("id", id_n);
+                            intx.putExtra("idd", id_p);
+                            intx.putExtra("godzina", godzina);
+                            intx.putExtra("data", data);
+                            intx.putExtra("uzytkownik", uzytkownik);
+                            intx.putExtra("nazwaLeku", nazwaLeku);
+                            intx.putExtra("jakaDawka", jakaDawka);
+                            intx.putExtra("iloscDni", iloscDni - 1);
+                            intx.putExtra("wybranyDzwiek", wybranyDzwiek);
+                            intx.putExtra("czyWibracja", czyWibracja);
+                            intx.putExtra("rand_val", rand_val);
+
                             PendingIntent newIntent = PendingIntent.getBroadcast(context, rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
                             AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
                             assert alarmManager != null;
-                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), newIntent);
 
-                            Toast.makeText(context, "Dodanie: " + " | " + rand_val + "\n" + sdfz.format(cal.getTime()), Toast.LENGTH_LONG).show();
+                            if(Build.VERSION.SDK_INT < 23){
+                                if(Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
+                                else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
+                            } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
+
+                            Toast.makeText(context, "Dodanie: " + " | " + String.valueOf(rand_val) + "\n" + sdfz.format(cal.getTime()), Toast.LENGTH_LONG).show();
+                            Log.d("========ALARM==========", "Dodanie: " + " | " + String.valueOf(rand_val) + "\n" + sdfz.format(cal.getTime()));
 
                         } else {
 
@@ -404,6 +381,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                             myDb.removeIdPrz_NOTYFIKACJA(id_p);
 
                             Toast.makeText(context, "Usunięcie notyfikacji: " + id_n, Toast.LENGTH_SHORT).show();
+                            Log.d("========ALARM==========", "Usunięcie notyfikacji: " + id_n);
 
                         }
 
@@ -482,16 +460,16 @@ public class NotificationReceiver extends BroadcastReceiver {
                                     .setSmallIcon(R.drawable.logo)
                                     .setContentTitle("Weź pigułke")
                                     .setContentText("UWAGA | Pozostało tylko " + String.valueOf(iloscLeku) + " tabletek leku " + cl.getString(1))
-                                    .setSound(alarmSound)
-                                    .setVibrate(new long[]{1000, 1000})
                                     .setAutoCancel(true)
                                     .setOnlyAlertOnce(true);
-                            notificationManager.notify(rand_val - 3, builder.build());
+
+                            if(wybranyDzwiek!=0) builder.setSound(alarmSound);
+                            if(czyWibracja) builder.setVibrate(new long[]{1000, 1000});
 
                             Notification notification2 = builder.build();
                             notification2.flags |= NotificationCompat.FLAG_AUTO_CANCEL;
 
-                            notificationManager.notify(rand_val, notification2);
+                            notificationManager.notify(rand_val-3, notification2);
 
                         }
 
@@ -519,6 +497,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             String specjalizacja = intent.getStringExtra("specjalizacja");
             String uzytkownik = intent.getStringExtra("uzytkownik");
             int wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
+            boolean czyWibracja = intent.getBooleanExtra("czyWibracja", false);
             int rand_val = intent.getIntExtra("rand_val", 0);
 
             try {
@@ -546,25 +525,6 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                 if (crand.getCount() != 0) {
 
-                    crand.moveToFirst();
-
-                    AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(context).getSystemService(Context.ALARM_SERVICE);
-                    Intent myIntent = new Intent(context, NotificationReceiver.class);
-                    PendingIntent removeIntent = PendingIntent.getBroadcast(
-                            context, crand.getInt(0), myIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT);
-                    assert alarmManager != null;
-                    alarmManager.cancel(removeIntent);
-
-                    Toast.makeText(context, "Anulacja: " + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
-
-                    removeIntent = PendingIntent.getBroadcast(
-                            context, crand.getInt(0) - 1, myIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT);
-                    alarmManager.cancel(removeIntent);
-
-                    Toast.makeText(context, "Anulacja: " + String.valueOf(crand.getInt(0)-1), Toast.LENGTH_LONG).show();
-
                     myDb.remove_WIZYTY(id_v);
 
                 }
@@ -588,32 +548,34 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, rand_val, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                Uri alarmSound;
-                alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
+                Uri alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
 
                 switch (wybranyDzwiek) {
                     case 1:
-                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
                         break;
                     case 2:
-                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm3);
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm2);
                         break;
                     case 3:
-                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm4);
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm3);
                         break;
                     case 4:
-                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm5);
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm4);
                         break;
                     case 5:
-                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm6);
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm5);
                         break;
                     case 6:
-                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm7);
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm6);
                         break;
                     case 7:
-                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm8);
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm7);
                         break;
                     case 8:
+                        alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm8);
+                        break;
+                    case 9:
                         alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm9);
                         break;
                 }
@@ -623,11 +585,11 @@ public class NotificationReceiver extends BroadcastReceiver {
                         .setSmallIcon(R.drawable.logo)
                         .setContentTitle("Weź pigułke")
                         .setContentText(powiadomienie)
-                        .setSound(alarmSound)
-                        .setVibrate(new long[]{1000, 1000})
                         .setAutoCancel(true)
                         .setOnlyAlertOnce(true);
-                notificationManager.notify(rand_val, builder.build());
+
+                if(wybranyDzwiek!=0) builder.setSound(alarmSound);
+                if(czyWibracja) builder.setVibrate(new long[]{1000, 1000});
 
                 Notification notification = builder.build();
                 notification.flags |= NotificationCompat.FLAG_AUTO_CANCEL;
@@ -641,7 +603,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
 
     }
-
 }
 
 

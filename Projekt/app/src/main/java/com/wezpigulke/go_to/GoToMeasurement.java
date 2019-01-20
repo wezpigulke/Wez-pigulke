@@ -16,7 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.classes.Measurement;
 import com.wezpigulke.list_adapter.MeasurementListAdapter;
 import com.wezpigulke.R;
@@ -29,7 +29,7 @@ import java.util.Objects;
 
 public class GoToMeasurement extends Fragment {
 
-    Database myDb;
+    DatabaseHelper myDb;
     private List<Measurement> results;
     private MeasurementListAdapter adapter;
     private ListView lv;
@@ -50,7 +50,7 @@ public class GoToMeasurement extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
 
         View v = inflater.inflate(R.layout.measurement, container, false);
 
@@ -119,7 +119,7 @@ public class GoToMeasurement extends Fragment {
         super.onResume();
         AktualizujBaze();
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
 
         loadSpinnerData();
 
@@ -182,7 +182,7 @@ public class GoToMeasurement extends Fragment {
         results.clear();
         lv.setAdapter(adapter);
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
         Cursor c;
 
         if (uzytkownik.equals("Wszyscy") && typ.equals("Wszystko")) c = myDb.getAllData_POMIARY();

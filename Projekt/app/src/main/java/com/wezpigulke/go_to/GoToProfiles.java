@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.classes.Profiles;
@@ -33,7 +33,7 @@ import java.util.Objects;
 
 public class GoToProfiles extends Fragment {
 
-    Database myDb;
+    DatabaseHelper myDb;
     private ProfilesListAdapter adapter;
     private List<Profiles> results;
     private ListView lv;
@@ -101,7 +101,7 @@ public class GoToProfiles extends Fragment {
         results.clear();
         lv.setAdapter(adapter);
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
         Cursor c = myDb.getAllData_UZYTKOWNICY();
 
         if (c.getCount() != 0) {

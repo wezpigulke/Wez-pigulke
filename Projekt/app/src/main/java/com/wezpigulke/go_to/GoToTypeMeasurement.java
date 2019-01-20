@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.classes.MeasurementType;
 import com.wezpigulke.list_adapter.MeasurementTypeListAdapter;
 import com.wezpigulke.R;
@@ -27,7 +27,7 @@ import java.util.Objects;
 
 public class GoToTypeMeasurement extends Fragment {
 
-    Database myDb;
+    DatabaseHelper myDb;
     private MeasurementTypeListAdapter adapter;
     private List<MeasurementType> results;
     private ListView lv;
@@ -96,7 +96,7 @@ public class GoToTypeMeasurement extends Fragment {
         results.clear();
         lv.setAdapter(adapter);
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
         Cursor c = myDb.getAllData_TYP_POMIAR();
 
         if (c.getCount() != 0) {

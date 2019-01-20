@@ -21,7 +21,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.R;
 import com.wezpigulke.classes.Reminder;
@@ -35,7 +35,7 @@ import java.util.Objects;
 
 public class GoToReminder extends Fragment {
 
-    Database myDb;
+    DatabaseHelper myDb;
     private List<Reminder> results;
     private ReminderListAdapter adapter;
     private ListView lv;
@@ -146,7 +146,7 @@ public class GoToReminder extends Fragment {
 
         lv.setAdapter(adapter);
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
         Cursor c;
 
         if (uzytkownik.equals("Wszyscy")) c = myDb.getAllData_PRZYPOMNIENIE();
@@ -177,7 +177,7 @@ public class GoToReminder extends Fragment {
 
     private void usunDane() {
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
         Cursor dbIDNotyfikacja = myDb.getID_NOTYFIKACJA(idd);
 
         if (dbIDNotyfikacja.getCount() != 0) {

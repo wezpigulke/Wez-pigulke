@@ -21,7 +21,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.R;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
@@ -35,7 +35,7 @@ import java.util.Objects;
 
 public class GoToVisit extends Fragment {
 
-    Database myDb;
+    DatabaseHelper myDb;
     private List<Visit> results;
     private VisitListAdapter adapter;
     private ListView lv;
@@ -150,7 +150,7 @@ public class GoToVisit extends Fragment {
         results.clear();
         lv.setAdapter(adapter);
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
         Cursor c;
 
         if (uzytkownik.equals("Wszyscy")) c = myDb.getAllData_WIZYTY();

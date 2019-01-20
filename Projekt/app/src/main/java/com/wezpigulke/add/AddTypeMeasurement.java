@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
 import com.wezpigulke.other.OpenDialog;
 
@@ -16,7 +16,7 @@ import java.util.Objects;
 
 public class AddTypeMeasurement extends AppCompatActivity {
 
-    Database myDb;
+    DatabaseHelper myDb;
 
     private EditText typBadania;
 
@@ -24,7 +24,7 @@ public class AddTypeMeasurement extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        myDb = new Database(this);
+        myDb = new DatabaseHelper(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_type_measurement);

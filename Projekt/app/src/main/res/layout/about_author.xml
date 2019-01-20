@@ -5,17 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="306dp"
+        android:layout_height="139dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="39dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/umk" />
+
     <TextView
         android:id="@+id/textView4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="120dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="50dp"
         android:gravity="center"
-        android:text="Autor:"
-        android:textSize="30sp"
+        android:text="Autor:\nJakub Dziennik"
+        android:textColor="#ff0000"
+        android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,10 +43,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="160dp"
+        android:layout_marginBottom="60dp"
         android:gravity="center"
-        android:text="Jakub Dziennik"
-        android:textSize="36sp"
+        android:text="\nStudent IV roku informatyki\nna UMK w Toruniu.\nAplikacja została wykonana\nna zaliczenie pracy\ninżynierskiej."
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,18 +54,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4"
         tools:ignore="MissingConstraints" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="306dp"
-        android:layout_height="139dp"
-        android:layout_marginStart="39dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="39dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/umk" />
 
 </android.support.constraint.ConstraintLayout>

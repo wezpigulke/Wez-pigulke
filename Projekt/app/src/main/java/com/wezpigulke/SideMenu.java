@@ -38,7 +38,7 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        Database myDb = new Database(this);
+        DatabaseHelper myDb = new DatabaseHelper(this);
 
         Cursor res = myDb.getAllName_UZYTKOWNICY();
         res.moveToFirst();
@@ -57,10 +57,9 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
         TextView headerName = headerView.findViewById(R.id.isName);
         headerName.setText("Weź\npigułkę");
 
-        Cursor ch = myDb.getAllData_HISTORIA();
         Cursor cr = myDb.getAllData_PRZYPOMNIENIE();
 
-        if (ch.getCount() == 0 && cr.getCount() == 0) {
+        if (cr.getCount() == 0) {
             displaySelectedScreen(R.id.reminder);
         } else displaySelectedScreen(R.id.today);
         navigationView.setNavigationItemSelectedListener(this);

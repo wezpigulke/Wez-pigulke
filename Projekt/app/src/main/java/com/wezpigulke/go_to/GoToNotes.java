@@ -17,7 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.classes.Notes;
 import com.wezpigulke.list_adapter.NotesListAdapter;
 import com.wezpigulke.R;
@@ -30,7 +30,7 @@ import java.util.Objects;
 
 public class GoToNotes extends Fragment {
 
-    Database myDb;
+    DatabaseHelper myDb;
     private List<Notes> results;
     private NotesListAdapter adapter;
     private ListView lv;
@@ -97,7 +97,7 @@ public class GoToNotes extends Fragment {
         super.onResume();
         AktualizujBaze();
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
 
         loadSpinnerData();
 
@@ -158,7 +158,7 @@ public class GoToNotes extends Fragment {
         results.clear();
         lv.setAdapter(adapter);
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
         Cursor c;
 
         if (uzytkownik.equals("Wszyscy")) c = myDb.getAllData_NOTATKI();

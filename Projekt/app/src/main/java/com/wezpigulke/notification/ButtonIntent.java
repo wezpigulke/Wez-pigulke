@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,7 +17,7 @@ public class ButtonIntent extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Database myDb = new Database(context);
+        DatabaseHelper myDb = new DatabaseHelper(context);
         int coZrobic = intent.getIntExtra("coZrobic", -1);
 
         switch(coZrobic) {

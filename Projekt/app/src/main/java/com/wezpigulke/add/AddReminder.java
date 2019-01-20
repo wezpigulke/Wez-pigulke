@@ -9,10 +9,12 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,32 +22,35 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.wezpigulke.Database;
-import com.wezpigulke.other.DecimalDigitsInputFilter;
-import com.wezpigulke.notification.NotificationReceiver;
-import com.wezpigulke.other.OpenDialog;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
+import com.wezpigulke.notification.NotificationReceiver;
+import com.wezpigulke.other.DecimalDigitsInputFilter;
+import com.wezpigulke.other.OpenDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import static java.lang.Integer.MAX_VALUE;
 import static java.util.Calendar.getInstance;
 
 public class AddReminder extends AppCompatActivity {
 
-    Database myDb;
+    DatabaseHelper myDb;
 
     private TextView dataTabletka;
     private TextView godzinaTabletka;
@@ -67,6 +72,7 @@ public class AddReminder extends AppCompatActivity {
     private String uzytkownik;
     private Spinner dawka;
     private Spinner spinnerNazwaLeku;
+    private CheckBox checkBox;
 
     private ArrayList<String> labelDawka;
     private ArrayList<String> labelReminder;
@@ -88,6 +94,7 @@ public class AddReminder extends AppCompatActivity {
     private Integer labelSizeCopy;
     private String wlasnaDawka;
     private Integer czyPetlaPoszla;
+    private Boolean czyWibracja;
 
     private TextView setTime1;
     private TextView setTime2;
@@ -137,7 +144,7 @@ public class AddReminder extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        myDb = new Database(this);
+        myDb = new DatabaseHelper(this);
 
         final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
@@ -157,6 +164,8 @@ public class AddReminder extends AppCompatActivity {
         dataTabletka = findViewById(R.id.dateVisit);
         godzinaTabletka = findViewById(R.id.timeMedicine);
         ileDni = findViewById(R.id.editText2);
+
+        checkBox = findViewById(R.id.checkBox);
 
         dodaj = findViewById(R.id.dodajButton);
 
@@ -240,6 +249,9 @@ public class AddReminder extends AppCompatActivity {
 
         dawka.setSelection(1);
 
+
+        checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> czyWibracja = isChecked);
+
         spinnerNazwaLeku.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -300,39 +312,39 @@ public class AddReminder extends AppCompatActivity {
                 stopPlaying();
 
                 switch(position) {
-                    case 0:
+                    case 1:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
                         mp.start();
                         break;
-                    case 1:
+                    case 2:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm2);
                         mp.start();
                         break;
-                    case 2:
+                    case 3:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm3);
                         mp.start();
                         break;
-                    case 3:
+                    case 4:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm4);
                         mp.start();
                         break;
-                    case 4:
+                    case 5:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm5);
                         mp.start();
                         break;
-                    case 5:
+                    case 6:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm6);
                         mp.start();
                         break;
-                    case 6:
+                    case 7:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm7);
                         mp.start();
                         break;
-                    case 7:
+                    case 8:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm8);
                         mp.start();
                         break;
-                    case 8:
+                    case 9:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm9);
                         mp.start();
                         break;
@@ -413,6 +425,7 @@ public class AddReminder extends AppCompatActivity {
                 spinner.setVisibility(View.GONE);
                 dalej.setVisibility(View.GONE);
                 spinnerDzwiek.setVisibility(View.GONE);
+                checkBox.setVisibility(View.GONE);
 
                 spinnerReminder.setVisibility(View.VISIBLE);
                 dodaj.setVisibility(View.VISIBLE);
@@ -586,7 +599,9 @@ public class AddReminder extends AppCompatActivity {
                                 1,
                                 uzytkownik,
                                 1,
-                                "Jednorazowo: " + godzinaTabletka.getText().toString()
+                                "Jednorazowo: " + godzinaTabletka.getText().toString(),
+                                dzwiek,
+                                czyWibracja
                         );
 
                         Cursor cc = myDb.getMAXid_PRZYPOMNIENIE();
@@ -625,14 +640,20 @@ public class AddReminder extends AppCompatActivity {
                         intx.putExtra("jakaDawka", jakaDawka);
                         intx.putExtra("iloscDni", 0);
                         intx.putExtra("wybranyDzwiek", dzwiek);
+                        intx.putExtra("czyWibracja", czyWibracja);
                         intx.putExtra("rand_val", rand_val);
 
                         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
                         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                         assert alarmManager != null;
-                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 
-                        Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
+                        if(Build.VERSION.SDK_INT < 23){
+                            if(Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+                            else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+                        } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+
+                        Toast.makeText(getApplicationContext(), "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
+                        Log.d("========ALARM==========", "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16));
 
                         goBack();
 
@@ -720,7 +741,9 @@ public class AddReminder extends AppCompatActivity {
                                         iloscDni,
                                         uzytkownik,
                                         1,
-                                        "Codziennie: " + godzinaTabletka.getText().toString()
+                                        "Codziennie: " + godzinaTabletka.getText().toString(),
+                                        dzwiek,
+                                        czyWibracja
                                 );
 
                                 Integer rand_val = random();
@@ -754,14 +777,20 @@ public class AddReminder extends AppCompatActivity {
                                 intx.putExtra("jakaDawka", jakaDawka);
                                 intx.putExtra("iloscDni", iloscDni - 1);
                                 intx.putExtra("wybranyDzwiek", dzwiek);
+                                intx.putExtra("czyWibracja", czyWibracja);
                                 intx.putExtra("rand_val", rand_val);
 
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
                                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                                 assert alarmManager != null;
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 
-                                Toast.makeText(getApplicationContext(), "Dodanie: " + " | " + coIleDni + rand_val + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
+                                if(Build.VERSION.SDK_INT < 23){
+                                    if(Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+                                    else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+                                } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+
+                                Toast.makeText(getApplicationContext(), "Dodanie: " + " | " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
+                                Log.d("========ALARM==========", "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16));
 
                             } else if (coWybrane == 3 && iloscDni >= 1) {
 
@@ -780,7 +809,9 @@ public class AddReminder extends AppCompatActivity {
                                         iloscDni,
                                         uzytkownik,
                                         coIleDni,
-                                        "Co " + String.valueOf(coIleDni) + " dni: " + godzinaTabletka.getText().toString()
+                                        "Co " + String.valueOf(coIleDni) + " dni: " + godzinaTabletka.getText().toString(),
+                                        dzwiek,
+                                        czyWibracja
                                 );
 
                                 Integer rand_val = random();
@@ -815,14 +846,20 @@ public class AddReminder extends AppCompatActivity {
                                 intx.putExtra("jakaDawka", jakaDawka);
                                 intx.putExtra("iloscDni", iloscDni - 1);
                                 intx.putExtra("wybranyDzwiek", dzwiek);
+                                intx.putExtra("czyWibracja", czyWibracja);
                                 intx.putExtra("rand_val", rand_val);
 
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
                                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                                 assert alarmManager != null;
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 
-                                Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
+                                if(Build.VERSION.SDK_INT < 23){
+                                    if(Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+                                    else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+                                } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+
+                                Toast.makeText(getApplicationContext(), "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
+                                Log.d("========ALARM==========", "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16));
 
                             }
 
@@ -932,7 +969,21 @@ public class AddReminder extends AppCompatActivity {
                             }
 
                             String[] wszystkie = wszystkieGodziny.replaceAll(" ", "").split(",");
-                            String najwyzszaGodzina = Stream.of(wszystkie).max(String::compareTo).get();
+                            List tempList = Arrays.asList(wszystkie);
+
+                            List<String> tempWszystkieGodziny = Arrays.asList(wszystkie);
+                            Collections.sort(tempWszystkieGodziny);
+
+                            wszystkieGodziny = "";
+
+                            for (String s : tempWszystkieGodziny)
+                            {
+                                wszystkieGodziny += s + ", ";
+                            }
+
+                            wszystkieGodziny = wszystkieGodziny.substring(0, wszystkieGodziny.length()-2);
+
+                            String najwyzszaGodzina = (String) Collections.max(tempList);
 
                             Integer id;
                             Integer idd;
@@ -956,7 +1007,9 @@ public class AddReminder extends AppCompatActivity {
                                         iloscDni,
                                         uzytkownik,
                                         1,
-                                        String.valueOf(ileRazyDziennie) + " razy dziennie: " + wszystkieGodziny
+                                        String.valueOf(ileRazyDziennie) + " razy dziennie: " + wszystkieGodziny,
+                                        dzwiek,
+                                        czyWibracja
                                 );
                                 czyPetlaPoszla = 1;
                             }
@@ -998,14 +1051,20 @@ public class AddReminder extends AppCompatActivity {
                                 intx.putExtra("jakaDawka", jakaDawka);
                                 intx.putExtra("iloscDni", iloscDni - 1);
                                 intx.putExtra("wybranyDzwiek", dzwiek);
+                                intx.putExtra("czyWibracja", czyWibracja);
                                 intx.putExtra("rand_val", rand_val);
 
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
                                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                                 assert alarmManager != null;
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 
-                                Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
+                                if(Build.VERSION.SDK_INT < 23){
+                                    if(Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+                                    else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+                                } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+
+                                Toast.makeText(getApplicationContext(), "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
+                                Log.d("========ALARM==========", "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16));
 
                             }
 
@@ -1333,6 +1392,8 @@ public class AddReminder extends AppCompatActivity {
 
     private void loadSpinnerDzwiek() {
 
+        labelDzwiek.add("Brak");
+
         for (int i = 1; i <= 9; i++) {
             labelDzwiek.add("Alarm nr " + String.valueOf(i));
         }
@@ -1410,6 +1471,7 @@ public class AddReminder extends AppCompatActivity {
 
             dawka.setVisibility(View.VISIBLE);
             spinnerNazwaLeku.setVisibility(View.VISIBLE);
+            checkBox.setVisibility(View.VISIBLE);
 
             Cursor cxz = myDb.getAllName_UZYTKOWNICY();
             if (cxz.getCount() > 1) {

@@ -6,7 +6,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.R;
 
@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class AddDoctor extends AppCompatActivity {
 
-    Database myDb;
+    DatabaseHelper myDb;
 
     private EditText name;
     private EditText address;
@@ -24,7 +24,7 @@ public class AddDoctor extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        myDb = new Database(this);
+        myDb = new DatabaseHelper(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_doctor);

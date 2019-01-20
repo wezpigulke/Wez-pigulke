@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.support.design.widget.FloatingActionButton;
 import android.widget.ListView;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.classes.Doctor;
 import com.wezpigulke.list_adapter.DoctorListAdapter;
 import com.wezpigulke.R;
@@ -28,7 +28,7 @@ import java.util.Objects;
 
 public class GoToDoctors extends Fragment {
 
-    Database myDb;
+    DatabaseHelper myDb;
     private List<Doctor> results;
     private ListView lv;
     private Integer idd;
@@ -105,7 +105,7 @@ public class GoToDoctors extends Fragment {
 
         results.clear();
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
         Cursor c = myDb.getAllData_DOKTORZY();
 
         if (c.getCount() != 0) {

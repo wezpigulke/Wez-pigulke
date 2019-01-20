@@ -1,5 +1,6 @@
 package com.wezpigulke.notification;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -7,12 +8,12 @@ import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
 
 public class RepeatingActivityVisit extends AppCompatActivity {
 
-    Database myDb;
+    DatabaseHelper myDb;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -20,7 +21,7 @@ public class RepeatingActivityVisit extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.visit_activity_layout);
 
-        myDb = new Database(this);
+        myDb = new DatabaseHelper(this);
 
         TextView tProfil = findViewById(R.id.textView12v);
         TextView tGodzina = findViewById(R.id.textView6v);
@@ -37,11 +38,21 @@ public class RepeatingActivityVisit extends AppCompatActivity {
         String specjalizacja = getIntent().getStringExtra("specjalizacja");
         String uzytkownik = getIntent().getStringExtra("uzytkownik");
 
-        tProfil.setText(Html.fromHtml("Profil: " + "<b>" + uzytkownik + "</b> ", 0));
-        tGodzina.setText(Html.fromHtml("Godzina: " + "<b>" + godzina + "</b> ", 0));
-        tData.setText(Html.fromHtml("Data: " + "<b>" + data + "</b> ", 0));
-        tLekarz.setText(Html.fromHtml("Lekarz: " + "<b>" + imie_nazwisko + "</b> ", 0));
-        tSpecjalizacja.setText(Html.fromHtml("Specjalizacja: " + "<b>" + specjalizacja + "</b> ", 0));
+        if (Build.VERSION.SDK_INT >= 24) {
+            tProfil.setText(Html.fromHtml("Profil: " + "<b>" + uzytkownik + "</b> ", 0));
+            tGodzina.setText(Html.fromHtml("Godzina: " + "<b>" + godzina + "</b> ", 0));
+            tData.setText(Html.fromHtml("Data: " + "<b>" + data + "</b> ", 0));
+            tLekarz.setText(Html.fromHtml("Lekarz: " + "<b>" + imie_nazwisko + "</b> ", 0));
+            tSpecjalizacja.setText(Html.fromHtml("Specjalizacja: " + "<b>" + specjalizacja + "</b> ", 0));
+        } else {
+            tProfil.setText(Html.fromHtml("Profil: " + "<b>" + uzytkownik + "</b> "));
+            tGodzina.setText(Html.fromHtml("Godzina: " + "<b>" + godzina + "</b> "));
+            tData.setText(Html.fromHtml("Data: " + "<b>" + data + "</b> "));
+            tLekarz.setText(Html.fromHtml("Lekarz: " + "<b>" + imie_nazwisko + "</b> "));
+            tSpecjalizacja.setText(Html.fromHtml("Specjalizacja: " + "<b>" + specjalizacja + "</b> "));
+        }
+
+
     }
 
 }

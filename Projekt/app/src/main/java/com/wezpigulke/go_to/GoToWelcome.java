@@ -13,14 +13,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.R;
 import com.wezpigulke.SideMenu;
 
 public class GoToWelcome extends AppCompatActivity {
 
-    Database myDb;
+    DatabaseHelper myDb;
 
     private TextView yourName;
     private Integer ktoryObrazek;
@@ -46,7 +46,7 @@ public class GoToWelcome extends AppCompatActivity {
 
         ktoryObrazek = 0;
 
-        myDb = new Database(this);
+        myDb = new DatabaseHelper(this);
 
         Cursor cs = myDb.getAllData_STATYSTYKI();
 
@@ -76,15 +76,23 @@ public class GoToWelcome extends AppCompatActivity {
 
         facetObr.setOnClickListener(v -> {
             Drawable highlight = ContextCompat.getDrawable(getApplicationContext(), R.drawable.highlight);
+
+
             facetObr.setBackground(highlight);
             kobietaObr.setBackground(null);
+
+
             ktoryObrazek = 1;
         });
 
         kobietaObr.setOnClickListener(v -> {
             Drawable highlight = ContextCompat.getDrawable(getApplicationContext(), R.drawable.highlight);
+
+
             kobietaObr.setBackground(highlight);
             facetObr.setBackground(null);
+
+
             ktoryObrazek = 2;
 
         });

@@ -18,7 +18,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.other.DecimalDigitsInputFilter;
 import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.R;
@@ -32,7 +32,7 @@ import java.util.Objects;
 
 public class AddMeasurement extends AppCompatActivity {
 
-    Database myDb;
+    DatabaseHelper myDb;
 
     private Button add;
     private Button goThen;
@@ -71,7 +71,7 @@ public class AddMeasurement extends AppCompatActivity {
 
         labelx = new ArrayList<>();
 
-        myDb = new Database(this);
+        myDb = new DatabaseHelper(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_measurement);

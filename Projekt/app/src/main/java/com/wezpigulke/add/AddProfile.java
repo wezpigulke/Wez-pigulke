@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.R;
 
@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public class AddProfile extends AppCompatActivity {
 
-    Database myDb;
+    DatabaseHelper myDb;
     private EditText txt;
     private ImageView facetObr;
     private ImageView kobietaObr;
@@ -29,7 +29,7 @@ public class AddProfile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        myDb = new Database(this);
+        myDb = new DatabaseHelper(this);
 
         ktoryObrazek = 1;
 

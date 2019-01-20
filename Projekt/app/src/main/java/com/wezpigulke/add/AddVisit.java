@@ -15,11 +15,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.R;
@@ -37,16 +38,18 @@ import static java.util.Calendar.*;
 
 public class AddVisit extends AppCompatActivity {
 
-    Database myDb;
+    DatabaseHelper myDb;
 
     private TextView data;
     private TextView godzina;
 
     private String name;
     private String specialization;
+    private Boolean czyWibracja;
 
     private DatePickerDialog.OnDateSetListener dataListener;
     private TimePickerDialog.OnTimeSetListener godzinaListener;
+    private CheckBox checkBoxx;
 
     private int year;
     private int month;
@@ -85,7 +88,7 @@ public class AddVisit extends AppCompatActivity {
         hour = Integer.parseInt(godzinaa);
         minutes = Integer.parseInt(minuta);
 
-        myDb = new Database(this);
+        myDb = new DatabaseHelper(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_visit);
@@ -96,6 +99,7 @@ public class AddVisit extends AppCompatActivity {
 
         data = findViewById(R.id.dateVisit);
         godzina = findViewById(R.id.timeVisit);
+        checkBoxx = findViewById(R.id.checkBoxx);
 
         final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
@@ -112,6 +116,8 @@ public class AddVisit extends AppCompatActivity {
         Cursor res = myDb.getAllName_UZYTKOWNICY();
         res.moveToFirst();
         uzytkownik = res.getString(0);
+
+        checkBoxx.setOnCheckedChangeListener((compoundButton, isChecked) -> czyWibracja = isChecked);
 
         loadSpinnerData();
         loadSpinnerDzwiek();
@@ -192,7 +198,7 @@ public class AddVisit extends AppCompatActivity {
 
                 if (diff < 0) {
 
-                    openDialog("Godzina dzisiejszego powiadomienia minęła, wybierz inną godzinę lub ustaw przyszłą datę");
+                    openDialog("Godzina dzisiejszej wizyty minęła, wybierz inną godzinę lub ustaw przyszłą datę");
 
                 } else {
 
@@ -206,7 +212,9 @@ public class AddVisit extends AppCompatActivity {
                             name,
                             specialization,
                             uzytkownik,
-                            rand_val
+                            rand_val,
+                            dzwiek,
+                            czyWibracja
                     );
 
 
@@ -225,6 +233,7 @@ public class AddVisit extends AppCompatActivity {
                     intxz.putExtra("specjalizacja", specialization);
                     intxz.putExtra("uzytkownik", uzytkownik);
                     intxz.putExtra("wybranyDzwiek", dzwiek);
+                    intxz.putExtra("czyWibracja", czyWibracja);
                     intxz.putExtra("rand_val", rand_val);
 
                     cal.add(Calendar.DATE, -1);
@@ -269,40 +278,40 @@ public class AddVisit extends AppCompatActivity {
                 dzwiek = position;
                 stopPlaying();
 
-                switch (position) {
-                    case 0:
+                switch(position) {
+                    case 1:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
                         mp.start();
                         break;
-                    case 1:
+                    case 2:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm2);
                         mp.start();
                         break;
-                    case 2:
+                    case 3:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm3);
                         mp.start();
                         break;
-                    case 3:
+                    case 4:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm4);
                         mp.start();
                         break;
-                    case 4:
+                    case 5:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm5);
                         mp.start();
                         break;
-                    case 5:
+                    case 6:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm6);
                         mp.start();
                         break;
-                    case 6:
+                    case 7:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm7);
                         mp.start();
                         break;
-                    case 7:
+                    case 8:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm8);
                         mp.start();
                         break;
-                    case 8:
+                    case 9:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm9);
                         mp.start();
                         break;
@@ -395,6 +404,8 @@ public class AddVisit extends AppCompatActivity {
     }
 
     private void loadSpinnerDzwiek() {
+
+        labelDzwiek.add("Brak");
 
         for (int i = 1; i <= 9; i++) {
             labelDzwiek.add("Alarm nr " + String.valueOf(i));

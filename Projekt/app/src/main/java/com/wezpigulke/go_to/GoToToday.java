@@ -20,7 +20,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.wezpigulke.Database;
+import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.R;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
@@ -31,6 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -39,7 +40,7 @@ import java.util.Objects;
 
 public class GoToToday extends Fragment {
 
-    Database myDb;
+    DatabaseHelper myDb;
     private List<Today> results;
     private TodayListAdapter adapter;
     private ListView lv;
@@ -142,7 +143,7 @@ public class GoToToday extends Fragment {
 
         lv.setAdapter(adapter);
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
         final Cursor c;
 
         if (uzytkownik.equals("Wszyscy")) c = myDb.getAllData_NOTYFIKACJA();
@@ -184,7 +185,7 @@ public class GoToToday extends Fragment {
             }
         }
 
-        results.sort(Comparator.comparing(Today::getDate));
+        Collections.sort(results, new CustomComparator());
 
         adapter = new TodayListAdapter(getActivity(), results);
         lv.setAdapter(adapter);
@@ -194,7 +195,7 @@ public class GoToToday extends Fragment {
     @SuppressLint("ShortAlarm")
     private void usunDane() throws ParseException {
 
-        myDb = new Database(getActivity());
+        myDb = new DatabaseHelper(getActivity());
 
         int id = 0;
         int typ = 0;
@@ -316,6 +317,13 @@ public class GoToToday extends Fragment {
 
         builder.show();
 
+    }
+
+    public class CustomComparator implements Comparator<Today> {
+        @Override
+        public int compare(Today o1, Today o2) {
+            return o1.getDate().compareTo(o2.getDate());
+        }
     }
 
 }
