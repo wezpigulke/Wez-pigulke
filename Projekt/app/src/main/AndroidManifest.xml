@@ -14,10 +14,10 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
         <activity
-            android:name="com.wezpigulke.Welcome.GoToWelcome"
+            android:name="com.wezpigulke.go_to.GoToWelcome"
             android:label="Weź pigułkę"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
@@ -28,72 +28,74 @@
         </activity>
 
         <activity
-            android:name="com.wezpigulke.SideMenu.SideMenu"
+            android:name="com.wezpigulke.SideMenu"
             android:label="Dzisiaj"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.Reminder.AddReminder"
+            android:name="com.wezpigulke.add.AddReminder"
             android:label="Dodawanie przypomnienia"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.Doctor.AddDoctor"
+            android:name="com.wezpigulke.add.AddDoctor"
             android:label="Dodaj lekarza"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.Profiles.AddProfile"
+            android:name="com.wezpigulke.add.AddProfile"
             android:label="Dodaj profil"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.Visit.AddVisit"
+            android:name="com.wezpigulke.add.AddVisit"
             android:label="Dodaj wizytę"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.Medicine.AddMedicine"
+            android:name="com.wezpigulke.add.AddMedicine"
             android:label="Dodaj lek"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.Notes.AddNotes"
+            android:name="com.wezpigulke.add.AddNotes"
             android:configChanges="orientation"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.Measurement.AddMeasurement"
+            android:name="com.wezpigulke.add.AddMeasurement"
             android:label="Dodaj pomiar"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.TypeMeasurement.AddTypeMeasurement"
+            android:name="com.wezpigulke.add.AddTypeMeasurement"
             android:label="Dodaj typ badania"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.wezpigulke.NotificationSystem.RepeatingActivityReminder"
-            android:label="Weź tabletkę"
-            android:launchMode="singleTop" />
+            android:name="com.wezpigulke.notification.RepeatingActivityReminder"
+            android:label="Weź tabletkę"/>
 
         <activity
-            android:name="com.wezpigulke.NotificationSystem.RepeatingActivityVisit"
+            android:name="com.wezpigulke.notification.RepeatingActivityVisit"
             android:label="Wizyta u lekarza" />
 
-        <receiver android:name="com.wezpigulke.NotificationSystem.NotificationReceiver" />
+        <receiver
+            android:name="com.wezpigulke.notification.NotificationReceiver"
+            android:exported="true" >
+        </receiver>
 
-        <receiver android:name="com.wezpigulke.NotificationSystem.ButtonIntent" />
+        <receiver android:name="com.wezpigulke.notification.ButtonIntent" />
 
     </application>
 
