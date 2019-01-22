@@ -225,7 +225,7 @@ public class AddVisit extends AppCompatActivity {
                     Intent intxz = new Intent(getApplicationContext(), NotificationReceiver.class);
 
                     intxz.putExtra("coPokazac", 1);
-                    intxz.putExtra("tresc", uzytkownik + "  |  wizyta u " + name + " jutro o " + godzina.getText().toString());
+                    intxz.putExtra("tresc", uzytkownik + "  |  wizyta u " + specialization + ": " + name + " jutro o " + godzina.getText().toString());
                     intxz.putExtra("id", id);
                     intxz.putExtra("godzina", godzina.getText().toString());
                     intxz.putExtra("data", data.getText().toString());
@@ -245,12 +245,12 @@ public class AddVisit extends AppCompatActivity {
                         assert alarmManagerr != null;
                         alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
 
-                        Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
 
                     }
 
                     rand_val--;
-                    intxz.putExtra("tresc", uzytkownik + "  |  wizyta u " + name + " o " + godzina.getText().toString());
+                    intxz.putExtra("tresc", uzytkownik + "  |  wizyta u " + specialization + ": " + name + " o " + godzina.getText().toString());
                     intxz.putExtra("rand_val", rand_val);
 
                     cal.add(Calendar.DATE, +1);
@@ -261,7 +261,7 @@ public class AddVisit extends AppCompatActivity {
                     assert alarmManagerr != null;
                     alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
 
-                    Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
 
                     onBackPressed();
 

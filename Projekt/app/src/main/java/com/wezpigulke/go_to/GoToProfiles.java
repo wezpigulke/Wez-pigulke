@@ -153,7 +153,7 @@ public class GoToProfiles extends Fragment {
                                         assert alarmManager != null;
                                         alarmManager.cancel(pendingIntent);
 
-                                        Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
+                                        //Text(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
 
 
                                     }
@@ -166,7 +166,7 @@ public class GoToProfiles extends Fragment {
                         if (cw.getCount() != 0) {
                             while (cw.moveToNext()) {
 
-                                Cursor crand = myDb.getRand_NOTYFIKACJA(cw.getInt(0));
+                                Cursor crand = myDb.getRand_WIZYTY(cw.getInt(0));
                                 crand.moveToFirst();
 
                                 AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
@@ -178,7 +178,12 @@ public class GoToProfiles extends Fragment {
                                 assert alarmManager != null;
                                 alarmManager.cancel(pendingIntent);
 
-                                Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
+                                pendingIntent = PendingIntent.getBroadcast(
+                                        getActivity(), crand.getInt(0)-1, myIntent,
+                                        PendingIntent.FLAG_UPDATE_CURRENT);
+                                alarmManager.cancel(pendingIntent);
+
+                                //Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
 
 
                             }

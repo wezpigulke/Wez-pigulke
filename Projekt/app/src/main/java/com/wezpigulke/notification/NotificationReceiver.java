@@ -34,7 +34,7 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Toast.makeText(context, "ODPALONY ALARM", Toast.LENGTH_LONG).show();
+        //Toast.makeText(context, "ODPALONY ALARM", Toast.LENGTH_LONG).show();
         Log.d("========ALARM==========", "Alarm odpalony");
 
         myDb = new DatabaseHelper(context);
@@ -372,7 +372,7 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
                                 else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
                             } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
 
-                            Toast.makeText(context, "Dodanie: " + " | " + String.valueOf(rand_val) + "\n" + sdfz.format(cal.getTime()), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(context, "Dodanie: " + " | " + String.valueOf(rand_val) + "\n" + sdfz.format(cal.getTime()), Toast.LENGTH_LONG).show();
                             Log.d("========ALARM==========", "Dodanie: " + " | " + String.valueOf(rand_val) + "\n" + sdfz.format(cal.getTime()));
 
                         } else {
@@ -380,7 +380,7 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
                             myDb.remove_PRZYPOMNIENIE(id_p);
                             myDb.removeIdPrz_NOTYFIKACJA(id_p);
 
-                            Toast.makeText(context, "Usunięcie notyfikacji: " + id_n, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context, "Usunięcie notyfikacji: " + id_n, Toast.LENGTH_SHORT).show();
                             Log.d("========ALARM==========", "Usunięcie notyfikacji: " + id_n);
 
                         }
@@ -401,7 +401,6 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
                         Cursor cp = myDb.getIDfromMedicine_PRZYPOMNIENIE(nazwaLeku);
                         double ileNotyfikacji, typPrzypomnienia, pozostalaIloscDni;
                         Double sumujTypy = 0.0;
-                        Double jakaDawkaTabletki = 0.0;
 
                         while (cp.moveToNext()) {
 
@@ -420,24 +419,20 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
                             if (typPrzypomnienia > 1) {
 
                                 if (pozostalaIloscDni <= 7)
-                                    sumujTypy += ((1 / typPrzypomnienia) * jakaDawkaTabletki) * pozostalaIloscDni;
-                                else sumujTypy += ((1 / typPrzypomnienia) * jakaDawkaTabletki) * 7;
+                                    sumujTypy += ((1 / typPrzypomnienia) * jakaDawka) * pozostalaIloscDni;
+                                else sumujTypy += ((1 / typPrzypomnienia) * jakaDawka) * 7;
 
                             } else {
 
                                 if (pozostalaIloscDni <= 7)
-                                    sumujTypy += (typPrzypomnienia * ileNotyfikacji * jakaDawkaTabletki) * pozostalaIloscDni;
+                                    sumujTypy += (typPrzypomnienia * ileNotyfikacji * jakaDawka) * pozostalaIloscDni;
                                 else
-                                    sumujTypy += (typPrzypomnienia * ileNotyfikacji * jakaDawkaTabletki) * 7;
+                                    sumujTypy += (typPrzypomnienia * ileNotyfikacji * jakaDawka) * 7;
                             }
 
                         }
 
-                        sumujTypy -= jakaDawkaTabletki;
-
                         if (sumujTypy > iloscLeku) {
-
-                            sumujTypy -= jakaDawka;
 
                             notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 

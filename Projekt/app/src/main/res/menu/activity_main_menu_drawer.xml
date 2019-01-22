@@ -49,5 +49,6 @@
             android:id="@+id/aboutAuthor"
             android:icon="@drawable/author"
             android:title="O autorze" />
+
     </group>
 </menu>

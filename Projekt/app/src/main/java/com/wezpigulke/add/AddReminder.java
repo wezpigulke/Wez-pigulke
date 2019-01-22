@@ -652,7 +652,7 @@ public class AddReminder extends AppCompatActivity {
                             else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
                         } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
 
-                        Toast.makeText(getApplicationContext(), "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
                         Log.d("========ALARM==========", "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16));
 
                         goBack();
@@ -789,7 +789,7 @@ public class AddReminder extends AppCompatActivity {
                                     else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
                                 } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
 
-                                Toast.makeText(getApplicationContext(), "Dodanie: " + " | " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getApplicationContext(), "Dodanie: " + " | " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
                                 Log.d("========ALARM==========", "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16));
 
                             } else if (coWybrane == 3 && iloscDni >= 1) {
@@ -858,7 +858,7 @@ public class AddReminder extends AppCompatActivity {
                                     else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
                                 } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
 
-                                Toast.makeText(getApplicationContext(), "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getApplicationContext(), "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
                                 Log.d("========ALARM==========", "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16));
 
                             }
@@ -1063,7 +1063,7 @@ public class AddReminder extends AppCompatActivity {
                                     else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
                                 } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
 
-                                Toast.makeText(getApplicationContext(), "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
+                                //Text(getApplicationContext(), "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
                                 Log.d("========ALARM==========", "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16));
 
                             }
@@ -1381,8 +1381,8 @@ public class AddReminder extends AppCompatActivity {
 
         labelReminder.add("Jednorazowo");
         labelReminder.add("Codziennie");
-        labelReminder.add("X razy dziennie");
-        labelReminder.add("Co X dni");
+        labelReminder.add("Kilka razy dziennie");
+        labelReminder.add("Co kilka dni");
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, labelReminder);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

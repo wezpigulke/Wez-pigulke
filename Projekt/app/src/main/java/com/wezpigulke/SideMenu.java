@@ -134,12 +134,6 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
-        switch (id) {
-            case R.id.listOfProfiles:
-
-                break;
-        }
-
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

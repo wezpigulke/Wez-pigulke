@@ -38,6 +38,7 @@ public class ButtonIntent extends BroadcastReceiver {
                 manager.cancel(rand_val);
                 Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
                 context.sendBroadcast(it);
+                break;
 
             case 1:
                 id_h = intent.getIntExtra("id_h", 0);
@@ -53,7 +54,7 @@ public class ButtonIntent extends BroadcastReceiver {
                 Cursor cl = myDb.getDataName_LEK(nazwaLeku);
                 cl.moveToFirst();
                 double iloscLeku = cl.getDouble(2) + jakaDawka;
-                myDb.update_LEK(Integer.parseInt(cl.getString(0)), iloscLeku);
+                myDb.update_LEK(cl.getInt(0), iloscLeku);
 
                 myDb.update_HISTORIA(id_h, obecnyCzas, "NIEWZIETE");
 
@@ -62,6 +63,7 @@ public class ButtonIntent extends BroadcastReceiver {
                 manager.cancel(rand_val);
                 it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
                 context.sendBroadcast(it);
+                break;
 
         }
 

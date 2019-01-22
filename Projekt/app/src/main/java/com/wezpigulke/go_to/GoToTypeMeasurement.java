@@ -1,5 +1,4 @@
 package com.wezpigulke.go_to;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
@@ -30,22 +29,23 @@ public class GoToTypeMeasurement extends Fragment {
     DatabaseHelper myDb;
     private MeasurementTypeListAdapter adapter;
     private List<MeasurementType> results;
-    private ListView lv;
-    private Integer idd;
+    private ListView listView;
+    private Integer id;
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view,
+                              @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         Objects.requireNonNull(getActivity()).setTitle("Typy pomiarów");
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.type_measurement, container, false);
-
         FloatingActionButton fabz = v.findViewById(R.id.fabMesaurementType);
 
         fabz.setOnClickListener(v1 -> {
@@ -54,20 +54,18 @@ public class GoToTypeMeasurement extends Fragment {
         });
 
         results = new ArrayList<>();
-        lv = v.findViewById(R.id.measurementTypeList);
-
+        listView = v.findViewById(R.id.measurementTypeList);
         return v;
-
     }
 
     @SuppressLint("ClickableViewAccessibility")
     public void onResume() {
 
         super.onResume();
-        AktualizujBaze();
+        aktualizujBaze();
 
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
-                lv,
+                listView,
                 new SwipeDismissListViewTouchListener.DismissCallbacks() {
                     @Override
                     public boolean canDismiss(int position) {
@@ -78,7 +76,7 @@ public class GoToTypeMeasurement extends Fragment {
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
 
-                            idd = results.get(position).getId();
+                            id = results.get(position).getId();
                             dialogRemove();
 
                         }
@@ -87,16 +85,16 @@ public class GoToTypeMeasurement extends Fragment {
 
                 });
 
-        lv.setOnTouchListener(touchListener);
+        listView.setOnTouchListener(touchListener);
 
     }
 
-    public void AktualizujBaze() {
+    public void aktualizujBaze() {
 
         results.clear();
-        lv.setAdapter(adapter);
+        listView.setAdapter(adapter);
 
-        myDb = new DatabaseHelper(getActivity());
+        DatabaseHelper myDb = new DatabaseHelper(getActivity());
         Cursor c = myDb.getAllData_TYP_POMIAR();
 
         if (c.getCount() != 0) {
@@ -106,7 +104,7 @@ public class GoToTypeMeasurement extends Fragment {
         }
 
         adapter = new MeasurementTypeListAdapter(getActivity(), results);
-        lv.setAdapter(adapter);
+        listView.setAdapter(adapter);
 
     }
 
@@ -117,14 +115,14 @@ public class GoToTypeMeasurement extends Fragment {
         builder.setMessage("Czy na pewno chcesz usunąć? Usunie to wszystkie pomiary powiązane z tym typem.").setCancelable(false)
                 .setPositiveButton("Tak", (dialog, which) -> {
 
-                    Cursor cp = myDb.getDataType_TYP_POMIAR(idd);
+                    Cursor cp = myDb.getDataType_TYP_POMIAR(id);
                     cp.moveToFirst();
                     String nazwaTypu = cp.getString(0);
 
                     myDb.removeType_POMIARY(nazwaTypu);
-                    myDb.remove_TYP_POMIAR(idd);
+                    myDb.remove_TYP_POMIAR(id);
 
-                    AktualizujBaze();
+                    aktualizujBaze();
 
                 })
                 .setNegativeButton("Nie", (dialog, which) -> dialog.cancel());

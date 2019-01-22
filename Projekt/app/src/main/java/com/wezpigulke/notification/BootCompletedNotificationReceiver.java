@@ -109,7 +109,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                         assert alarmManagerr != null;
                         alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
 
-                        Toast.makeText(context, "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(context, "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
 
                     }
 
@@ -128,7 +128,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                     assert alarmManagerr != null;
                     alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
 
-                    Toast.makeText(context, "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context, "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
 
                 }
 
@@ -286,7 +286,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                         else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
                     } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
 
-                    Toast.makeText(context, "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0, 16), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context, "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0, 16), Toast.LENGTH_LONG).show();
 
                 }
 

@@ -16,37 +16,29 @@ import java.util.Objects;
 
 public class AddTypeMeasurement extends AppCompatActivity {
 
-    DatabaseHelper myDb;
-
-    private EditText typBadania;
-
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        myDb = new DatabaseHelper(this);
+        DatabaseHelper myDb = new DatabaseHelper(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_type_measurement);
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        Button dodajButton = findViewById(R.id.dodajLekButton);
-        typBadania = findViewById(R.id.typBadania);
+        Button przyciskDodawania = findViewById(R.id.addTypeMeasurementButton);
+        EditText typBadania = findViewById(R.id.typBadania);
 
-        dodajButton.setOnClickListener(v -> {
+        przyciskDodawania.setOnClickListener(v -> {
             if (typBadania.getText().length() > 0) {
-                Cursor cp = myDb.getDataID_TYP_POMIAR(typBadania.getText().toString());
-                if (cp.getCount() == 0) {
-                    myDb.insert_TYP_POMIAR(
-                            typBadania.getText().toString()
-                    );
+                Cursor cursor = myDb.getDataID_TYP_POMIAR(typBadania.getText().toString());
+                if (cursor.getCount() == 0) {
+                    myDb.insert_TYP_POMIAR(typBadania.getText().toString());
                     onBackPressed();
-                } else
-                    openDialog("Już istnieje typ badania o takiej samej nazwie w naszej bazie danych");
+                } else openDialog("Już istnieje typ badania o takiej samej nazwie w naszej bazie danych");
             } else openDialog("Wpisz typ badania");
         });
-
     }
 
     public void openDialog(String warning) {
@@ -72,5 +64,9 @@ public class AddTypeMeasurement extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }
+
+
+
+
+

@@ -134,11 +134,11 @@ public class GoToSettings extends Fragment {
                             assert alarmManager != null;
                             alarmManager.cancel(pendingIntent);
 
-                            Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
 
                             myIntent = new Intent(getActivity(), NotificationReceiver.class);
                             pendingIntent = PendingIntent.getBroadcast(
-                                    getActivity(), crand.getInt(0)+1, myIntent,
+                                    getActivity(), crand.getInt(0)-1, myIntent,
                                     PendingIntent.FLAG_UPDATE_CURRENT);
                             alarmManager.cancel(pendingIntent);
                         }
@@ -250,8 +250,7 @@ public class GoToSettings extends Fragment {
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(getActivity(), "Brak pozwolenia na dostęp do plików", Toast.LENGTH_SHORT)
-                            .show();
+                    Toast.makeText(getActivity(), "Brak pozwolenia na dostęp do plików", Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:

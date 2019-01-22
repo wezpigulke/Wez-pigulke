@@ -118,7 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Typ INTEGER, " +
                 "Wszystkie_godziny TEXT, " +
                 "Dzwiek INTEGER, " +
-                "Wibracja BOOLEAN)");
+                "Wibracja INTEGER)");
 
         db.execSQL("CREATE TABLE " + HISTORIA + " (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -154,7 +154,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Profil TEXT, " +
                 "Rand_ID INTEGER, " +
                 "Dzwiek INTEGER, " +
-                "Wibracja BOOLEAN)");
+                "Wibracja INTEGER)");
 
         db.execSQL("CREATE TABLE " + POMIARY + " (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +

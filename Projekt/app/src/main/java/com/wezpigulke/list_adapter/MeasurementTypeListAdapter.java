@@ -16,8 +16,6 @@ public class MeasurementTypeListAdapter extends BaseAdapter {
     private Context mContext;
     private List<MeasurementType> results;
 
-    //Constructor
-
     public MeasurementTypeListAdapter(Context mContext, List<MeasurementType> results) {
         this.mContext = mContext;
         this.results = results;
@@ -40,15 +38,13 @@ public class MeasurementTypeListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.measurement_type_listview, null);
-
         TextView measurementName = v.findViewById(R.id.measurementTypeName);
-
         measurementName.setText(results.get(position).getProfile());
-
         v.setTag(results.get(position).getId());
-
         return v;
     }
 }
+
+
+
