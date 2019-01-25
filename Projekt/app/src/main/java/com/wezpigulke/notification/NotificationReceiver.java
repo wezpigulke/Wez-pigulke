@@ -349,7 +349,6 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
 
                             Intent intx = new Intent(context, NotificationReceiver.class);
                             intx.putExtra("coPokazac", 0);
-                            intx.putExtra("czyPowtarzanyAlarm", true);
                             intx.putExtra("tresc", uzytkownik + " |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
                             intx.putExtra("id", id_n);
                             intx.putExtra("idd", id_p);

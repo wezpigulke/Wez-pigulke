@@ -60,7 +60,6 @@ public class GoToTypeMeasurement extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     public void onResume() {
-
         super.onResume();
         aktualizujBaze();
 
@@ -71,20 +70,14 @@ public class GoToTypeMeasurement extends Fragment {
                     public boolean canDismiss(int position) {
                         return true;
                     }
-
                     @Override
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
-
                             id = results.get(position).getId();
                             dialogRemove();
-
                         }
-
                     }
-
                 });
-
         listView.setOnTouchListener(touchListener);
 
     }
@@ -92,7 +85,6 @@ public class GoToTypeMeasurement extends Fragment {
     public void aktualizujBaze() {
 
         results.clear();
-        listView.setAdapter(adapter);
 
         DatabaseHelper myDb = new DatabaseHelper(getActivity());
         Cursor c = myDb.getAllData_TYP_POMIAR();
@@ -117,11 +109,8 @@ public class GoToTypeMeasurement extends Fragment {
 
                     Cursor cp = myDb.getDataType_TYP_POMIAR(id);
                     cp.moveToFirst();
-                    String nazwaTypu = cp.getString(0);
-
-                    myDb.removeType_POMIARY(nazwaTypu);
+                    myDb.removeType_POMIARY(cp.getString(0));
                     myDb.remove_TYP_POMIAR(id);
-
                     aktualizujBaze();
 
                 })

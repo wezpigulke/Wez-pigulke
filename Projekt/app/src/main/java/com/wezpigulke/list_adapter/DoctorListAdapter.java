@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wezpigulke.classes.Doctor;
@@ -45,10 +46,14 @@ public class DoctorListAdapter extends BaseAdapter {
         TextView doctorName = v.findViewById(R.id.medicineReminder);
         TextView specializationDoctor = v.findViewById(R.id.dateVisit);
         TextView address = v.findViewById(R.id.addressVisit);
+        ImageView doctorImage = v.findViewById(R.id.imageView4);
 
         doctorName.setText(results.get(position).getName());
         specializationDoctor.setText(results.get(position).getSpecialization());
         address.setText(results.get(position).getAddress());
+
+        if(results.get(position).getPicture()==1) doctorImage.setImageResource(R.drawable.doctor);
+        else doctorImage.setImageResource(R.drawable.doctorr);
 
         v.setTag(results.get(position).getId());
 

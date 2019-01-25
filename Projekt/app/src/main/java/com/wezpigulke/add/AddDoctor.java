@@ -39,21 +39,28 @@ public class AddDoctor extends AppCompatActivity {
         phone_number = findViewById(R.id.editText8);
 
         add.setOnClickListener(v -> {
-
             if (name.getText().length() > 0 && specialization.getText().length() > 0) {
-
                 String numerTelefonu = phone_number.getText().toString();
                 if(numerTelefonu.length()==0) numerTelefonu="0";
 
-                myDb.insert_DOKTORZY(
-                        name.getText().toString(),
-                        specialization.getText().toString(),
-                        Integer.valueOf(numerTelefonu),
-                        address.getText().toString()
-                );
-
+                if(name.getText().toString().replaceAll("\\W", "").substring(-1).equals("a")) {
+                    myDb.insert_DOKTORZY(
+                            name.getText().toString(),
+                            specialization.getText().toString(),
+                            Integer.valueOf(numerTelefonu),
+                            address.getText().toString(),
+                            1
+                    );
+                } else {
+                    myDb.insert_DOKTORZY(
+                            name.getText().toString(),
+                            specialization.getText().toString(),
+                            Integer.valueOf(numerTelefonu),
+                            address.getText().toString(),
+                            0
+                    );
+                }
                 onBackPressed();
-
             } else if (name.getText().length() == 0) openDialog("Wpisz imie i nazwisko lekarza");
             else if (specialization.getText().length() == 0) openDialog("Wpisz specjalizacje lekarza");
         });

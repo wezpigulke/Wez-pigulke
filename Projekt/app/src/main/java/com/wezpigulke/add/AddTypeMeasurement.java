@@ -24,7 +24,6 @@ public class AddTypeMeasurement extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_type_measurement);
-
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         Button przyciskDodawania = findViewById(R.id.addTypeMeasurementButton);

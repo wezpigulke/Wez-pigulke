@@ -48,17 +48,12 @@ public class AddProfile extends AppCompatActivity {
 
         add.setOnClickListener(v -> {
             if (txt.getText().length() > 0) {
-
                 Cursor cp = myDb.getId_UZYTKOWNICY(txt.getText().toString());
-
                 if (cp.getCount() == 0) {
-
                     myDb.insert_UZYTKOWNICY(txt.getText().toString(), ktoryObrazek);
                     closeKeyboard();
                     onBackPressed();
-
                 } else openDialog("Już istnieje osoba o takim imieniu w naszej bazie danych");
-
             } else openDialog("Wpisz imie");
         });
 

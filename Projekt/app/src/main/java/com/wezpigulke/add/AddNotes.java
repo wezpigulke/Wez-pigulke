@@ -34,7 +34,6 @@ public class AddNotes extends AppCompatActivity {
     private ArrayList<String> label;
     private String uzytkownik;
 
-
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -35,7 +35,7 @@ public class AddMedicine extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        Button dodajButton = findViewById(R.id.addTypeMeasurementButton);
+        Button dodajButton = findViewById(R.id.dodajLekButton);
         nazwaLeku = findViewById(R.id.nazwaLeku);
         iloscTabletek = findViewById(R.id.iloscTabletek);
 

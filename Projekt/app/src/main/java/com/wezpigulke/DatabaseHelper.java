@@ -51,6 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DOKTORZY_SPECJALIZACJA = "Specjalizacja";
     private static final String DOKTORZY_NUMER = "Numer";
     private static final String DOKTORZY_ADRES = "Adres";
+    private static final String DOKTORZY_OBRAZEK = "Obrazek";
 
     private static final String WIZYTY = "Wizyty";
     private static final String WIZYTY_ID = "ID";
@@ -143,7 +144,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Imie_Nazwisko TEXT, " +
                 "Specjalizacja TEXT, " +
                 "Numer INTEGER, " +
-                "Adres TEXT)");
+                "Adres TEXT," +
+                "Obrazek INTEGER)");
 
         db.execSQL("CREATE TABLE " + WIZYTY + " (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -627,13 +629,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * ============ DOKTORZY ============
      **/
 
-    public void insert_DOKTORZY(String name, String specialization, Integer phone_number, String address) {
+    public void insert_DOKTORZY(String name, String specialization, Integer phone_number, String address, Integer image) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(DOKTORZY_IMIE_I_NAZWISKO, name);
         contentValues.put(DOKTORZY_SPECJALIZACJA, specialization);
         contentValues.put(DOKTORZY_NUMER, phone_number);
         contentValues.put(DOKTORZY_ADRES, address);
+        contentValues.put(DOKTORZY_OBRAZEK, image);
         long result = db.insert(DOKTORZY, null, contentValues);
     }
 

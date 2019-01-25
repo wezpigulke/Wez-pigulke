@@ -56,15 +56,16 @@ public class GoToSettings extends Fragment {
 
     DatabaseHelper myDb;
 
-    private Integer i = 0;
-
+    private Integer i;
     private Integer progress;
-
     private ProgressBar myprogressbar;
 
     private TextView tProgres;
     private TextView tWziete;
     private TextView tZapomniane;
+    private PdfPCell cell;
+
+    private PdfPTable table_result;
 
     private File pdfFile;
     final private int REQUEST_CODE_ASK_PERMISSIONS = 111;
@@ -92,10 +93,11 @@ public class GoToSettings extends Fragment {
         final Button pdf = v.findViewById(R.id.button5);
 
         myprogressbar = v.findViewById(R.id.myprogressbar);
-
         tProgres = v.findViewById(R.id.textView8);
         tWziete = v.findViewById(R.id.textView13);
         tZapomniane = v.findViewById(R.id.textView14);
+
+        i = 0;
 
         DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
             switch (which) {
@@ -105,16 +107,11 @@ public class GoToSettings extends Fragment {
 
                     if(cursorAllDataNotyfikacja.getCount() != 0) {
                         while(cursorAllDataNotyfikacja.moveToNext()) {
+
                             Cursor cursorRandNotyfikacja = myDb.getRand_NOTYFIKACJA(cursorAllDataNotyfikacja.getInt(0));
                             cursorRandNotyfikacja.moveToFirst();
+                            cancelAlarm(cursorRandNotyfikacja.getInt(0));
 
-                            AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
-                            Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                    getActivity(), cursorRandNotyfikacja.getInt(0), myIntent,
-                                    PendingIntent.FLAG_UPDATE_CURRENT);
-                            assert alarmManager != null;
-                            alarmManager.cancel(pendingIntent);
                         }
                     }
 
@@ -122,25 +119,14 @@ public class GoToSettings extends Fragment {
 
                     if(cw.getCount() != 0) {
                         while(cw.moveToNext()) {
-                            AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
 
                             Cursor crand = myDb.getRand_WIZYTY(cw.getInt(0));
                             crand.moveToFirst();
-
-                            Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                    getActivity(), crand.getInt(0), myIntent,
-                                    PendingIntent.FLAG_UPDATE_CURRENT);
-                            assert alarmManager != null;
-                            alarmManager.cancel(pendingIntent);
+                            cancelAlarm(crand.getInt(0));
+                            cancelAlarm(crand.getInt(0)-1);
 
                             //Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
 
-                            myIntent = new Intent(getActivity(), NotificationReceiver.class);
-                            pendingIntent = PendingIntent.getBroadcast(
-                                    getActivity(), crand.getInt(0)-1, myIntent,
-                                    PendingIntent.FLAG_UPDATE_CURRENT);
-                            alarmManager.cancel(pendingIntent);
                         }
                     }
 
@@ -169,13 +155,20 @@ public class GoToSettings extends Fragment {
             }
         });
 
+        int wziete = 0;
+        int niewziete = 0;
+
         Cursor cw = myDb.getWziete_STATYSTYKI(0);
-        cw.moveToFirst();
-        int wziete = Integer.parseInt(cw.getString(0));
+        if(cw.getCount() != 0) {
+            cw.moveToFirst();
+            wziete = Integer.parseInt(cw.getString(0));
+        }
 
         Cursor cn = myDb.getNiewziete_STATYSTYKI(0);
-        cn.moveToFirst();
-        int niewziete = Integer.parseInt(cn.getString(0));
+        if(cn.getCount() != 0) {
+            cn.moveToFirst();
+            niewziete = Integer.parseInt(cn.getString(0));
+        }
 
         if (niewziete >= 0 && wziete == 0) progress = 0;
         else if (wziete >= 0 && niewziete == 0) progress = 100;
@@ -195,11 +188,19 @@ public class GoToSettings extends Fragment {
         tZapomniane.setVisibility(View.INVISIBLE);
         tProgres.setVisibility(View.INVISIBLE);
 
+        addProgressBar();
+
+        return v;
+
+    }
+
+    private void addProgressBar() {
+
         myprogressbar.setScaleY(10);
 
         if (Build.VERSION.SDK_INT >= 21) {
             if (progress < 50) myprogressbar.setProgressTintList(ColorStateList.valueOf(Color.RED));
-           else myprogressbar.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
+            else myprogressbar.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
         } else {
             myprogressbar.setVisibility(View.INVISIBLE);
         }
@@ -217,26 +218,18 @@ public class GoToSettings extends Fragment {
             });
         }).start();
 
-        return v;
-
     }
 
     private void createPdfWrapper() throws FileNotFoundException, DocumentException {
 
         int hasWriteStoragePermission = ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (hasWriteStoragePermission != PackageManager.PERMISSION_GRANTED) {
-
             if (!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)) {
-                showMessageOKCancel(
-                        (dialog, which) -> requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CODE_ASK_PERMISSIONS));
+                showMessageOKCancel((dialog, which) -> requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CODE_ASK_PERMISSIONS));
                 return;
             }
-
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    REQUEST_CODE_ASK_PERMISSIONS);
-        } else {
-            createPdf();
-        }
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_ASK_PERMISSIONS);
+        } else createPdf();
     }
 
     @Override
@@ -271,10 +264,11 @@ public class GoToSettings extends Fragment {
     @SuppressWarnings("all")
     private void createPdf() throws FileNotFoundException, DocumentException {
 
+        BaseColor greenColor = WebColors.getRGBColor("#00ff00");
+        BaseColor redColor = WebColors.getRGBColor("#ff0000");
+
         File docsFolder = new File(Environment.getExternalStorageDirectory() + "/Documents");
-        if (!docsFolder.exists()) {
-            docsFolder.mkdir();
-        }
+        if (!docsFolder.exists()) docsFolder.mkdir();
 
         pdfFile = new File(docsFolder.getAbsolutePath(), "Raport.pdf");
         OutputStream output = new FileOutputStream(pdfFile);
@@ -282,111 +276,85 @@ public class GoToSettings extends Fragment {
         PdfWriter.getInstance(document, output);
         document.open();
 
-        Paragraph p = new Paragraph("LISTA STARYCH PRZYPOMNIEN", FontFactory.getFont(FontFactory.TIMES_BOLD, 18, Font.BOLD, BaseColor.RED));
+        Paragraph p = new Paragraph("LISTA STARYCH PRZYPOMNIEN",
+                FontFactory.getFont(FontFactory.TIMES_BOLD, 18, Font.BOLD, BaseColor.RED));
         p.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(p);
         document.add(Chunk.NEWLINE);
 
         Cursor cu = myDb.getAllName_UZYTKOWNICY();
 
-        while (cu.moveToNext()) {
+        if (cu.getCount()!=0) {
+            while (cu.moveToNext()) {
+                String user = cu.getString(0);
 
-            String user = cu.getString(0);
+                Paragraph pz = new Paragraph("Profil: " + user,
+                        FontFactory.getFont(FontFactory.TIMES_BOLD, 15, Font.BOLD, BaseColor.BLUE));
+                pz.setAlignment(Paragraph.ALIGN_CENTER);
+                document.add(pz);
+                document.add(Chunk.NEWLINE);
 
-            Paragraph pz = new Paragraph("Profil: " + user, FontFactory.getFont(FontFactory.TIMES_BOLD, 15, Font.BOLD, BaseColor.BLUE));
-            pz.setAlignment(Paragraph.ALIGN_CENTER);
-            document.add(pz);
-            document.add(Chunk.NEWLINE);
+                PdfPTable table = new PdfPTable(6);
 
-            PdfPCell cell;
+                generateNewCell("Godzina");
+                generateNewCell("Data");
+                generateNewCell("Lek");
+                generateNewCell("Dawka");
+                generateNewCell("Potw.");
+                generateNewCell("Status");
+                document.add(table);
 
-            PdfPTable table = new PdfPTable(6);
-            cell = new PdfPCell(new Paragraph("Godzina", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
-            cell = new PdfPCell(new Paragraph("Data", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
-            cell = new PdfPCell(new Paragraph("Lek", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
-            cell = new PdfPCell(new Paragraph("Dawka", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
-            cell = new PdfPCell(new Paragraph("Potw.", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
-            cell = new PdfPCell(new Paragraph("Status", FontFactory.getFont(FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
-            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            table.addCell(cell);
+                Cursor cp = myDb.getUserData_HISTORIA(user);
+                if (cp.getCount() != 0) {
+                    while (cp.moveToNext()) {
 
-            document.add(table);
+                        table_result = new PdfPTable(6);
 
-            String statusHistorii;
+                        addNewCell(cp.getString(2));
+                        addNewCell(cp.getString(3).substring(0, 5));
+                        addNewCell(cp.getString(4));
+                        addNewCell(cp.getString(5));
+                        addNewCell(cp.getString(6));
 
+                        String statusHistorii = cp.getString(7);
 
-            BaseColor greenColor = WebColors.getRGBColor("#00ff00");
-            BaseColor redColor = WebColors.getRGBColor("#ff0000");
+                        switch (statusHistorii) {
+                            case "WZIETE":
+                                cell = new PdfPCell(new Paragraph(""));
+                                cell.setBackgroundColor(greenColor);
+                                break;
+                            case "NIEWZIETE":
+                                cell = new PdfPCell(new Paragraph(""));
+                                cell.setBackgroundColor(redColor);
+                                break;
+                            case "BRAK":
+                                cell = new PdfPCell(new Paragraph("BRAK"));
+                                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                                break;
+                        }
 
-            Cursor cp = myDb.getUserData_HISTORIA(user);
-            if (cp.getCount() != 0) {
-                while (cp.moveToNext()) {
-
-                    PdfPTable table_result = new PdfPTable(6);
-
-                    cell = new PdfPCell(new Paragraph(cp.getString(2)));
-                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    table_result.addCell(cell);
-
-                    cell = new PdfPCell(new Paragraph(cp.getString(3).substring(0, 5)));
-                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    table_result.addCell(cell);
-
-                    cell = new PdfPCell(new Paragraph(cp.getString(4)));
-                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    table_result.addCell(cell);
-
-                    cell = new PdfPCell(new Paragraph(cp.getString(5)));
-                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    table_result.addCell(cell);
-
-                    cell = new PdfPCell(new Paragraph(cp.getString(6)));
-                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    table_result.addCell(cell);
-
-                    statusHistorii = cp.getString(7);
-
-                    switch (statusHistorii) {
-                        case "WZIETE":
-                            cell = new PdfPCell(new Paragraph(""));
-                            cell.setBackgroundColor(greenColor);
-                            table_result.addCell(cell);
-                            break;
-                        case "NIEWZIETE":
-                            cell = new PdfPCell(new Paragraph(""));
-                            cell.setBackgroundColor(redColor);
-                            table_result.addCell(cell);
-                            break;
-                        case "BRAK":
-                            cell = new PdfPCell(new Paragraph("BRAK"));
-                            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-                            table_result.addCell(cell);
-                            break;
+                        table_result.addCell(cell);
+                        document.add(table_result);
                     }
-
-                    document.add(table_result);
-
                 }
+                document.add(Chunk.NEWLINE);
+                document.add(Chunk.NEWLINE);
             }
-
-            document.add(Chunk.NEWLINE);
-            document.add(Chunk.NEWLINE);
-
         }
-
         document.close();
         previewPdf();
+    }
 
+    private void generateNewCell(String text) {
+        cell = new PdfPCell(new Paragraph(text,FontFactory.getFont(
+                FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+    }
+
+    private void addNewCell (String value) {
+        cell = new PdfPCell(new Paragraph(value));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table_result.addCell(cell);
     }
 
     private void previewPdf() {
@@ -412,6 +380,16 @@ public class GoToSettings extends Fragment {
 
         super.onResume();
 
+    }
+
+    private void cancelAlarm(Integer id) {
+        AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
+        Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                getActivity(), id, myIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        assert alarmManager != null;
+        alarmManager.cancel(pendingIntent);
     }
 
 }

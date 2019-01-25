@@ -60,48 +60,17 @@ public class AddMeasurement extends AppCompatActivity {
     private int labelSize;
     private int labelSizeCopy;
 
-    public AddMeasurement() {
-    }
-
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        label = new ArrayList<>();
-
-        labelx = new ArrayList<>();
 
         myDb = new DatabaseHelper(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_measurement);
-
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-
-        String rok = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
-        String miesiac = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
-        String dzien = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
-        String godzina = new SimpleDateFormat("HH", Locale.getDefault()).format(new Date());
-        String minuta = new SimpleDateFormat("mm", Locale.getDefault()).format(new Date());
-
-        year = Integer.parseInt(rok);
-        month = Integer.parseInt(miesiac);
-        day = Integer.parseInt(dzien);
-        hour = Integer.parseInt(godzina);
-        minutes = Integer.parseInt(minuta);
-
-        add = findViewById(R.id.dodajMeasurement);
-        goThen = findViewById(R.id.goThen3);
-
-        typProfilu = findViewById(R.id.spinnerProfileMeasurement);
-        typBadania = findViewById(R.id.spinnerTypeMeasurement);
-
-        dataBadania = findViewById(R.id.dateMeasurement);
-        godzinaBadania = findViewById(R.id.timeMeasurement);
-        wynikPomiaru = findViewById(R.id.resultMeasurement);
+        intializeAllElements();
 
         wynikPomiaru.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(6,2)});
         wynikPomiaru.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
@@ -109,9 +78,6 @@ public class AddMeasurement extends AppCompatActivity {
         Cursor res = myDb.getAllName_UZYTKOWNICY();
         res.moveToFirst();
         uzytkownik = res.getString(0);
-
-        dataBadania.setText(date);
-        godzinaBadania.setText(time);
 
         wynikPomiaru.setVisibility(View.GONE);
         add.setVisibility(View.GONE);
@@ -277,6 +243,39 @@ public class AddMeasurement extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void intializeAllElements() {
+
+        add = findViewById(R.id.dodajMeasurement);
+        goThen = findViewById(R.id.goThen3);
+        typProfilu = findViewById(R.id.spinnerProfileMeasurement);
+        typBadania = findViewById(R.id.spinnerTypeMeasurement);
+        dataBadania = findViewById(R.id.dateMeasurement);
+        godzinaBadania = findViewById(R.id.timeMeasurement);
+        wynikPomiaru = findViewById(R.id.resultMeasurement);
+
+        label = new ArrayList<>();
+        labelx = new ArrayList<>();
+
+        final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+        String rok = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
+        String miesiac = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
+        String dzien = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
+        String godzina = new SimpleDateFormat("HH", Locale.getDefault()).format(new Date());
+        String minuta = new SimpleDateFormat("mm", Locale.getDefault()).format(new Date());
+
+        year = Integer.parseInt(rok);
+        month = Integer.parseInt(miesiac);
+        day = Integer.parseInt(dzien);
+        hour = Integer.parseInt(godzina);
+        minutes = Integer.parseInt(minuta);
+
+        dataBadania.setText(date);
+        godzinaBadania.setText(time);
+
     }
 
 }

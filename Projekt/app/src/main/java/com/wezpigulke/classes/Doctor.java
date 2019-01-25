@@ -6,13 +6,15 @@ public class Doctor {
     private String specialization;
     private String phone;
     private String address;
+    private Integer picture;
 
-    public Doctor(int id, String name, String specialization, String phone, String address) {
+    public Doctor(int id, String name, String specialization, String phone, String address, Integer picture) {
         this.id = id;
         this.name = name;
         this.specialization = specialization;
         this.phone = phone;
         this.address = address;
+        this.picture = picture;
     }
 
     public int getId() {
@@ -45,6 +47,22 @@ public class Doctor {
 
     public String getAddress() {
         return address;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Integer getPicture() {
+        return picture;
+    }
+
+    public void setPicture(Integer picture) {
+        this.picture = picture;
     }
 
 }

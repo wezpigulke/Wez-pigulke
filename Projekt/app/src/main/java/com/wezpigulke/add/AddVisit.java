@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.notification.NotificationReceiver;
@@ -42,6 +41,7 @@ public class AddVisit extends AppCompatActivity {
 
     private TextView data;
     private TextView godzina;
+    private Button dodaj;
 
     private String name;
     private String specialization;
@@ -49,7 +49,6 @@ public class AddVisit extends AppCompatActivity {
 
     private DatePickerDialog.OnDateSetListener dataListener;
     private TimePickerDialog.OnTimeSetListener godzinaListener;
-    private CheckBox checkBoxx;
 
     private int year;
     private int month;
@@ -67,26 +66,12 @@ public class AddVisit extends AppCompatActivity {
     private Spinner spinnerDoctor;
     private ArrayList<String> labelDoktor;
     private String uzytkownik;
+    private Long diff;
+    private Calendar cal;
 
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        label = new ArrayList<>();
-        labelDzwiek = new ArrayList<>();
-        labelDoktor = new ArrayList<>();
-
-        String rok = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
-        String miesiac = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
-        String dzien = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
-        String godzinaa = new SimpleDateFormat("HH", Locale.getDefault()).format(new Date());
-        String minuta = new SimpleDateFormat("mm", Locale.getDefault()).format(new Date());
-
-        year = Integer.parseInt(rok);
-        month = Integer.parseInt(miesiac);
-        day = Integer.parseInt(dzien);
-        hour = Integer.parseInt(godzinaa);
-        minutes = Integer.parseInt(minuta);
 
         myDb = new DatabaseHelper(this);
 
@@ -95,34 +80,77 @@ public class AddVisit extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        Button add = findViewById(R.id.dodajVisit);
-
-        data = findViewById(R.id.dateVisit);
-        godzina = findViewById(R.id.timeVisit);
-        checkBoxx = findViewById(R.id.checkBoxx);
-
-        final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-
-        data.setText(date);
-        godzina.setText(time);
-
-        spinner = findViewById(R.id.spinner2);
-        spinnerDzwiek = findViewById(R.id.spinnerDzwiek2);
-        dzwiek = 1;
-
-        spinnerDoctor = findViewById(R.id.spinnerDoctor);
-
-        Cursor res = myDb.getAllName_UZYTKOWNICY();
-        res.moveToFirst();
-        uzytkownik = res.getString(0);
-
-        checkBoxx.setOnCheckedChangeListener((compoundButton, isChecked) -> czyWibracja = isChecked);
-
+        intializeAllVariables();
         loadSpinnerData();
         loadSpinnerDzwiek();
         loadSpinnerDoctor();
+        setSpinnerOnItemSelectedListener();
+        setSpinnerDoctorOnItemSelectedListener();
+        setSpinnerDzwiekOnItemSelectedListener();
+        setDodajOnClickListener();
+        setAllTimeOnClickListener();
 
+    }
+
+    private void setDodajOnClickListener() {
+
+        dodaj.setOnClickListener(v -> {
+
+            stopPlaying();
+
+            if (spinnerDoctor.getSelectedItem().toString().equals("Wybierz lekarza")) {
+                openDialog("Wybierz lekarza lub dodaj nowego");
+            } else {
+
+                calculateDiff();
+
+                if (diff < 0) openDialog("Godzina dzisiejszej wizyty minęła, wybierz inną godzinę lub ustaw przyszłą datę");
+                else {
+
+                    Integer rand_val = random();
+                    randomChanger(rand_val);
+
+                    myDb.insert_WIZYTY(
+                            godzina.getText().toString(),
+                            data.getText().toString(),
+                            name,
+                            specialization,
+                            uzytkownik,
+                            rand_val,
+                            dzwiek,
+                            czyWibracja
+                    );
+
+                    int id = 0;
+                    Cursor cw = myDb.getMaxId_WIZYTY();
+                    if(cw.getCount() != 0) {
+                        cw.moveToFirst();
+                        id = cw.getInt(0);
+                    }
+
+                    Intent intxz = putExtraToIntent(id, rand_val, uzytkownik + "  |  wizyta u " + specialization + ": " + name + " jutro o " + godzina.getText().toString());
+                    cal.add(Calendar.DATE, -1);
+
+                    if(diff > 24*60*60*100) addAlarm(rand_val, intxz);
+
+                    rand_val--;
+                    intxz = putExtraToIntent(id, rand_val, uzytkownik + "  |  wizyta u " + specialization + ": " + name + " o " + godzina.getText().toString());
+
+                    cal.add(Calendar.DATE, +1);
+                    cal.add(Calendar.HOUR_OF_DAY, -3);
+                    addAlarm(rand_val, intxz);
+
+                    onBackPressed();
+
+                }
+
+            }
+
+        });
+
+    }
+
+    private void setSpinnerOnItemSelectedListener() {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -135,6 +163,9 @@ public class AddVisit extends AppCompatActivity {
             }
 
         });
+    }
+
+    private void setSpinnerDoctorOnItemSelectedListener() {
 
         spinnerDoctor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -163,113 +194,67 @@ public class AddVisit extends AppCompatActivity {
             }
         });
 
-        add.setOnClickListener(v -> {
+    }
 
-            stopPlaying();
+    private void calculateDiff() {
 
-            if (spinnerDoctor.getSelectedItem().toString().equals("Wybierz lekarza")) {
-                openDialog("Wybierz lekarza lub dodaj nowego");
-            } else {
-                Calendar cal = getInstance();
+        cal = getInstance();
+        cal.set(year, month - 1, day, hour, minutes, 0);
 
-                cal.set(year, month - 1, day, hour, minutes, 0);
+        String dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
 
-                String dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
+        Date firstDate = null;
+        Date secondDate = null;
 
-                Date firstDate = null;
-                Date secondDate = null;
+        try {
+            firstDate = sdf.parse(dzisiejszaData);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            secondDate = sdf.parse(godzina.getText().toString() + " " + data.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-                try {
-                    firstDate = sdf.parse(dzisiejszaData);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    secondDate = sdf.parse(godzina.getText().toString() + " " + data.getText().toString());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+        assert secondDate != null;
+        assert firstDate != null;
+        diff = secondDate.getTime() - firstDate.getTime();
 
-                assert secondDate != null;
-                assert firstDate != null;
+    }
 
-                long diff = secondDate.getTime() - firstDate.getTime();
+    private void addAlarm(Integer rand_val, Intent intxz) {
 
-                if (diff < 0) {
+        PendingIntent pendingIntentt = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intxz, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManagerr = (AlarmManager) getSystemService(ALARM_SERVICE);
+        assert alarmManagerr != null;
+        alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
 
-                    openDialog("Godzina dzisiejszej wizyty minęła, wybierz inną godzinę lub ustaw przyszłą datę");
+        //Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
 
-                } else {
+    }
 
-                    Integer rand_val = random();
+    private Intent putExtraToIntent(Integer id, Integer rand_val, String tresc) {
 
-                    randomChanger(rand_val);
+        Intent intxz = new Intent(getApplicationContext(), NotificationReceiver.class);
+        intxz.putExtra("coPokazac", 1);
+        intxz.putExtra("tresc", tresc);
+        intxz.putExtra("id", id);
+        intxz.putExtra("godzina", godzina.getText().toString());
+        intxz.putExtra("data", data.getText().toString());
+        intxz.putExtra("imie_nazwisko", name);
+        intxz.putExtra("specjalizacja", specialization);
+        intxz.putExtra("uzytkownik", uzytkownik);
+        intxz.putExtra("wybranyDzwiek", dzwiek);
+        intxz.putExtra("czyWibracja", czyWibracja);
+        intxz.putExtra("rand_val", rand_val);
 
-                    myDb.insert_WIZYTY(
-                            godzina.getText().toString(),
-                            data.getText().toString(),
-                            name,
-                            specialization,
-                            uzytkownik,
-                            rand_val,
-                            dzwiek,
-                            czyWibracja
-                    );
+        return intxz;
 
+    }
 
-                    Cursor cw = myDb.getMaxId_WIZYTY();
-                    cw.moveToFirst();
-                    Integer id = cw.getInt(0);
-
-                    Intent intxz = new Intent(getApplicationContext(), NotificationReceiver.class);
-
-                    intxz.putExtra("coPokazac", 1);
-                    intxz.putExtra("tresc", uzytkownik + "  |  wizyta u " + specialization + ": " + name + " jutro o " + godzina.getText().toString());
-                    intxz.putExtra("id", id);
-                    intxz.putExtra("godzina", godzina.getText().toString());
-                    intxz.putExtra("data", data.getText().toString());
-                    intxz.putExtra("imie_nazwisko", name);
-                    intxz.putExtra("specjalizacja", specialization);
-                    intxz.putExtra("uzytkownik", uzytkownik);
-                    intxz.putExtra("wybranyDzwiek", dzwiek);
-                    intxz.putExtra("czyWibracja", czyWibracja);
-                    intxz.putExtra("rand_val", rand_val);
-
-                    cal.add(Calendar.DATE, -1);
-
-                    if(diff > 24*60*60*100) {
-
-                        PendingIntent pendingIntentt = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intxz, PendingIntent.FLAG_UPDATE_CURRENT);
-                        AlarmManager alarmManagerr = (AlarmManager) getSystemService(ALARM_SERVICE);
-                        assert alarmManagerr != null;
-                        alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
-
-                        //Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
-
-                    }
-
-                    rand_val--;
-                    intxz.putExtra("tresc", uzytkownik + "  |  wizyta u " + specialization + ": " + name + " o " + godzina.getText().toString());
-                    intxz.putExtra("rand_val", rand_val);
-
-                    cal.add(Calendar.DATE, +1);
-                    cal.add(Calendar.HOUR_OF_DAY, -3);
-
-                    PendingIntent pendingIntentt = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intxz, PendingIntent.FLAG_UPDATE_CURRENT);
-                    AlarmManager alarmManagerr = (AlarmManager) getSystemService(ALARM_SERVICE);
-                    assert alarmManagerr != null;
-                    alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
-
-                    //Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
-
-                    onBackPressed();
-
-                }
-
-            }
-
-        });
+    private void setSpinnerDzwiekOnItemSelectedListener() {
 
         spinnerDzwiek.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -325,6 +310,10 @@ public class AddVisit extends AppCompatActivity {
             }
 
         });
+
+    }
+
+    private void setAllTimeOnClickListener() {
 
         godzina.setOnClickListener(view -> {
             TimePickerDialog dialog = new TimePickerDialog(AddVisit.this,godzinaListener, hour, minutes, true);
@@ -492,4 +481,46 @@ public class AddVisit extends AppCompatActivity {
         return (int) (Math.random() * (MAX_VALUE));
     }
 
+
+    private void intializeAllVariables() {
+
+        String rok = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
+        String miesiac = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
+        String dzien = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
+        String godzinaa = new SimpleDateFormat("HH", Locale.getDefault()).format(new Date());
+        String minuta = new SimpleDateFormat("mm", Locale.getDefault()).format(new Date());
+
+        label = new ArrayList<>();
+        labelDzwiek = new ArrayList<>();
+        labelDoktor = new ArrayList<>();
+        year = Integer.parseInt(rok);
+        month = Integer.parseInt(miesiac);
+        day = Integer.parseInt(dzien);
+        hour = Integer.parseInt(godzinaa);
+        minutes = Integer.parseInt(minuta);
+
+        dodaj = findViewById(R.id.dodajVisit);
+        data = findViewById(R.id.dateVisit);
+        godzina = findViewById(R.id.timeVisit);
+        CheckBox checkBox = findViewById(R.id.checkBoxx);
+
+        final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+        data.setText(date);
+        godzina.setText(time);
+
+        spinner = findViewById(R.id.spinner2);
+        spinnerDzwiek = findViewById(R.id.spinnerDzwiek2);
+        dzwiek = 1;
+
+        spinnerDoctor = findViewById(R.id.spinnerDoctor);
+
+        Cursor res = myDb.getAllName_UZYTKOWNICY();
+        res.moveToFirst();
+        uzytkownik = res.getString(0);
+
+        checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> czyWibracja = isChecked);
+
+    }
 }
