@@ -51,7 +51,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DOKTORZY_SPECJALIZACJA = "Specjalizacja";
     private static final String DOKTORZY_NUMER = "Numer";
     private static final String DOKTORZY_ADRES = "Adres";
-    private static final String DOKTORZY_OBRAZEK = "Obrazek";
 
     private static final String WIZYTY = "Wizyty";
     private static final String WIZYTY_ID = "ID";
@@ -144,8 +143,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Imie_Nazwisko TEXT, " +
                 "Specjalizacja TEXT, " +
                 "Numer INTEGER, " +
-                "Adres TEXT," +
-                "Obrazek INTEGER)");
+                "Adres TEXT)");
 
         db.execSQL("CREATE TABLE " + WIZYTY + " (" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -220,12 +218,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(HISTORIA_GODZINA_AKCEPTACJI, godzinaAkceptacji);
         contentValues.put(HISTORIA_STATUS, status);
 
-        long result = db.insert(HISTORIA, null, contentValues);
-    }
-
-    public Cursor getAllData_HISTORIA() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT * FROM " + HISTORIA, null);
+        db.insert(HISTORIA, null, contentValues);
     }
 
     public Cursor getUserData_HISTORIA(String user) {
@@ -245,7 +238,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(HISTORIA_GODZINA_AKCEPTACJI, godzina);
         contentValues.put(HISTORIA_STATUS, status);
 
-        long result = db.update(HISTORIA, contentValues, HISTORIA_ID + "=" + id, null);
+        db.update(HISTORIA, contentValues, HISTORIA_ID + "=" + id, null);
 
     }
 
@@ -261,7 +254,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(LEK_NAZWA, nazwa);
         contentValues.put(LEK_ILOSC_TABLETEK, ilosc);
 
-        long result = db.insert(LEK, null, contentValues);
+        db.insert(LEK, null, contentValues);
     }
 
     public Cursor getMAXid_LEK() {
@@ -300,7 +293,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         contentValues.put(LEK_ILOSC_TABLETEK, ilosc);
 
-        long result = db.update(LEK, contentValues, "ID=" + id, null);
+        db.update(LEK, contentValues, "ID=" + id, null);
 
     }
 
@@ -321,7 +314,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(STATYSTYKI_WZIETE, wziete);
         contentValues.put(STATYSTYKI_NIEWZIETE, niewziete);
 
-        long result = db.insert(STATYSTYKI, null, contentValues);
+        db.insert(STATYSTYKI, null, contentValues);
     }
 
     public Cursor getAllData_STATYSTYKI() {
@@ -342,7 +335,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         contentValues.put(STATYSTYKI_WZIETE, wziete);
 
-        long result = db.update(STATYSTYKI, contentValues, "ID=" + id, null);
+        db.update(STATYSTYKI, contentValues, "ID=" + id, null);
 
     }
 
@@ -359,7 +352,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         contentValues.put(STATYSTYKI_NIEWZIETE, niewziete);
 
-        long result = db.update(STATYSTYKI, contentValues, "ID=" + id, null);
+        db.update(STATYSTYKI, contentValues, "ID=" + id, null);
 
     }
 
@@ -376,12 +369,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(NOTYFIKACJA_OSTATNIADATA, data);
         contentValues.put(NOTYFIKACJA_RANDID, rand);
 
-        long result = db.insert(NOTYFIKACJA, null, contentValues);
+        db.insert(NOTYFIKACJA, null, contentValues);
     }
 
     public Cursor getAllData_NOTYFIKACJA() {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, B.Profil, A.ID_przypomnienie, B.Ilosc_dni, B.Typ, A.Rand_ID, B.Dzwiek " +
+        return db.rawQuery("SELECT A.ID, B.Lek, B.Dawka, A.Godzina, A.Data, B.Profil, A.ID_przypomnienie, B.Ilosc_dni, B.Typ, A.Rand_ID, B.Dzwiek, B.Wibracja " +
                         "FROM " + NOTYFIKACJA + " A " +
                         "INNER JOIN " + PRZYPOMNIENIE + " B " +
                         "ON " + "B.ID = A.ID_przypomnienie"
@@ -449,7 +442,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         contentValues.put(NOTYFIKACJA_OSTATNIADATA, days);
 
-        long result = db.update(NOTYFIKACJA, contentValues, "ID=" + id, null);
+        db.update(NOTYFIKACJA, contentValues, "ID=" + id, null);
 
     }
 
@@ -474,7 +467,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(NOTATKI_TRESC, tekst);
         contentValues.put(NOTATKI_PROFIL, profil);
         contentValues.put(NOTATKI_DATA, data);
-        long result = db.insert(NOTATKI, null, contentValues);
+        db.insert(NOTATKI, null, contentValues);
     }
 
     public Cursor getAllData_NOTATKI() {
@@ -514,7 +507,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(POMIARY_PROFIL, profil);
         contentValues.put(POMIARY_GODZINA, godzina);
         contentValues.put(POMIARY_DATA, data);
-        long result = db.insert(POMIARY, null, contentValues);
+        db.insert(POMIARY, null, contentValues);
     }
 
     public Cursor getAllData_POMIARY() {
@@ -560,7 +553,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TYP_POMIAR_NAZWA, typ);
-        long result = db.insert(TYP_POMIAR, null, contentValues);
+        db.insert(TYP_POMIAR, null, contentValues);
     }
 
     public Cursor getAllData_TYP_POMIAR() {
@@ -597,7 +590,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(UZYTKOWNICY_IMIE, name);
         contentValues.put(UZYTKOWNICY_OBRAZEK, obrazek);
-        long result = db.insert(UZYTKOWNICY, null, contentValues);
+        db.insert(UZYTKOWNICY, null, contentValues);
     }
 
     public Cursor getAllData_UZYTKOWNICY() {
@@ -629,15 +622,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * ============ DOKTORZY ============
      **/
 
-    public void insert_DOKTORZY(String name, String specialization, Integer phone_number, String address, Integer image) {
+    public void insert_DOKTORZY(String name, String specialization, Integer phone_number, String address) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(DOKTORZY_IMIE_I_NAZWISKO, name);
         contentValues.put(DOKTORZY_SPECJALIZACJA, specialization);
         contentValues.put(DOKTORZY_NUMER, phone_number);
         contentValues.put(DOKTORZY_ADRES, address);
-        contentValues.put(DOKTORZY_OBRAZEK, image);
-        long result = db.insert(DOKTORZY, null, contentValues);
+        db.insert(DOKTORZY, null, contentValues);
     }
 
     public Cursor getAllData_DOKTORZY() {
@@ -675,7 +667,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(PRZYPOMNIENIE_DZWIEK, dzwiek);
         contentValues.put(PRZYPOMNIENIE_WIBRACJA, wibracja);
 
-        long result = db.insert(PRZYPOMNIENIE, null, contentValues);
+        db.insert(PRZYPOMNIENIE, null, contentValues);
     }
 
     public Cursor getAllData_PRZYPOMNIENIE() {
@@ -734,7 +726,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         contentValues.put(PRZYPOMNIENIE_ILOSC_DNI, days);
 
-        long result = db.update(PRZYPOMNIENIE, contentValues, "ID=" + id, null);
+        db.update(PRZYPOMNIENIE, contentValues, "ID=" + id, null);
 
     }
 
@@ -755,7 +747,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(WIZYTY_DZWIEK, dzwiek);
         contentValues.put(WIZYTY_WIBRACJA, wibracja);
 
-        long result = db.insert(WIZYTY, null, contentValues);
+        db.insert(WIZYTY, null, contentValues);
     }
 
     public Cursor getAllData_WIZYTY() {

@@ -98,11 +98,9 @@
 
         <receiver
             android:name="com.wezpigulke.notification.BootCompletedNotificationReceiver"
-            android:enabled="true"
-            android:exported="true" >
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
 

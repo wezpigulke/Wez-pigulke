@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.notification.NotificationReceiver;
@@ -231,7 +232,7 @@ public class AddVisit extends AppCompatActivity {
         assert alarmManagerr != null;
         alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
 
-        //Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
 
     }
 

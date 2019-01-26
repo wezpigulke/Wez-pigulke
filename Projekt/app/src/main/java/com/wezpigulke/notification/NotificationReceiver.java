@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import static android.content.Context.ALARM_SERVICE;
+import static com.wezpigulke.R.drawable.no;
 
 public class NotificationReceiver extends WakefulBroadcastReceiver {
 
@@ -34,7 +35,7 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        //Toast.makeText(context, "ODPALONY ALARM", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "ODPALONY ALARM", Toast.LENGTH_LONG).show();
         Log.d("========ALARM==========", "Alarm odpalony");
 
         myDb = new DatabaseHelper(context);
@@ -304,14 +305,14 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
                         no.putExtra("rand_val", rand_val);
                         PendingIntent noIntent = PendingIntent.getBroadcast(context, rand_val - 2, no, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default")
-                                .setContentIntent(pendingIntent)
-                                .setSmallIcon(R.drawable.logo)
-                                .setContentTitle("Weź pigułke")
-                                .setContentText(powiadomienie)
-                                .setAutoCancel(true)
-                                .addAction(R.drawable.yes, "Wziąłem", yesIntent)
-                                .addAction(R.drawable.no, "Zapomniałem", noIntent);
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default");
+                        builder.setContentIntent(pendingIntent);
+                        builder.setSmallIcon(R.drawable.logo);
+                        builder.setContentTitle("Weź pigułke");
+                        builder.setContentText(powiadomienie);
+                        builder.setAutoCancel(true);
+                        builder.addAction(R.drawable.yes, "Wziąłem", yesIntent);
+                        builder.addAction(R.drawable.no, "Zapomniałem", noIntent);
 
                         if(wybranyDzwiek!=0) builder.setSound(alarmSound);
                         if(czyWibracja) builder.setVibrate(new long[]{1000, 1000});
@@ -371,7 +372,7 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
                                 else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
                             } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
 
-                            //Toast.makeText(context, "Dodanie: " + " | " + String.valueOf(rand_val) + "\n" + sdfz.format(cal.getTime()), Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, "Dodanie: " + " | " + String.valueOf(rand_val) + "\n" + sdfz.format(cal.getTime()), Toast.LENGTH_LONG).show();
                             Log.d("========ALARM==========", "Dodanie: " + " | " + String.valueOf(rand_val) + "\n" + sdfz.format(cal.getTime()));
 
                         } else {
@@ -379,7 +380,7 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
                             myDb.remove_PRZYPOMNIENIE(id_p);
                             myDb.removeIdPrz_NOTYFIKACJA(id_p);
 
-                            //Toast.makeText(context, "Usunięcie notyfikacji: " + id_n, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Usunięcie notyfikacji: " + id_n, Toast.LENGTH_SHORT).show();
                             Log.d("========ALARM==========", "Usunięcie notyfikacji: " + id_n);
 
                         }

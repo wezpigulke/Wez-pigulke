@@ -130,11 +130,11 @@ public class RepeatingActivityReminder extends Activity {
             if (Build.VERSION.SDK_INT >= 24) {
                 tNazwa.setText(Html.fromHtml("Nazwa leku: " + "<b>" + nazwa + "</b> ", 0));
                 tIlosc.setText(Html.fromHtml("Ilość tabletek: " + "<b>" + ilosc + "</b> ",0));
-                tSuma.setText(Html.fromHtml("Tygodniowo zajadasz: " + "<b>" + sumujTypy + "</b> ",0));
+                tSuma.setText(Html.fromHtml("Tygodniowo zażywasz: " + "<b>" + sumujTypy + "</b> ",0));
             } else {
                 tNazwa.setText(Html.fromHtml("Nazwa leku: " + "<b>" + nazwa + "</b> "));
                 tIlosc.setText(Html.fromHtml("Ilość tabletek: " + "<b>" + ilosc + "</b> "));
-                tSuma.setText(Html.fromHtml("Tygodniowo zajadasz: " + "<b>" + sumujTypy + "</b> "));
+                tSuma.setText(Html.fromHtml("Tygodniowo zażywasz: " + "<b>" + sumujTypy + "</b> "));
             }
 
 
@@ -150,6 +150,7 @@ public class RepeatingActivityReminder extends Activity {
                 input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
 
                 input.setText(ilosc);
+                input.setSelection(input.getText().length());
                 input.setGravity(Gravity.CENTER_HORIZONTAL);
 
                 builder.setView(input);

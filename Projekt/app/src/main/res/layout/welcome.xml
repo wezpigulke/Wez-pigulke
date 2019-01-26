@@ -94,7 +94,6 @@
 
     <EditText
         android:id="@+id/imie"
-        android:windowSoftInputMode="stateVisible|adjustPan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
@@ -102,11 +101,13 @@
         android:layout_marginEnd="70dp"
         android:backgroundTint="@android:color/holo_green_light"
         android:ems="10"
+        android:hint="Imie"
         android:inputType="textPersonName"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textCursorDrawable="@android:color/holo_blue_light"
         android:textStyle="bold"
+        android:windowSoftInputMode="stateVisible|adjustPan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

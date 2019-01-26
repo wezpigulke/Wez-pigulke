@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
+import com.wezpigulke.notification.BootCompletedNotificationReceiver;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.R;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
@@ -265,7 +266,7 @@ public class GoToToday extends Fragment {
         assert alarmManager != null;
         alarmManager.cancel(pendingIntent);
 
-        //Toast.makeText(getContext(), "Anulacja: " + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "Anulacja: " + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
 
         Cursor policz = myDb.getCount_NOTYFIKACJA(id_p, dzisiejszaData);
         int ile = 0;
@@ -291,7 +292,7 @@ public class GoToToday extends Fragment {
             assert alarmManager != null;
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cz.getTimeInMillis(), AlarmManager.INTERVAL_DAY * typ, pendingIntent);
 
-            //Toast.makeText(getContext(), "Dodanie: " + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Dodanie: " + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
 
             if (ile == 0) myDb.updateDays_PRZYPOMNIENIE(id_p, dni - 1);
 

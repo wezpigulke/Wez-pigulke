@@ -194,7 +194,7 @@ public class GoToReminder extends Fragment {
                 assert alarmManager != null;
                 alarmManager.cancel(pendingIntent);
 
-                //Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
 
                 myDb.remove_NOTYFIKACJA(dbIDNotyfikacja.getInt(0));
 

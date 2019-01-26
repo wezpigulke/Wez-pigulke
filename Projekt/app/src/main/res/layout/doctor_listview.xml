@@ -60,5 +60,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="5dp"
-        android:layout_marginRight="14dp" />
+        android:layout_marginRight="14dp"
+        app:srcCompat="@drawable/doctor" />
 </RelativeLayout>

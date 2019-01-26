@@ -1155,7 +1155,7 @@ public class AddReminder extends AppCompatActivity {
             else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
         } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
 
-        //Text(getApplicationContext(), "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
         Log.d("========ALARM==========", "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16));
 
     }
