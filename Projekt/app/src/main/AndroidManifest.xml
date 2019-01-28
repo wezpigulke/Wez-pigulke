@@ -104,7 +104,6 @@
             </intent-filter>
         </receiver>
 
-
         <receiver android:name="com.wezpigulke.notification.ButtonIntent" />
 
     </application>

@@ -523,6 +523,8 @@ public class AddReminder extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
+                closeKeyboard();
+
                 for (int i = 0; i < 12; i++) {
                     array.get(i).setVisibility(View.GONE);
                 }
@@ -742,6 +744,8 @@ public class AddReminder extends AppCompatActivity {
         spinnerReminder.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+
+                closeKeyboard();
 
                 dataTabletka.setVisibility(View.GONE);
                 godzinaTabletka.setVisibility(View.GONE);
@@ -1027,10 +1031,8 @@ public class AddReminder extends AppCompatActivity {
                             if(diffDays == 0 && diffInMillis < 0) {
 
                                 if (iloscDni==1) {
-
                                     czyUsunacDzien = 1;
                                     czyUsunacWszystkieDni++;
-
                                 } else if (iloscDni>1) {
                                     Calendar cx = Calendar.getInstance();
                                     try {
@@ -1038,41 +1040,39 @@ public class AddReminder extends AppCompatActivity {
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
-
                                     cx.add(Calendar.DATE, 1);
                                     dataPrzypomnienia = sdf.format(cx.getTime());
                                     cal.set(year, month - 1, day + 1, hour, minutes, 0);
-
                                     czyUsunacDzien = 0;
                                 }
 
-                            }
-
-                            String[] wszystkie = wszystkieGodziny.replaceAll(" ", "").split(",");
-                            List tempList = Arrays.asList(wszystkie);
-
-                            List<String> tempWszystkieGodziny = Arrays.asList(wszystkie);
-                            Collections.sort(tempWszystkieGodziny);
-
-                            wszystkieGodziny = "";
-
-                            for (String s : tempWszystkieGodziny) wszystkieGodziny += s + ", ";
-
-                            wszystkieGodziny = wszystkieGodziny.substring(0, wszystkieGodziny.length()-2);
-
-                            String najwyzszaGodzina = (String) Collections.max(tempList);
+                            } else cal.set(year, month - 1, day, hour, minutes, 0);
 
                             Integer idd = 0;
+
+                            Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
+                            if(cx.getCount() != 0) {
+                                cx.moveToFirst();
+                                idd = Integer.parseInt(cx.getString(0));
+                                idd++;
+                            }
 
                             if (i.equals(ileRazyDziennie)) {
                                 if (i.equals(czyUsunacWszystkieDni)) {
                                     iloscDni--;
                                 }
 
-                                Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
-                                cx.moveToFirst();
-                                idd = Integer.parseInt(cx.getString(0));
-                                idd++;
+                                String[] wszystkie = wszystkieGodziny.replaceAll(" ", "").split(",");
+                                List tempList = Arrays.asList(wszystkie);
+
+                                List<String> tempWszystkieGodziny = Arrays.asList(wszystkie);
+                                Collections.sort(tempWszystkieGodziny);
+
+                                wszystkieGodziny = "";
+
+                                for (String s : tempWszystkieGodziny) wszystkieGodziny += s + ", ";
+                                wszystkieGodziny = wszystkieGodziny.substring(0, wszystkieGodziny.length()-2);
+                                String najwyzszaGodzina = (String) Collections.max(tempList);
 
                                 myDb.insert_PRZYPOMNIENIE(
                                         idd,
@@ -1089,8 +1089,6 @@ public class AddReminder extends AppCompatActivity {
                                 );
                                 czyPetlaPoszla = 1;
                             }
-
-                            if(czyPetlaPoszla!=1) idd++;
 
                             if (czyUsunacDzien != 1 && iloscDni>=1) {
 
@@ -1378,6 +1376,7 @@ public class AddReminder extends AppCompatActivity {
         };
 
         dataTabletka.setOnClickListener(view -> {
+            closeKeyboard();
             DatePickerDialog dialog = new DatePickerDialog(AddReminder.this, dataTabletkaListener, year, month - 1, day);
             dialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
             dialog.show();

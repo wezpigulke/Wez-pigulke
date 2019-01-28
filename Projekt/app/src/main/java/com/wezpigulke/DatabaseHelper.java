@@ -428,7 +428,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getMAXid_NOTYFIKACJA() {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT IFNULL(MAX(ID), -1) FROM " + NOTYFIKACJA, null);
+        return db.rawQuery("SELECT IFNULL(MAX(ID), 0) FROM " + NOTYFIKACJA, null);
     }
 
     public Cursor getRand_NOTYFIKACJA(Integer id) {
