@@ -27,7 +27,6 @@ import java.util.Objects;
 public class GoToTypeMeasurement extends Fragment {
 
     DatabaseHelper myDb;
-    private MeasurementTypeListAdapter adapter;
     private List<MeasurementType> results;
     private ListView listView;
     private Integer id;
@@ -44,6 +43,8 @@ public class GoToTypeMeasurement extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        myDb = new DatabaseHelper(getActivity());
 
         View v = inflater.inflate(R.layout.type_measurement, container, false);
         FloatingActionButton fabz = v.findViewById(R.id.fabMesaurementType);
@@ -85,8 +86,6 @@ public class GoToTypeMeasurement extends Fragment {
     public void aktualizujBaze() {
 
         results.clear();
-
-        DatabaseHelper myDb = new DatabaseHelper(getActivity());
         Cursor c = myDb.getAllData_TYP_POMIAR();
 
         if (c.getCount() != 0) {
@@ -95,7 +94,7 @@ public class GoToTypeMeasurement extends Fragment {
             }
         }
 
-        adapter = new MeasurementTypeListAdapter(getActivity(), results);
+        MeasurementTypeListAdapter adapter = new MeasurementTypeListAdapter(getActivity(), results);
         listView.setAdapter(adapter);
 
     }

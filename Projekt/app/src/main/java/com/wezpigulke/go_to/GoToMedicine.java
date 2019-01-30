@@ -113,7 +113,6 @@ public class GoToMedicine extends Fragment {
 
             input.setText(ilosc);
             input.setGravity(Gravity.CENTER_HORIZONTAL);
-
             input.setSelection(input.getText().length());
 
             builder.setView(input);
@@ -173,7 +172,7 @@ public class GoToMedicine extends Fragment {
         if (cp.getCount() == 0) {
             myDb.remove_LEK(id);
             AktualizujBaze();
-        } else openDialog("Nie można usunąć. Posiadasz aktywne przypomnienie z tym lekiem");
+        } else openDialog("Nie można usunąć. Posiadasz aktywne przypomnienie z tym lekiem.");
 
     }
 

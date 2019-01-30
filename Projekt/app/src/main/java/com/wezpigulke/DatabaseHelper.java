@@ -637,9 +637,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + DOKTORZY, null);
     }
 
-    public Cursor getNumer_DOKTORZY(int id) {
+    public Cursor getIdData_DOKTORZY(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.rawQuery("SELECT " + DOKTORZY_NUMER + " FROM " + DOKTORZY + " WHERE " + DOKTORZY_ID + "=" + id, null);
+        return db.rawQuery("SELECT * FROM " + DOKTORZY + " WHERE " + DOKTORZY_ID + "=" + id, null);
     }
 
     public void remove_DOKTORZY(Integer id) {

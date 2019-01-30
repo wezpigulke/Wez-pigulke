@@ -25,8 +25,9 @@
     <ListView
         android:id="@+id/visitList"
         android:layout_width="match_parent"
-        android:layout_height="460dp"
+        android:layout_height="0dp"
         android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -45,7 +46,6 @@
         android:layout_marginStart="104dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="103dp"
-        android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toTopOf="@+id/visitList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

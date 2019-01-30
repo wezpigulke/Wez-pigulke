@@ -31,7 +31,7 @@ public class AddProfile extends AppCompatActivity {
 
         myDb = new DatabaseHelper(this);
 
-        ktoryObrazek = 1;
+        ktoryObrazek = 0;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_profile);
@@ -48,12 +48,14 @@ public class AddProfile extends AppCompatActivity {
 
         add.setOnClickListener(v -> {
             if (txt.getText().length() > 0) {
-                Cursor cp = myDb.getId_UZYTKOWNICY(txt.getText().toString());
-                if (cp.getCount() == 0) {
-                    myDb.insert_UZYTKOWNICY(txt.getText().toString(), ktoryObrazek);
-                    closeKeyboard();
-                    onBackPressed();
-                } else openDialog("Już istnieje osoba o takim imieniu w naszej bazie danych");
+                if(ktoryObrazek!=0) {
+                    Cursor cp = myDb.getId_UZYTKOWNICY(txt.getText().toString());
+                    if (cp.getCount() == 0) {
+                        myDb.insert_UZYTKOWNICY(txt.getText().toString(), ktoryObrazek);
+                        closeKeyboard();
+                        onBackPressed();
+                    } else openDialog("Już istnieje osoba o takim imieniu w naszej bazie danych");
+                } else openDialog("Musisz wybrać obrazek");
             } else openDialog("Wpisz imie");
         });
 

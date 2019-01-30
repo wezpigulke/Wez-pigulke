@@ -33,6 +33,7 @@ public class GoToDoctors extends Fragment {
     private ListView lv;
     private Integer idd;
     private String nrtel;
+    private String adres;
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -68,10 +69,11 @@ public class GoToDoctors extends Fragment {
         lv.setOnItemClickListener((parent, view, i, l) -> {
 
             int idd = (int) view.getTag();
-            Cursor c = myDb.getNumer_DOKTORZY(idd);
+            Cursor c = myDb.getIdData_DOKTORZY(idd);
             c.moveToFirst();
-            nrtel = c.getString(0);
-            if(!nrtel.equals("0")) dialogCallOrSms();
+            nrtel = c.getString(3);
+            adres = c.getString(4);
+            if(!nrtel.equals("0")) dialogCallOrNavigate();
 
         });
 
@@ -136,15 +138,24 @@ public class GoToDoctors extends Fragment {
 
     }
 
-    public void dialogCallOrSms() {
+    public void dialogCallOrNavigate() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AlertDialog);
 
-        builder.setMessage("Co chcesz zrobić?").setCancelable(false)
-                .setPositiveButton("Zadzwonić", (dialog, which) -> dialContactPhone(nrtel))
-                .setNegativeButton("Nic", (dialog, which) -> dialog.cancel());
+        builder.setMessage("Co chcesz zrobić?").setCancelable(true)
+                .setNegativeButton("Zadzwoń", (dialog, which) -> dialContactPhone(nrtel))
+                .setPositiveButton("Nawiguj", (dialog, which) -> openMap());
 
         builder.show();
+
+    }
+
+    private void openMap() {
+
+        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + adres);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
 
     }
 

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import com.wezpigulke.DatabaseHelper;
@@ -23,6 +26,7 @@ import com.wezpigulke.R;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 import com.wezpigulke.add.AddMeasurement;
 
+import java.lang.invoke.ConstantCallSite;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,8 +37,8 @@ public class GoToMeasurement extends Fragment {
     private List<Measurement> results;
     private MeasurementListAdapter adapter;
     private ListView lv;
-    private Spinner spinner;
-    private Spinner spinnerType;
+    private Spinner measurementSpinner;
+    private Spinner measurementTypeSpinner;
     private ArrayList<String> label;
     private ArrayList<String> labelx;
     private String uzytkownik;
@@ -66,8 +70,8 @@ public class GoToMeasurement extends Fragment {
 
         results = new ArrayList<>();
         lv = v.findViewById(R.id.measurementList);
-        spinner = v.findViewById(R.id.measurementSpinner);
-        spinnerType = v.findViewById(R.id.measurementTypeSpinner);
+        measurementSpinner = v.findViewById(R.id.measurementSpinner);
+        measurementTypeSpinner = v.findViewById(R.id.measurementTypeSpinner);
         uzytkownik = "Wszyscy";
         typ = "Wszystko";
 
@@ -80,8 +84,8 @@ public class GoToMeasurement extends Fragment {
         label.clear();
         labelx.clear();
 
-        spinner.setVisibility(View.VISIBLE);
-        spinnerType.setVisibility(View.VISIBLE);
+        measurementSpinner.setVisibility(View.VISIBLE);
+        measurementTypeSpinner.setVisibility(View.VISIBLE);
 
         Cursor cxz = myDb.getAllName_UZYTKOWNICY();
         Cursor cxs = myDb.getAllData_TYP_POMIAR();
@@ -90,24 +94,24 @@ public class GoToMeasurement extends Fragment {
         labelx.add("Wszystko");
 
         if (cxz.getCount() == 1) {
-            spinner.setVisibility(View.GONE);
+            measurementSpinner.setVisibility(View.GONE);
         } else {
             while (cxz.moveToNext()) {
                 label.add(cxz.getString(0));
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, label);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner.setAdapter(dataAdapter);
+                measurementSpinner.setAdapter(dataAdapter);
             }
         }
 
         if (cxs.getCount() <= 1) {
-            spinnerType.setVisibility(View.GONE);
+            measurementTypeSpinner.setVisibility(View.GONE);
         } else {
             while (cxs.moveToNext()) {
                 labelx.add(cxs.getString(1));
-                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, labelx);
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, labelx);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerType.setAdapter(dataAdapter);
+                measurementTypeSpinner.setAdapter(dataAdapter);
             }
         }
 
@@ -124,10 +128,10 @@ public class GoToMeasurement extends Fragment {
         loadSpinnerData();
 
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        measurementSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                uzytkownik = spinner.getItemAtPosition(position).toString();
+                uzytkownik = measurementSpinner.getItemAtPosition(position).toString();
                 AktualizujBaze();
             }
 
@@ -138,10 +142,10 @@ public class GoToMeasurement extends Fragment {
 
         });
 
-        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        measurementTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                typ = spinnerType.getItemAtPosition(position).toString();
+                typ = measurementTypeSpinner.getItemAtPosition(position).toString();
                 AktualizujBaze();
             }
 
