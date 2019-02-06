@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -85,6 +87,12 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name="com.wezpigulke.go_to.GoToMedicineInformation"
+            android:label="Informacje o leku"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.wezpigulke.notification.RepeatingActivityReminder"
             android:label="Weź tabletkę"/>
 
@@ -94,7 +102,8 @@
 
         <receiver android:name="com.wezpigulke.notification.NotificationReceiver"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            tools:ignore="ExportedReceiver" />
 
         <receiver
             android:name="com.wezpigulke.notification.BootCompletedNotificationReceiver"

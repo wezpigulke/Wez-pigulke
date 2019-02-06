@@ -4,14 +4,12 @@ public class Doctor {
     private int id;
     private String name;
     private String specialization;
-    private String phone;
     private String address;
 
-    public Doctor(int id, String name, String specialization, String phone, String address) {
+    public Doctor(int id, String name, String specialization, String address) {
         this.id = id;
         this.name = name;
         this.specialization = specialization;
-        this.phone = phone;
         this.address = address;
     }
 
@@ -35,24 +33,8 @@ public class Doctor {
         return specialization;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phoneNumer) {
-        this.phone = phoneNumer;
-    }
-
     public String getAddress() {
         return address;
-    }
-
-    public void setSpecialization(String specialization) {
-        this.specialization = specialization;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
 }

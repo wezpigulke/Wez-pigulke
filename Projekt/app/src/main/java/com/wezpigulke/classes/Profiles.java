@@ -23,10 +23,6 @@ public class Profiles {
         return profile;
     }
 
-    public void setProfile(String profileName) {
-        this.profile = profileName;
-    }
-
     public int getPicture() {
         return picture;
     }

@@ -1,9 +1,14 @@
 package com.wezpigulke.go_to;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -17,16 +22,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.other.DecimalDigitsInputFilter;
 import com.wezpigulke.classes.Medicine;
 import com.wezpigulke.list_adapter.MedicineListAdapter;
+import com.wezpigulke.other.DecimalDigitsInputFilter;
 import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.R;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 import com.wezpigulke.add.AddMedicine;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +51,9 @@ public class GoToMedicine extends Fragment {
     private List<Medicine> results;
     private ListView lv;
     private Integer id;
+    private String medicineName;
+    private Integer medicineCount;
+    private View v;
     private Integer id_l;
 
     @Override
@@ -51,7 +67,7 @@ public class GoToMedicine extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.medicine, container, false);
+        v = inflater.inflate(R.layout.medicine, container, false);
 
         results = new ArrayList<>();
         lv = v.findViewById(R.id.medicineList);
@@ -97,35 +113,61 @@ public class GoToMedicine extends Fragment {
 
         lv.setOnItemClickListener((parent, view, position, id) -> {
 
-            id_l = results.get(position).getId();
-
-            Cursor cl = myDb.getNumber_LEK(id_l);
-            cl.moveToFirst();
-            String ilosc = cl.getString(0);
-
             AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AlertDialog);
-            builder.setTitle("Aktualizacja ilości");
 
-            final EditText input = new EditText(getContext());
+            builder.setMessage("Co chcesz zrobić?").setCancelable(false)
+                    .setPositiveButton("Aktualizuj ilość", (dialog, which) -> updateQuantity(position))
+                    .setNegativeButton("Sprawdź informacje", (dialog, which) -> {
+                        if (isOnline()) {
+                            medicineName = results.get(position).getName();
+                            new getInformationAboutMedicine().execute();
+                        } else Toast.makeText(getContext(), "Brak połączenia z internetem", Toast.LENGTH_LONG).show();
+                    });
 
-            input.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(5, 2)});
-            input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
-
-            input.setText(ilosc);
-            input.setGravity(Gravity.CENTER_HORIZONTAL);
-            input.setSelection(input.getText().length());
-
-            builder.setView(input);
-
-            builder.setPositiveButton("OK", (dialog, which) -> {
-                myDb.update_LEK(id_l, Double.valueOf(input.getText().toString()));
-                AktualizujBaze();
-            });
-            builder.setNegativeButton("Anuluj", (dialog, which) -> dialog.cancel());
             builder.show();
 
         });
 
+    }
+
+    public void updateQuantity(Integer position) {
+
+        id_l = results.get(position).getId();
+
+        Cursor cl = myDb.getNumber_LEK(id_l);
+        cl.moveToFirst();
+        String ilosc = cl.getString(0);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AlertDialog);
+        builder.setTitle("Aktualizacja ilości");
+
+        final EditText input = new EditText(getContext());
+
+        input.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(5, 2)});
+        input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+
+        input.setText(ilosc);
+        input.setGravity(Gravity.CENTER_HORIZONTAL);
+        input.setSelection(input.getText().length());
+
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            myDb.update_LEK(id_l, Double.valueOf(input.getText().toString()));
+            AktualizujBaze();
+        });
+        builder.setNegativeButton("Anuluj", (dialog, which) -> dialog.cancel());
+        builder.show();
+
+    }
+
+    public boolean isOnline() {
+        boolean var = false;
+        ConnectivityManager cm = (ConnectivityManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CONNECTIVITY_SERVICE);
+        if ( cm.getActiveNetworkInfo() != null ) {
+            var = true;
+        }
+        return var;
     }
 
     public void AktualizujBaze() {
@@ -181,6 +223,43 @@ public class GoToMedicine extends Fragment {
         openDialog.setValue(text);
         assert getFragmentManager() != null;
         openDialog.show(getFragmentManager(), "GoToMedicine");
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    public class getInformationAboutMedicine extends AsyncTask<Void, Void, Void> {
+
+        @SuppressLint("ShowToast")
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            try {
+                Document doc = Jsoup.connect("http://bazalekow.leksykon.com.pl/szukaj-leku.html?a=search&o=0&p=50&cmn=" +  medicineName).get();
+                Elements elements = doc.select("div.results-drug-list-block.block-shadow > div.header-block > span.quantity-block > span.quantity");
+                medicineCount = Integer.parseInt(elements.text());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @SuppressLint({"ResourceType", "ShowToast"})
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+            super.onPostExecute(aVoid);
+
+            if(medicineCount>0) {
+                Intent intent = new Intent(v.getContext(), GoToMedicineInformation.class);
+                intent.putExtra("medicineName", medicineName);
+                startActivity(intent);
+            } else {
+                Handler handler =  new Handler(Objects.requireNonNull(getActivity()).getMainLooper());
+                handler.post(() -> Toast.makeText(getActivity(), "Nie znaleziono takiego leku w bazie",Toast.LENGTH_LONG).show());
+            }
+
+        }
+
     }
 
 }

@@ -64,6 +64,7 @@ public class GoToSettings extends Fragment {
     private TextView tWziete;
     private TextView tZapomniane;
     private PdfPCell cell;
+    private PdfPTable table;
 
     private PdfPTable table_result;
 
@@ -294,7 +295,7 @@ public class GoToSettings extends Fragment {
                 document.add(pz);
                 document.add(Chunk.NEWLINE);
 
-                PdfPTable table = new PdfPTable(6);
+                table = new PdfPTable(6);
 
                 generateNewCell("Godzina");
                 generateNewCell("Data");
@@ -349,6 +350,7 @@ public class GoToSettings extends Fragment {
         cell = new PdfPCell(new Paragraph(text,FontFactory.getFont(
                 FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table.addCell(cell);
     }
 
     private void addNewCell (String value) {

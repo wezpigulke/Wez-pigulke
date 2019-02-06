@@ -27,10 +27,6 @@ public class Reminder {
         return medicine;
     }
 
-    public void setMedicine(String name) {
-        this.medicine = name;
-    }
-
     public String getDate() {
         return date;
     }
@@ -43,15 +39,8 @@ public class Reminder {
         return howManyDays;
     }
 
-    public void setHowManyDays(String howMany) {
-        this.howManyDays = howMany;
-    }
-
     public String getProfile() {
         return profile;
     }
 
-    public void setProfile(String profileName) {
-        this.profile = profileName;
-    }
 }

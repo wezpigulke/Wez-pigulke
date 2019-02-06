@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -16,17 +14,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import com.wezpigulke.DatabaseHelper;
+import com.wezpigulke.R;
+import com.wezpigulke.add.AddMeasurement;
 import com.wezpigulke.classes.Measurement;
 import com.wezpigulke.list_adapter.MeasurementListAdapter;
-import com.wezpigulke.R;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
-import com.wezpigulke.add.AddMeasurement;
 
-import java.lang.invoke.ConstantCallSite;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

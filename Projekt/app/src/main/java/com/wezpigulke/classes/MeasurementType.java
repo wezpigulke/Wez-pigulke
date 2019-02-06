@@ -21,7 +21,4 @@ public class MeasurementType {
         return name;
     }
 
-    public void setProfile(String name) {
-        this.name = name;
-    }
 }

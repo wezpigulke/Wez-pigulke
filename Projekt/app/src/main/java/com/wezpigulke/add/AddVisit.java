@@ -458,11 +458,11 @@ public class AddVisit extends AppCompatActivity {
 
         Cursor cursorCheckRandN = myDb.getRandId_NOTYFIKACJA(rand_val);
         cursorCheckRandN.moveToNext();
-        Integer rand_val_n = cursorCheckRandN.getInt(0);
+        int rand_val_n = cursorCheckRandN.getInt(0);
 
         Cursor cursorCheckRandW = myDb.getRandId_NOTYFIKACJA(rand_val);
         cursorCheckRandW.moveToNext();
-        Integer rand_val_w = cursorCheckRandW.getInt(0);
+        int rand_val_w = cursorCheckRandW.getInt(0);
 
         while(rand_val == rand_val_n &&
               rand_val == rand_val_n-1 &&

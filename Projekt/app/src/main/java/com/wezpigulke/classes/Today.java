@@ -25,10 +25,6 @@ public class Today {
         return medicine;
     }
 
-    public void setMedicine(String name) {
-        this.medicine = name;
-    }
-
     public String getDate() {
         return date;
     }
@@ -41,7 +37,4 @@ public class Today {
         return profile;
     }
 
-    public void setProfile(String profileName) {
-        this.profile = profileName;
-    }
 }

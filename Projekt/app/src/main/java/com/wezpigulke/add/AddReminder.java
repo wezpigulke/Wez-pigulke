@@ -93,14 +93,11 @@ public class AddReminder extends AppCompatActivity {
     private Integer labelSize;
     private Integer labelSizeCopy;
     private String wlasnaDawka;
-    private Integer czyPetlaPoszla;
     private Boolean czyWibracja;
-    private Long diff;
     private Long diffDays;
     private Long diffInMillis;
     private Calendar cal;
     private SimpleDateFormat sdf;
-    private SimpleDateFormat tdf;
 
     private TextView setTime1;
     private TextView setTime2;
@@ -255,7 +252,7 @@ public class AddReminder extends AppCompatActivity {
 
         labelDawka.clear();
 
-        for (Double i = 0.5; i <= 3; i += 0.5) {
+        for (double i = 0.5; i <= 3; i += 0.5) {
             labelDawka.add("Dawka: " + String.valueOf(i));
         }
 
@@ -354,11 +351,11 @@ public class AddReminder extends AppCompatActivity {
 
         Cursor cursorCheckRandN = myDb.getRandId_NOTYFIKACJA(rand_val);
         cursorCheckRandN.moveToNext();
-        Integer rand_val_n = cursorCheckRandN.getInt(0);
+        int rand_val_n = cursorCheckRandN.getInt(0);
 
         Cursor cursorCheckRandW = myDb.getRandId_NOTYFIKACJA(rand_val);
         cursorCheckRandW.moveToNext();
-        Integer rand_val_w = cursorCheckRandW.getInt(0);
+        int rand_val_w = cursorCheckRandW.getInt(0);
 
         while(rand_val == rand_val_n &&
                 rand_val == rand_val_n-1 &&
@@ -385,6 +382,7 @@ public class AddReminder extends AppCompatActivity {
         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 
+    @SuppressLint("SetTextI18n")
     private void intializeAllVariables() {
 
         final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
@@ -399,7 +397,6 @@ public class AddReminder extends AppCompatActivity {
 
         coWybrane = 0;
         ileRazyDziennie = 2;
-        czyPetlaPoszla = 0;
 
         String rok = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
         String miesiac = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
@@ -495,7 +492,6 @@ public class AddReminder extends AppCompatActivity {
         dawka.setSelection(1);
 
         sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        tdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
     }
 
@@ -622,7 +618,7 @@ public class AddReminder extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if(dawka.getItemAtPosition(position).toString().equals("Własna dawka")) {
 
-                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(Objects.requireNonNull(AddReminder.this), R.style.AlertDialog);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AddReminder.this, R.style.AlertDialog);
                     builder.setTitle("Własna dawka");
 
                     final EditText input = new EditText(AddReminder.this);
@@ -642,7 +638,7 @@ public class AddReminder extends AppCompatActivity {
                             dawka.setSelection(labelDawka.size()-2);
 
                             String temp = dawka.getItemAtPosition(position).toString();
-                            jakaDawka = Double.valueOf(temp.substring(7, temp.length()));
+                            jakaDawka = Double.valueOf(temp.substring(7));
 
                         } else {
                             dawka.setSelection(1);
@@ -656,7 +652,7 @@ public class AddReminder extends AppCompatActivity {
 
                 } else {
                     String temp = dawka.getItemAtPosition(position).toString();
-                    jakaDawka = Double.valueOf(temp.substring(7, temp.length()));
+                    jakaDawka = Double.valueOf(temp.substring(7));
                 }
 
             }
@@ -828,7 +824,7 @@ public class AddReminder extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        diff = Objects.requireNonNull(secondDate).getTime() - Objects.requireNonNull(firstDate).getTime();
+        long diff = Objects.requireNonNull(secondDate).getTime() - Objects.requireNonNull(firstDate).getTime();
         diffDays = diff / (24 * 60 * 60 * 1000);
         diffInMillis = Objects.requireNonNull(secondTime).getTime() - Objects.requireNonNull(firstTime).getTime();
 
@@ -984,14 +980,13 @@ public class AddReminder extends AppCompatActivity {
 
                     if(ileDni.getText().length() > 0) {
 
-                        czyPetlaPoszla = 0;
                         int czyUsunacDzien = 0;
                         Integer czyUsunacWszystkieDni = 0;
 
                         for (Integer i = 1; i <= ileRazyDziennie; i++) {
 
                             String godzinaPrzypomnienia;
-                            String wszystkieGodziny;
+                            StringBuilder wszystkieGodziny;
 
                             StringBuilder sb = new StringBuilder();
 
@@ -1000,7 +995,7 @@ public class AddReminder extends AppCompatActivity {
                             }
 
                             sb.append(array.get(ileRazyDziennie - 1).getText().toString());
-                            wszystkieGodziny = sb.toString();
+                            wszystkieGodziny = new StringBuilder(sb.toString());
 
                             sb.setLength(0);
 
@@ -1062,17 +1057,17 @@ public class AddReminder extends AppCompatActivity {
                                     iloscDni--;
                                 }
 
-                                String[] wszystkie = wszystkieGodziny.replaceAll(" ", "").split(",");
-                                List tempList = Arrays.asList(wszystkie);
+                                String[] wszystkie = wszystkieGodziny.toString().replaceAll(" ", "").split(",");
+                                List<String> tempList = Arrays.asList(wszystkie);
 
                                 List<String> tempWszystkieGodziny = Arrays.asList(wszystkie);
                                 Collections.sort(tempWszystkieGodziny);
 
-                                wszystkieGodziny = "";
+                                wszystkieGodziny = new StringBuilder();
 
-                                for (String s : tempWszystkieGodziny) wszystkieGodziny += s + ", ";
-                                wszystkieGodziny = wszystkieGodziny.substring(0, wszystkieGodziny.length()-2);
-                                String najwyzszaGodzina = (String) Collections.max(tempList);
+                                for (String s : tempWszystkieGodziny) wszystkieGodziny.append(s).append(", ");
+                                wszystkieGodziny = new StringBuilder(wszystkieGodziny.substring(0, wszystkieGodziny.length() - 2));
+                                String najwyzszaGodzina = Collections.max(tempList);
 
                                 myDb.insert_PRZYPOMNIENIE(
                                         idd,
@@ -1087,7 +1082,6 @@ public class AddReminder extends AppCompatActivity {
                                         dzwiek,
                                         czyWibracja
                                 );
-                                czyPetlaPoszla = 1;
                             }
 
                             if (czyUsunacDzien != 1 && iloscDni>=1) {

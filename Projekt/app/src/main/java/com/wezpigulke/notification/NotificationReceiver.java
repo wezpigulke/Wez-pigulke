@@ -5,15 +5,13 @@ import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -27,9 +25,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import static android.content.Context.ALARM_SERVICE;
-import static com.wezpigulke.R.drawable.no;
 
-public class NotificationReceiver extends WakefulBroadcastReceiver {
+public class NotificationReceiver extends BroadcastReceiver {
 
     DatabaseHelper myDb;
     NotificationManager notificationManager;
@@ -402,7 +399,7 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
 
                         Cursor cp = myDb.getIDfromMedicine_PRZYPOMNIENIE(nazwaLeku);
                         double ileNotyfikacji, typPrzypomnienia, pozostalaIloscDni;
-                        Double sumujTypy = 0.0;
+                        double sumujTypy = 0.0;
 
                         while (cp.moveToNext()) {
 

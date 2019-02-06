@@ -29,20 +29,12 @@ public class Measurement {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getResult() {
         return result;
     }
 
     public String getProfile() {
         return profile;
-    }
-
-    public void setProfile(String profile) {
-        this.profile = profile;
     }
 
     public String getDate() {

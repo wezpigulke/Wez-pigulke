@@ -21,12 +21,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.notification.BootCompletedNotificationReceiver;
-import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.R;
-import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 import com.wezpigulke.classes.Today;
 import com.wezpigulke.list_adapter.TodayListAdapter;
+import com.wezpigulke.notification.NotificationReceiver;
+import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

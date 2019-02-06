@@ -23,6 +23,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
     DatabaseHelper myDb;
 
+    @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
 

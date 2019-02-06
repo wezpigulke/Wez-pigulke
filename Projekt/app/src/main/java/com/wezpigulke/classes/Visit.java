@@ -6,7 +6,6 @@ public class Visit {
     private String name;
     private String specialization;
     private String date;
-    private String address;
 
     public Visit(int id, String profile, String name, String specialization, String date) {
         this.id = id;
@@ -26,10 +25,6 @@ public class Visit {
 
     public String getProfile() {
         return profile;
-    }
-
-    public void setProfile(String profile) {
-        this.profile = profile;
     }
 
     public String getName() {
