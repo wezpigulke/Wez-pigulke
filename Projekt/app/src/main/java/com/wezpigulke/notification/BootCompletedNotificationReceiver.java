@@ -51,7 +51,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                 String profil = cv.getString(5);
                 Integer rand_val = cv.getInt(6);
                 Integer dzwiek = cv.getInt(7);
-                Boolean czyWibracja = Boolean.parseBoolean(cv.getString(8));
+                Integer czyWibracja = cv.getInt(8);
 
                 try {
                     firstDate = sdf.parse(dzisiejszaData);
@@ -155,7 +155,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                 Integer iloscDni = c.getInt(7);
                 Integer rand_val = c.getInt(9);
                 Integer dzwiek = c.getInt(10);
-                Boolean czyWibracja = Boolean.getBoolean(c.getString(11));
+                Integer czyWibracja = c.getInt(11);
 
                 try {
                     firstDate = sdf.parse(dzisiejszaData);

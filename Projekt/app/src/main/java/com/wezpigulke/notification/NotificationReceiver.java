@@ -72,7 +72,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             Double jakaDawka = intent.getDoubleExtra("jakaDawka", 0);
 
             int wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
-            boolean czyWibracja = intent.getBooleanExtra("czyWibracja", false);
+            int czyWibracja = intent.getIntExtra("czyWibracja", 0);
             Integer rand_val = intent.getIntExtra("rand_val", 0);
 
             Cursor cs = myDb.getdataID_NOTYFIKACJA(id_n);
@@ -314,7 +314,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                         builder.addAction(R.drawable.no, "Zapomniałem", noIntent);
 
                         if(wybranyDzwiek!=0) builder.setSound(alarmSound);
-                        if(czyWibracja) builder.setVibrate(new long[]{1000, 1000});
+                        if(czyWibracja==1) builder.setVibrate(new long[]{1000, 1000});
 
                         Notification notification = builder.build();
                         notification.flags |= NotificationCompat.FLAG_AUTO_CANCEL;
@@ -458,7 +458,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                                     .setOnlyAlertOnce(true);
 
                             if(wybranyDzwiek!=0) builder.setSound(alarmSound);
-                            if(czyWibracja) builder.setVibrate(new long[]{1000, 1000});
+                            if(czyWibracja==1) builder.setVibrate(new long[]{1000, 1000});
 
                             Notification notification2 = builder.build();
                             notification2.flags |= NotificationCompat.FLAG_AUTO_CANCEL;
@@ -491,7 +491,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             String specjalizacja = intent.getStringExtra("specjalizacja");
             String uzytkownik = intent.getStringExtra("uzytkownik");
             int wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
-            boolean czyWibracja = intent.getBooleanExtra("czyWibracja", false);
+            int czyWibracja = intent.getIntExtra("czyWibracja", 0);
             int rand_val = intent.getIntExtra("rand_val", 0);
 
             try {
@@ -583,7 +583,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                         .setOnlyAlertOnce(true);
 
                 if(wybranyDzwiek!=0) builder.setSound(alarmSound);
-                if(czyWibracja) builder.setVibrate(new long[]{1000, 1000});
+                if(czyWibracja==1) builder.setVibrate(new long[]{1000, 1000});
 
                 Notification notification = builder.build();
                 notification.flags |= NotificationCompat.FLAG_AUTO_CANCEL;

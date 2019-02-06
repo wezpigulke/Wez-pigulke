@@ -125,7 +125,7 @@ public class GoToMedicineInformation extends AppCompatActivity {
             }
 
             builder.setItems(buttonText, (dialog, which) -> showDialogWithInformation(which));
-            builder.setNegativeButton("ANULUJ",(dialog, id) -> dialog.cancel());
+            builder.setNegativeButton("Zamknij",(dialog, id) -> dialog.cancel());
 
             AlertDialog dialog = builder.create();
             dialog.show();

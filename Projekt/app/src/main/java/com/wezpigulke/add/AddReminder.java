@@ -388,6 +388,8 @@ public class AddReminder extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void intializeAllVariables() {
 
+        czyWibracja = 0;
+
         final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 

@@ -213,7 +213,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String sql = "INSERT INTO " + HISTORIA + "(ID, Profil, Godzina, Data, Lek, Dawka, Godzina_akceptacji, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO " + HISTORIA + "(Profil, Godzina, Data, Lek, Dawka, Godzina_akceptacji, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
         SQLiteStatement statement = db.compileStatement(sql);
 
         statement.bindString(1, profil);
@@ -859,6 +859,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         statement.bindString(9, alltime);
         statement.bindLong(10, dzwiek);
         statement.bindLong(11, wibracja);
+
+        Log.d("OCOCHO", statement.toString());
+
         statement.executeInsert();
     }
 
@@ -960,7 +963,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String sql = "INSERT INTO " + PRZYPOMNIENIE + "(Godzina, Data, Imie_Nazwisko, Specjalizacja, Profil, Rand_ID, Dzwiek, Wibracja) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO " + WIZYTY + "(Godzina, Data, Imie_Nazwisko, Specjalizacja, Profil, Rand_ID, Dzwiek, Wibracja) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         SQLiteStatement statement = db.compileStatement(sql);
 
         statement.bindString(1, godzina);

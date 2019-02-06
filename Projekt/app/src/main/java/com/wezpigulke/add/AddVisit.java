@@ -485,6 +485,8 @@ public class AddVisit extends AppCompatActivity {
 
     private void intializeAllVariables() {
 
+        czyWibracja = 0;
+
         String rok = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
         String miesiac = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
         String dzien = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
