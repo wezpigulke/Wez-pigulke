@@ -48,7 +48,8 @@ public class MedicineInformationListAdapter extends BaseAdapter {
         TextView medPrice = v.findViewById(R.id.medNameInformation5);
 
         medName.setText(results.get(position).getName());
-        medTypeDose.setText(results.get(position).getType() + " | " + results.get(position).getDose());
+        if(results.get(position).getDose().length()>0) medTypeDose.setText(results.get(position).getType() + " | " + results.get(position).getDose());
+        else medTypeDose.setText(results.get(position).getType());
         medPack.setText(results.get(position).getPack());
         medPrice.setText(results.get(position).getPrice() + "zł");
 

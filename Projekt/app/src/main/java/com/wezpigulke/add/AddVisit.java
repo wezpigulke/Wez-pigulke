@@ -46,7 +46,7 @@ public class AddVisit extends AppCompatActivity {
 
     private String name;
     private String specialization;
-    private Boolean czyWibracja;
+    private Integer czyWibracja;
 
     private DatePickerDialog.OnDateSetListener dataListener;
     private TimePickerDialog.OnTimeSetListener godzinaListener;
@@ -521,7 +521,10 @@ public class AddVisit extends AppCompatActivity {
         res.moveToFirst();
         uzytkownik = res.getString(0);
 
-        checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> czyWibracja = isChecked);
+        checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if(isChecked) czyWibracja = 1;
+            else czyWibracja = 0;
+        });
 
     }
 }

@@ -93,7 +93,7 @@ public class AddReminder extends AppCompatActivity {
     private Integer labelSize;
     private Integer labelSizeCopy;
     private String wlasnaDawka;
-    private Boolean czyWibracja;
+    private Integer czyWibracja;
     private Long diffDays;
     private Long diffInMillis;
     private Calendar cal;
@@ -135,7 +135,10 @@ public class AddReminder extends AppCompatActivity {
 
         myDb = new DatabaseHelper(this);
         intializeAllVariables();
-        checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> czyWibracja = isChecked);
+        checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if(isChecked) czyWibracja = 1;
+            else czyWibracja = 0;
+        });
 
         setSpinnerNazwaLekuOnClickListener();
         setSpinnerIleRazyDziennieOnClickListener();

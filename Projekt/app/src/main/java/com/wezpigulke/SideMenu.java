@@ -123,12 +123,10 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
         }
 
         if (fragment != null) {
-
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.content_main, fragment);
             fragmentTransaction.commit();
-
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

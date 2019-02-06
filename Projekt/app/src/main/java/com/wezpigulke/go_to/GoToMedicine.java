@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,8 +37,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -115,7 +112,7 @@ public class GoToMedicine extends Fragment {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AlertDialog);
 
-            builder.setMessage("Co chcesz zrobić?").setCancelable(false)
+            builder.setMessage("Co chcesz zrobić?").setCancelable(true)
                     .setPositiveButton("Aktualizuj ilość", (dialog, which) -> updateQuantity(position))
                     .setNegativeButton("Sprawdź informacje", (dialog, which) -> {
                         if (isOnline()) {

@@ -1,7 +1,6 @@
 package com.wezpigulke.go_to;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -9,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
@@ -88,9 +88,11 @@ public class GoToMedicineInformation extends AppCompatActivity {
                 for(int i = 0; i< contentSize; i++) {
 
                     String content = doc.select("span.descr_common > span.descr_section").get(i).select("span.descr_head").text();
-                    contentHeaders.add(content);
-                    content = doc.select("span.descr_common > span.descr_section").get(i).select("span.descr_body").text();
-                    contentInformation.add(content);
+                    if(content.length()>0) {
+                        contentHeaders.add(content);
+                        content = doc.select("span.descr_common > span.descr_section").get(i).select("span.descr_body").text();
+                        contentInformation.add(content);
+                    }
 
                 }
 
@@ -112,35 +114,37 @@ public class GoToMedicineInformation extends AppCompatActivity {
 
     public void dialogShowInformation() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Jaką informacje chcesz zobaczyć?");
+        if(contentHeaders.size()>0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Jaką informacje chcesz zobaczyć?");
 
-        String[] buttonText = new String[contentHeaders.size()];
+            String[] buttonText = new String[contentHeaders.size()];
 
-        for (int i = 0; i < contentHeaders.size(); i++) {
-            buttonText[i] = contentHeaders.get(i);
-        }
+            for (int i = 0; i < contentHeaders.size(); i++) {
+                buttonText[i] = contentHeaders.get(i);
+            }
 
-        builder.setItems(buttonText, (dialog, which) -> {
-            showDialogWithInformation(which);
-        });
+            builder.setItems(buttonText, (dialog, which) -> showDialogWithInformation(which));
+            builder.setNegativeButton("ANULUJ",(dialog, id) -> dialog.cancel());
 
-        builder.setNegativeButton("ANULUJ",(dialog, id) -> {
-            dialog.cancel();
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else Toast.makeText(getApplicationContext(), "Brak informacji na temat leku", Toast.LENGTH_LONG).show();
 
     }
 
     private void showDialogWithInformation(Integer tmp) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(GoToMedicineInformation.this, R.style.AlertDialog);
-        builder.setMessage(contentInformation.get(tmp)).setCancelable(true).setPositiveButton("OK", (dialog, which) -> {
-            dialog.cancel();
-            dialogShowInformation();
-        });
+        builder.setMessage(contentInformation.get(tmp)).setCancelable(true)
+                .setPositiveButton("Sprawdź dalej", (dialog, which) -> {
+                    dialog.cancel();
+                    dialogShowInformation();
+                })
+                .setNegativeButton("Wyjdź", (dialog, which) -> {
+                    dialog.cancel();
+                });
+
         builder.show();
 
     }
@@ -157,7 +161,7 @@ public class GoToMedicineInformation extends AppCompatActivity {
 
                 Document doc = Jsoup.connect("http://bazalekow.leksykon.com.pl/szukaj-leku.html?a=search&o=0&p=50&cmn=" +  medicineName).get();
                 Elements elements = doc.select("div.results-drug-list-block.block-shadow > div.header-block > span.quantity-block > span.quantity");
-                Integer medicineCount = Integer.parseInt(elements.text());
+                int medicineCount = Integer.parseInt(elements.text());
 
                 elements = doc.select("div.results-drug-list-block.block-shadow > table > tbody > tr");
 
@@ -205,12 +209,6 @@ public class GoToMedicineInformation extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void showKeyboard(){
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        assert inputMethodManager != null;
-        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     public void closeKeyboard(){
