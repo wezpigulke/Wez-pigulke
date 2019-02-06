@@ -82,6 +82,9 @@ public class GoToMedicineInformation extends AppCompatActivity {
                 Document doc = Jsoup.connect("http://bazalekow.leksykon.com.pl/" + url).get();
                 int contentSize = doc.select("span.descr_common > span.descr_section").size();
 
+                contentHeaders.clear();
+                contentInformation.clear();
+
                 for(int i = 0; i< contentSize; i++) {
 
                     String content = doc.select("span.descr_common > span.descr_section").get(i).select("span.descr_head").text();
@@ -124,8 +127,6 @@ public class GoToMedicineInformation extends AppCompatActivity {
 
         builder.setNegativeButton("ANULUJ",(dialog, id) -> {
             dialog.cancel();
-            contentHeaders.clear();
-            contentInformation.clear();
         });
 
         AlertDialog dialog = builder.create();
