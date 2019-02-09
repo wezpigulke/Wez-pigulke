@@ -880,7 +880,7 @@ public class AddReminder extends AppCompatActivity {
                                 idd,
                                 godzinaPrzypomnienia,
                                 dataPrzypomnienia,
-                                uzytkownik + " |  " + godzinaPrzypomnienia + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")",
+                                uzytkownik + " | " + godzinaPrzypomnienia + " | Weź: " + nazwaLeku + " (Dawka: " + jakaDawka + ")",
                                 0,
                                 cal);
 
@@ -936,7 +936,7 @@ public class AddReminder extends AppCompatActivity {
                                         idd,
                                         godzinaPrzypomnienia,
                                         dataPrzypomnienia,
-                                        uzytkownik + " |  " + godzinaPrzypomnienia + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")",
+                                        uzytkownik + " | " + godzinaPrzypomnienia + "  | Weź: " + nazwaLeku + " (Dawka: " + jakaDawka + ")",
                                         iloscDni-1,
                                         cal);
 
@@ -969,7 +969,7 @@ public class AddReminder extends AppCompatActivity {
                                         idd,
                                         godzinaPrzypomnienia,
                                         dataPrzypomnienia,
-                                        uzytkownik + " |  " + godzinaPrzypomnienia + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")",
+                                        uzytkownik + " | " + godzinaPrzypomnienia + "  | Weź: " + nazwaLeku + " (Dawka: " + jakaDawka + ")",
                                         iloscDni-1,
                                         cal);
 
@@ -1095,7 +1095,7 @@ public class AddReminder extends AppCompatActivity {
                                         idd,
                                         godzinaPrzypomnienia,
                                         dataPrzypomnienia,
-                                        uzytkownik + " |  " + godzinaPrzypomnienia + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")",
+                                        uzytkownik + " | " + godzinaPrzypomnienia + " | Weź: " + nazwaLeku + " (Dawka: " + jakaDawka + ")",
                                         iloscDni-1,
                                         cal);
 
