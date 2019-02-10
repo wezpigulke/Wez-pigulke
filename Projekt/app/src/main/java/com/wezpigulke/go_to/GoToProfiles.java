@@ -70,7 +70,7 @@ public class GoToProfiles extends Fragment {
     public void onResume() {
 
         super.onResume();
-        AktualizujBaze();
+        aktualizujBaze();
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
                 lv,
                 new SwipeDismissListViewTouchListener.DismissCallbacks() {
@@ -96,7 +96,7 @@ public class GoToProfiles extends Fragment {
 
     }
 
-    public void AktualizujBaze() {
+    public void aktualizujBaze() {
 
         results.clear();
         lv.setAdapter(adapter);
@@ -195,7 +195,7 @@ public class GoToProfiles extends Fragment {
                         myDb.removeUser_NOTATKI(nazwaUzytkownika);
                         myDb.remove_UZYTKOWNICY(idd);
 
-                        AktualizujBaze();
+                        aktualizujBaze();
 
                     } else openDialog("Musisz posiadać chociaż jeden profil w bazie.");
 

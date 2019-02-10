@@ -64,7 +64,7 @@ public class GoToDoctors extends Fragment {
     public void onResume() {
 
         super.onResume();
-        AktualizujBaze();
+        aktualizujBaze();
 
         lv.setOnItemClickListener((parent, view, i, l) -> {
 
@@ -103,7 +103,7 @@ public class GoToDoctors extends Fragment {
         startActivity(new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null)));
     }
 
-    public void AktualizujBaze() {
+    public void aktualizujBaze() {
 
         results.clear();
 
@@ -130,7 +130,7 @@ public class GoToDoctors extends Fragment {
         builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
                 .setPositiveButton("Tak", (dialog, which) -> {
                     myDb.remove_DOKTORZY(idd);
-                    AktualizujBaze();
+                    aktualizujBaze();
                 })
                 .setNegativeButton("Nie", (dialog, which) -> dialog.cancel());
 

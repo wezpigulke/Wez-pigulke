@@ -310,8 +310,8 @@ public class NotificationReceiver extends BroadcastReceiver {
                         builder.setContentTitle("Weź pigułke");
                         builder.setContentText(powiadomienie);
                         builder.setAutoCancel(true);
-                        builder.addAction(R.drawable.yes, "Wziąłem", yesIntent);
-                        builder.addAction(R.drawable.no, "Zapomniałem", noIntent);
+                        builder.addAction(0, "Wziąłem", yesIntent);
+                        builder.addAction(0, "Zapomniałem", noIntent);
 
                         if(wybranyDzwiek!=0) builder.setSound(alarmSound);
                         if(czyWibracja==1) builder.setVibrate(new long[]{1000, 1000});

@@ -117,7 +117,7 @@ public class GoToMeasurement extends Fragment {
     public void onResume() {
 
         super.onResume();
-        AktualizujBaze();
+        aktualizujBaze();
 
         myDb = new DatabaseHelper(getActivity());
 
@@ -128,7 +128,7 @@ public class GoToMeasurement extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 uzytkownik = measurementSpinner.getItemAtPosition(position).toString();
-                AktualizujBaze();
+                aktualizujBaze();
             }
 
             @Override
@@ -142,7 +142,7 @@ public class GoToMeasurement extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 typ = measurementTypeSpinner.getItemAtPosition(position).toString();
-                AktualizujBaze();
+                aktualizujBaze();
             }
 
             @Override
@@ -177,7 +177,7 @@ public class GoToMeasurement extends Fragment {
 
     }
 
-    public void AktualizujBaze() {
+    public void aktualizujBaze() {
 
         results.clear();
         lv.setAdapter(adapter);
@@ -210,7 +210,7 @@ public class GoToMeasurement extends Fragment {
         builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
                 .setPositiveButton("Tak", (dialog, which) -> {
                     myDb.remove_POMIARY(idd);
-                    AktualizujBaze();
+                    aktualizujBaze();
                 })
                 .setNegativeButton("Nie", (dialog, which) -> dialog.cancel());
 

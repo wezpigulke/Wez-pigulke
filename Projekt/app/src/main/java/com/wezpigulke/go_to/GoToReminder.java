@@ -97,14 +97,14 @@ public class GoToReminder extends Fragment {
     public void onResume() {
 
         super.onResume();
-        AktualizujBaze();
+        aktualizujBaze();
         loadSpinnerData();
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 uzytkownik = spinner.getItemAtPosition(position).toString();
-                AktualizujBaze();
+                aktualizujBaze();
             }
 
             @Override
@@ -140,7 +140,7 @@ public class GoToReminder extends Fragment {
     }
 
 
-    public void AktualizujBaze() {
+    public void aktualizujBaze() {
 
         results.clear();
 
@@ -203,7 +203,7 @@ public class GoToReminder extends Fragment {
 
         myDb.remove_PRZYPOMNIENIE(idd);
 
-        AktualizujBaze();
+        aktualizujBaze();
 
     }
 

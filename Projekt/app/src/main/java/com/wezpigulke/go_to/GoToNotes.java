@@ -97,7 +97,7 @@ public class GoToNotes extends Fragment {
     public void onResume() {
 
         super.onResume();
-        AktualizujBaze();
+        aktualizujBaze();
 
         myDb = new DatabaseHelper(getActivity());
 
@@ -109,7 +109,7 @@ public class GoToNotes extends Fragment {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
                 uzytkownik = spinner.getItemAtPosition(position).toString();
-                AktualizujBaze();
+                aktualizujBaze();
 
             }
 
@@ -155,7 +155,7 @@ public class GoToNotes extends Fragment {
 
     }
 
-    public void AktualizujBaze() {
+    public void aktualizujBaze() {
 
         results.clear();
         lv.setAdapter(adapter);
@@ -186,7 +186,7 @@ public class GoToNotes extends Fragment {
         builder.setMessage("Czy na pewno chcesz usunąć?").setCancelable(false)
                 .setPositiveButton("Tak", (dialog, which) -> {
                     myDb.remove_NOTATKI(idd);
-                    AktualizujBaze();
+                    aktualizujBaze();
                 })
                 .setNegativeButton("Nie", (dialog, which) -> dialog.cancel());
 

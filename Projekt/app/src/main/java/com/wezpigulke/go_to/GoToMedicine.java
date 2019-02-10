@@ -83,7 +83,7 @@ public class GoToMedicine extends Fragment {
     public void onResume() {
 
         super.onResume();
-        AktualizujBaze();
+        aktualizujBaze();
 
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
                 lv,
@@ -151,7 +151,7 @@ public class GoToMedicine extends Fragment {
 
         builder.setPositiveButton("OK", (dialog, which) -> {
             myDb.update_LEK(id_l, Double.valueOf(input.getText().toString()));
-            AktualizujBaze();
+            aktualizujBaze();
         });
         builder.setNegativeButton("Anuluj", (dialog, which) -> dialog.cancel());
         builder.show();
@@ -167,7 +167,7 @@ public class GoToMedicine extends Fragment {
         return var;
     }
 
-    public void AktualizujBaze() {
+    public void aktualizujBaze() {
 
         results.clear();
         lv.setAdapter(adapter);
@@ -210,7 +210,7 @@ public class GoToMedicine extends Fragment {
 
         if (cp.getCount() == 0) {
             myDb.remove_LEK(id);
-            AktualizujBaze();
+            aktualizujBaze();
         } else openDialog("Nie można usunąć. Posiadasz aktywne przypomnienie z tym lekiem.");
 
     }

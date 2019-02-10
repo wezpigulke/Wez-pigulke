@@ -8,8 +8,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -19,102 +19,98 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <receiver android:name=".TodayWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/today_widget_info" />
+        </receiver>
 
         <activity
-            android:name="com.wezpigulke.go_to.GoToWelcome"
-            android:label="Weź pigułkę"
+            android:name=".go_to.GoToWelcome"
             android:configChanges="orientation"
+            android:label="Weź pigułkę"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="com.wezpigulke.SideMenu"
+            android:name=".SideMenu"
+            android:configChanges="orientation"
             android:label="Dzisiaj"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait" />
-
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wezpigulke.add.AddReminder"
+            android:name=".add.AddReminder"
+            android:configChanges="orientation"
             android:label="Dodawanie przypomnienia"
-            android:configChanges="orientation"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.wezpigulke.add.AddDoctor"
+            android:name=".add.AddDoctor"
+            android:configChanges="orientation"
             android:label="Dodaj lekarza"
-            android:configChanges="orientation"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.wezpigulke.add.AddProfile"
+            android:name=".add.AddProfile"
+            android:configChanges="orientation"
             android:label="Dodaj profil"
-            android:configChanges="orientation"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.wezpigulke.add.AddVisit"
+            android:name=".add.AddVisit"
+            android:configChanges="orientation"
             android:label="Dodaj wizytę"
-            android:configChanges="orientation"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.wezpigulke.add.AddMedicine"
+            android:name=".add.AddMedicine"
+            android:configChanges="orientation"
             android:label="Dodaj lek"
-            android:configChanges="orientation"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.wezpigulke.add.AddNotes"
+            android:name=".add.AddNotes"
             android:configChanges="orientation"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait" />
-
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.wezpigulke.add.AddMeasurement"
+            android:name=".add.AddMeasurement"
+            android:configChanges="orientation"
             android:label="Dodaj pomiar"
-            android:configChanges="orientation"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.wezpigulke.add.AddTypeMeasurement"
+            android:name=".add.AddTypeMeasurement"
+            android:configChanges="orientation"
             android:label="Dodaj typ badania"
-            android:configChanges="orientation"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.wezpigulke.go_to.GoToMedicineInformation"
+            android:name=".go_to.GoToMedicineInformation"
+            android:configChanges="orientation"
             android:label="Informacje o leku"
-            android:configChanges="orientation"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name="com.wezpigulke.notification.RepeatingActivityReminder"
-            android:label="Weź tabletkę"/>
-
+            android:name=".notification.RepeatingActivityReminder"
+            android:label="Weź tabletkę" />
         <activity
-            android:name="com.wezpigulke.notification.RepeatingActivityVisit"
+            android:name=".notification.RepeatingActivityVisit"
             android:label="Wizyta u lekarza" />
 
-        <receiver android:name="com.wezpigulke.notification.NotificationReceiver"
+        <receiver
+            android:name=".notification.NotificationReceiver"
             android:enabled="true"
             android:exported="true"
             tools:ignore="ExportedReceiver" />
-
         <receiver
-            android:name="com.wezpigulke.notification.BootCompletedNotificationReceiver"
+            android:name=".notification.BootCompletedNotificationReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name="com.wezpigulke.notification.ButtonIntent" />
-
+        <receiver android:name=".notification.ButtonIntent" />
     </application>
 
 </manifest>

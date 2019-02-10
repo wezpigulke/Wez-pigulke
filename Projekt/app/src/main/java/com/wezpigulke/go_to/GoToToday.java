@@ -97,14 +97,14 @@ public class GoToToday extends Fragment {
     public void onResume() {
 
         super.onResume();
-        AktualizujBaze();
+        aktualizujBaze();
         loadSpinnerData();
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 uzytkownik = spinner.getItemAtPosition(position).toString();
-                AktualizujBaze();
+                aktualizujBaze();
             }
 
             @Override
@@ -137,7 +137,7 @@ public class GoToToday extends Fragment {
     }
 
 
-    public void AktualizujBaze() {
+    public void aktualizujBaze() {
 
         results.clear();
 
@@ -149,13 +149,14 @@ public class GoToToday extends Fragment {
         if (uzytkownik.equals("Wszyscy")) c = myDb.getAllData_NOTYFIKACJA();
         else c = myDb.getUserData_NOTYFIKACJA(uzytkownik);
 
+        String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        String dzisiejszyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        SimpleDateFormat tdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+
+
         while (c.moveToNext()) {
-
-            String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-            String dzisiejszyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            SimpleDateFormat tdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
             Date firstDate = null;
             Date secondDate = null;
@@ -297,7 +298,7 @@ public class GoToToday extends Fragment {
 
         } else if (ile == 0) myDb.remove_PRZYPOMNIENIE(id_p);
 
-        AktualizujBaze();
+        aktualizujBaze();
 
     }
 

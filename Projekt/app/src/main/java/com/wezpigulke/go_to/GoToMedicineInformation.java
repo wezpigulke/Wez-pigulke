@@ -73,7 +73,6 @@ public class GoToMedicineInformation extends AppCompatActivity {
     @SuppressLint("StaticFieldLeak")
     public class getMedicineInformation extends AsyncTask<Void, Void, Void> {
 
-        @SuppressLint("ShowToast")
         @Override
         protected Void doInBackground(Void... params) {
 
