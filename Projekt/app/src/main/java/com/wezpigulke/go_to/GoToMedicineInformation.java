@@ -13,7 +13,7 @@ import android.widget.Toast;
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
 import com.wezpigulke.classes.MedicineInformation;
-import com.wezpigulke.list_adapter.MedicineInformationListAdapter;
+import com.wezpigulke.adapters.MedicineInformationListAdapter;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

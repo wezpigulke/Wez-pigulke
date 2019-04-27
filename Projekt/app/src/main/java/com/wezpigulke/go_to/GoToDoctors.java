@@ -16,7 +16,7 @@ import android.widget.ListView;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.classes.Doctor;
-import com.wezpigulke.list_adapter.DoctorListAdapter;
+import com.wezpigulke.adapters.DoctorListAdapter;
 import com.wezpigulke.R;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 import com.wezpigulke.add.AddDoctor;
@@ -74,6 +74,7 @@ public class GoToDoctors extends Fragment {
             nrtel = c.getString(3);
             adres = c.getString(4);
             if(!nrtel.equals("0")) dialogCallOrNavigate();
+            c.close();
 
         });
 
@@ -117,6 +118,7 @@ public class GoToDoctors extends Fragment {
                 } else results.add(new Doctor(c.getInt(0), c.getString(1), c.getString(2), c.getString(4)));
             }
         }
+        c.close();
 
         DoctorListAdapter adapter = new DoctorListAdapter(getActivity(), results);
         lv.setAdapter(adapter);

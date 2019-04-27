@@ -21,9 +21,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
+import com.wezpigulke.adapters.DoctorListAdapter;
+import com.wezpigulke.adapters.DoctorSpinnerAdapter;
+import com.wezpigulke.classes.Doctor;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.R;
+
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -65,10 +70,11 @@ public class AddVisit extends AppCompatActivity {
 
     private Spinner spinner;
     private Spinner spinnerDoctor;
-    private ArrayList<String> labelDoktor;
     private String uzytkownik;
     private Long diff;
     private Calendar cal;
+
+    private ArrayList<Doctor> doctorArrayList;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -99,7 +105,8 @@ public class AddVisit extends AppCompatActivity {
 
             stopPlaying();
 
-            if (spinnerDoctor.getSelectedItem().toString().equals("Wybierz lekarza")) {
+            Doctor selectedItem = (Doctor)spinnerDoctor.getSelectedItem();
+            if (selectedItem.getSpecialization().equals("Wybierz lekarza")) {
                 openDialog("Wybierz lekarza lub dodaj nowego");
             } else {
 
@@ -172,20 +179,15 @@ public class AddVisit extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
-                String stringTemp = spinnerDoctor.getItemAtPosition(position).toString();
+                Doctor doctor = (Doctor)parentView.getItemAtPosition(position);
 
-                if (stringTemp.equals("Dodaj nowego lekarza")) {
-
+                if(doctor.getSpecialization().equals("Dodaj nowego lekarza")) {
                     Intent cel = new Intent(parentView.getContext(), AddDoctor.class);
                     startActivity(cel);
-
-                } else if (!stringTemp.equals("Wybierz lekarza")) {
-                    String[] listTemp = stringTemp.split(" +[|]+ ");
-
-                    name = listTemp[0];
-                    specialization = listTemp[1];
-
                 }
+
+                name = doctor.getName();
+                specialization = doctor.getSpecialization();
 
             }
 
@@ -365,30 +367,25 @@ public class AddVisit extends AppCompatActivity {
 
     private void loadSpinnerDoctor() {
 
-        labelDoktor.clear();
+        doctorArrayList.clear();
 
-        Cursor cxz = myDb.getAllData_DOKTORZY();
+        Cursor c = myDb.getAllData_DOKTORZY();
 
-        if (cxz.getCount() != 0) {
-            while (cxz.moveToNext()) {
-                labelDoktor.add(cxz.getString(1) + " | " + cxz.getString(2));
+        if (c.getCount() != 0) {
+            while (c.moveToNext()) {
+                if(c.getString(3).equals("0")) {
+                    doctorArrayList.add(new Doctor(c.getInt(0), c.getString(1), c.getString(2), c.getString(4)));
+                } else doctorArrayList.add(new Doctor(c.getInt(0), c.getString(1), c.getString(2), c.getString(4)));
             }
         }
 
-        labelDoktor.add("Dodaj nowego lekarza");
-        labelDoktor.add("Wybierz lekarza");
+        doctorArrayList.add(new Doctor(-2, "", "Dodaj nowego lekarza", ""));
+        doctorArrayList.add(new Doctor(-1, "", "Wybierz lekarza", ""));
 
-        final int labelSize = labelDoktor.size() - 1;
+        final int labelSize = doctorArrayList.size() - 1;
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, labelDoktor) {
-            @Override
-            public int getCount() {
-                return (labelSize);
-            }
-        };
-
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerDoctor.setAdapter(dataAdapter);
+        DoctorSpinnerAdapter doctorSpinnerAdapter = new DoctorSpinnerAdapter(getApplicationContext(), doctorArrayList);
+        spinnerDoctor.setAdapter(doctorSpinnerAdapter);
         spinnerDoctor.setSelection(labelSize);
 
     }
@@ -465,11 +462,11 @@ public class AddVisit extends AppCompatActivity {
         int rand_val_w = cursorCheckRandW.getInt(0);
 
         while(rand_val == rand_val_n &&
-              rand_val == rand_val_n-1 &&
-              rand_val == rand_val_n-2 &&
-              rand_val == rand_val_n-3 &&
-              rand_val == rand_val_w &&
-              rand_val == rand_val_w-1) {
+                rand_val == rand_val_n-1 &&
+                rand_val == rand_val_n-2 &&
+                rand_val == rand_val_n-3 &&
+                rand_val == rand_val_w &&
+                rand_val == rand_val_w-1) {
 
             rand_val = random();
 
@@ -481,7 +478,6 @@ public class AddVisit extends AppCompatActivity {
     {
         return (int) (Math.random() * (MAX_VALUE));
     }
-
 
     private void intializeAllVariables() {
 
@@ -495,7 +491,7 @@ public class AddVisit extends AppCompatActivity {
 
         label = new ArrayList<>();
         labelDzwiek = new ArrayList<>();
-        labelDoktor = new ArrayList<>();
+        doctorArrayList = new ArrayList<>();
         year = Integer.parseInt(rok);
         month = Integer.parseInt(miesiac);
         day = Integer.parseInt(dzien);

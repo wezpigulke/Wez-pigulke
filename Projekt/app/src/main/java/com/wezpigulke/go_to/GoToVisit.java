@@ -26,7 +26,7 @@ import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.R;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 import com.wezpigulke.classes.Visit;
-import com.wezpigulke.list_adapter.VisitListAdapter;
+import com.wezpigulke.adapters.VisitListAdapter;
 import com.wezpigulke.add.AddVisit;
 
 import java.util.ArrayList;
@@ -93,6 +93,8 @@ public class GoToVisit extends Fragment {
                 spinner.setAdapter(dataAdapter);
             }
         }
+
+        cxz.close();
 
     }
 
@@ -164,6 +166,7 @@ public class GoToVisit extends Fragment {
 
         adapter = new VisitListAdapter(getActivity(), results);
         lv.setAdapter(adapter);
+        c.close();
 
     }
 
@@ -193,6 +196,7 @@ public class GoToVisit extends Fragment {
 
         myDb.remove_WIZYTY(idd);
 
+        crand.close();
         aktualizujBaze();
 
     }

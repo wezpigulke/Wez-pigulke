@@ -25,7 +25,7 @@ import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.R;
 import com.wezpigulke.classes.Reminder;
-import com.wezpigulke.list_adapter.ReminderListAdapter;
+import com.wezpigulke.adapters.ReminderListAdapter;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 import com.wezpigulke.add.AddReminder;
 

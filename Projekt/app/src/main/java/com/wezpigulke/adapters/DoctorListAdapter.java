@@ -1,4 +1,4 @@
-package com.wezpigulke.list_adapter;
+package com.wezpigulke.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -7,17 +7,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.wezpigulke.classes.Today;
 import com.wezpigulke.R;
+import com.wezpigulke.classes.Doctor;
 
 import java.util.List;
 
-public class TodayListAdapter extends BaseAdapter {
+public class DoctorListAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<Today> results;
+    private List<Doctor> results;
 
-    public TodayListAdapter(Context mContext, List<Today> results) {
+    public DoctorListAdapter(Context mContext, List<Doctor> results) {
         this.mContext = mContext;
         this.results = results;
     }
@@ -40,15 +40,15 @@ public class TodayListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.today_listview, null);
+        @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.doctor_listview, null);
 
-        TextView medicineToday = v.findViewById(R.id.medicineReminder);
-        TextView dateToday = v.findViewById(R.id.dateVisit);
-        TextView profileToday = v.findViewById(R.id.profileReminder);
+        TextView doctorName = v.findViewById(R.id.medicineReminder);
+        TextView specializationDoctor = v.findViewById(R.id.dateVisit);
+        TextView address = v.findViewById(R.id.addressVisit);
 
-        medicineToday.setText(results.get(position).getMedicine());
-        dateToday.setText(results.get(position).getDate());
-        profileToday.setText(results.get(position).getProfile());
+        doctorName.setText(results.get(position).getName());
+        specializationDoctor.setText(results.get(position).getSpecialization());
+        address.setText(results.get(position).getAddress());
 
         v.setTag(results.get(position).getId());
 

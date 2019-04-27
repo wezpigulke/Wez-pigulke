@@ -11,6 +11,7 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -79,6 +80,8 @@ public class AddMeasurement extends AppCompatActivity {
         res.moveToFirst();
         uzytkownik = res.getString(0);
 
+        res.close();
+
         wynikPomiaru.setVisibility(View.GONE);
         add.setVisibility(View.GONE);
 
@@ -125,6 +128,9 @@ public class AddMeasurement extends AppCompatActivity {
 
                 wynikPomiaru.setVisibility(View.VISIBLE);
                 add.setVisibility(View.VISIBLE);
+
+                wynikPomiaru.requestFocus();
+                showKeyboard();
 
             } else openDialog("Wybierz typ badania lub dodaj nowy");
 
@@ -175,6 +181,18 @@ public class AddMeasurement extends AppCompatActivity {
 
     }
 
+    public void showKeyboard(){
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        assert inputMethodManager != null;
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+    }
+
+    public void closeKeyboard(){
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        assert inputMethodManager != null;
+        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+    }
+
     private void loadSpinnerData() {
 
         Cursor cxz = myDb.getAllName_UZYTKOWNICY();
@@ -190,6 +208,8 @@ public class AddMeasurement extends AppCompatActivity {
             }
         }
 
+        cxz.close();
+
         Cursor cxs = myDb.getPomiar_TYP_POMIAR();
 
         if (cxs.getCount() != 0) {
@@ -197,6 +217,9 @@ public class AddMeasurement extends AppCompatActivity {
                 labelx.add(cxs.getString(0));
             }
         }
+
+        cxs.close();
+
         labelx.add("Dodaj nowy typ");
         labelx.add("Wybierz typ badania");
 
@@ -229,6 +252,7 @@ public class AddMeasurement extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        closeKeyboard();
         super.onBackPressed();
         finish();
     }

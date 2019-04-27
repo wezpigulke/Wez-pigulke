@@ -20,7 +20,7 @@ import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
 import com.wezpigulke.add.AddMeasurement;
 import com.wezpigulke.classes.Measurement;
-import com.wezpigulke.list_adapter.MeasurementListAdapter;
+import com.wezpigulke.adapters.MeasurementListAdapter;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 
 import java.util.ArrayList;
@@ -99,6 +99,7 @@ public class GoToMeasurement extends Fragment {
                 measurementSpinner.setAdapter(dataAdapter);
             }
         }
+        cxz.close();
 
         if (cxs.getCount() <= 1) {
             measurementTypeSpinner.setVisibility(View.GONE);
@@ -110,6 +111,7 @@ public class GoToMeasurement extends Fragment {
                 measurementTypeSpinner.setAdapter(dataAdapter);
             }
         }
+        cxs.close();
 
     }
 
@@ -197,6 +199,8 @@ public class GoToMeasurement extends Fragment {
                 results.add(new Measurement(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(5), c.getString(4)));
             }
         }
+
+        c.close();
 
         adapter = new MeasurementListAdapter(getActivity(), results);
         lv.setAdapter(adapter);

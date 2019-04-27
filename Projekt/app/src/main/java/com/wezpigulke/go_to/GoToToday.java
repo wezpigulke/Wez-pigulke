@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
 import com.wezpigulke.classes.Today;
-import com.wezpigulke.list_adapter.TodayListAdapter;
+import com.wezpigulke.adapters.TodayListAdapter;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 
@@ -90,6 +90,7 @@ public class GoToToday extends Fragment {
                 spinner.setAdapter(dataAdapter);
             }
         }
+        cxz.close();
 
     }
 
@@ -186,6 +187,8 @@ public class GoToToday extends Fragment {
             }
         }
 
+        c.close();
+
         Collections.sort(results, new CustomComparator());
 
         adapter = new TodayListAdapter(getActivity(), results);
@@ -217,7 +220,7 @@ public class GoToToday extends Fragment {
                 dni = ccc.getInt(9);
             }
         }
-
+        ccc.close();
 
         String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -275,6 +278,7 @@ public class GoToToday extends Fragment {
             policz.moveToNext();
             ile = Integer.parseInt(policz.getString(0));
         }
+        policz.close();
 
         if (dni > 1) {
 
@@ -298,6 +302,7 @@ public class GoToToday extends Fragment {
 
         } else if (ile == 0) myDb.remove_PRZYPOMNIENIE(id_p);
 
+        crand.close();
         aktualizujBaze();
 
     }

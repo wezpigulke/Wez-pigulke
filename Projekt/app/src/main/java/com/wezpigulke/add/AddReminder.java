@@ -167,6 +167,8 @@ public class AddReminder extends AppCompatActivity {
                 spinner.setAdapter(dataAdapter);
             }
         }
+
+        cxz.close();
     }
 
     private void loadSpinnerNazwaLeku() {
@@ -180,6 +182,8 @@ public class AddReminder extends AppCompatActivity {
                 labelNazwaLeku.add(cxz.getString(1));
             }
         }
+
+        cxz.close();
 
         labelNazwaLeku.add("Dodaj nowy typ");
         labelNazwaLeku.add("Wybierz lek");
@@ -314,6 +318,8 @@ public class AddReminder extends AppCompatActivity {
                 spinner.setVisibility(View.VISIBLE);
             }
 
+            cxz.close();
+
             dalej.setVisibility(View.VISIBLE);
             spinnerDzwiek.setVisibility(View.VISIBLE);
 
@@ -356,9 +362,13 @@ public class AddReminder extends AppCompatActivity {
         cursorCheckRandN.moveToNext();
         int rand_val_n = cursorCheckRandN.getInt(0);
 
+        cursorCheckRandN.close();
+
         Cursor cursorCheckRandW = myDb.getRandId_NOTYFIKACJA(rand_val);
         cursorCheckRandW.moveToNext();
         int rand_val_w = cursorCheckRandW.getInt(0);
+
+        cursorCheckRandW.close();
 
         while(rand_val == rand_val_n &&
                 rand_val == rand_val_n-1 &&
@@ -469,6 +479,7 @@ public class AddReminder extends AppCompatActivity {
         Cursor res = myDb.getAllName_UZYTKOWNICY();
         res.moveToFirst();
         uzytkownik = res.getString(0);
+        res.close();
 
         wlasnaDawka = "";
 
@@ -681,6 +692,8 @@ public class AddReminder extends AppCompatActivity {
 
             } else {
 
+                closeKeyboard();
+
                 dawka.setVisibility(View.GONE);
                 spinnerNazwaLeku.setVisibility(View.GONE);
                 spinner.setVisibility(View.GONE);
@@ -842,6 +855,7 @@ public class AddReminder extends AppCompatActivity {
             cl.moveToFirst();
             Double iloscTabletek = Double.valueOf(cl.getString(2));
             Double jakaDawkaTabletki = jakaDawka;
+            cl.close();
 
             if ((iloscTabletek - jakaDawkaTabletki) >= 0) {
 
@@ -861,6 +875,7 @@ public class AddReminder extends AppCompatActivity {
                             idd = Integer.parseInt(cx.getString(0));
                             idd++;
                         }
+                        cx.close();
 
                         myDb.insert_PRZYPOMNIENIE(
                                 idd,
@@ -917,6 +932,7 @@ public class AddReminder extends AppCompatActivity {
                                     idd = Integer.parseInt(cx.getString(0));
                                     idd++;
                                 }
+                                cx.close();
 
                                 myDb.insert_PRZYPOMNIENIE(
                                         idd,
@@ -950,6 +966,7 @@ public class AddReminder extends AppCompatActivity {
                                     idd = Integer.parseInt(cx.getString(0));
                                     idd++;
                                 }
+                                cx.close();
 
                                 myDb.insert_PRZYPOMNIENIE(
                                         idd,
@@ -1056,6 +1073,7 @@ public class AddReminder extends AppCompatActivity {
                                 idd = Integer.parseInt(cx.getString(0));
                                 idd++;
                             }
+                            cx.close();
 
                             if (i.equals(ileRazyDziennie)) {
                                 if (i.equals(czyUsunacWszystkieDni)) {
@@ -1126,6 +1144,7 @@ public class AddReminder extends AppCompatActivity {
         Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
         c1.moveToFirst();
         id = Integer.parseInt(c1.getString(0));
+        c1.close();
 
         Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
 
@@ -1167,11 +1186,12 @@ public class AddReminder extends AppCompatActivity {
             Cursor clr = myDb.getID_LEK(nazwaLeku);
             clr.moveToFirst();
             Integer id_l = Integer.parseInt(clr.getString(0));
+            clr.close();
 
             Cursor clrr = myDb.getNumber_LEK(id_l);
             clrr.moveToFirst();
-
             String ilosc = clrr.getString(0);
+            clrr.close();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(AddReminder.this, R.style.AlertDialog);
             builder.setTitle("Aktualizacja ilości");

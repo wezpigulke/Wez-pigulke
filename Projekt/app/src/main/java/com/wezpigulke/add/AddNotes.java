@@ -60,6 +60,7 @@ public class AddNotes extends AppCompatActivity {
         Cursor res = myDb.getAllName_UZYTKOWNICY();
         res.moveToFirst();
         uzytkownik = res.getString(0);
+        res.close();
 
         loadSpinnerData();
 

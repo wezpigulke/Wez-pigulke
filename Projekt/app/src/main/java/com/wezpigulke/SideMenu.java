@@ -40,9 +40,6 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
 
         DatabaseHelper myDb = new DatabaseHelper(this);
 
-        Cursor res = myDb.getAllName_UZYTKOWNICY();
-        res.moveToFirst();
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -64,6 +61,7 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
         } else displaySelectedScreen(R.id.today);
         navigationView.setNavigationItemSelectedListener(this);
 
+        cr.close();
     }
 
     @Override

@@ -1,23 +1,23 @@
-package com.wezpigulke.list_adapter;
+package com.wezpigulke.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wezpigulke.classes.Profiles;
 import com.wezpigulke.R;
-import com.wezpigulke.classes.Doctor;
 
 import java.util.List;
 
-public class DoctorListAdapter extends BaseAdapter {
-
+public class ProfilesListAdapter extends BaseAdapter {
     private Context mContext;
-    private List<Doctor> results;
+    private List<Profiles> results;
 
-    public DoctorListAdapter(Context mContext, List<Doctor> results) {
+    public ProfilesListAdapter(Context mContext, List<Profiles> results) {
         this.mContext = mContext;
         this.results = results;
     }
@@ -40,15 +40,15 @@ public class DoctorListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.doctor_listview, null);
+        @SuppressLint("ViewHolder") View v = View.inflate(mContext, R.layout.profile_listview, null);
 
-        TextView doctorName = v.findViewById(R.id.medicineReminder);
-        TextView specializationDoctor = v.findViewById(R.id.dateVisit);
-        TextView address = v.findViewById(R.id.addressVisit);
+        TextView profileName = v.findViewById(R.id.profileReminder);
+        ImageView profileImage = v.findViewById(R.id.imageView5);
 
-        doctorName.setText(results.get(position).getName());
-        specializationDoctor.setText(results.get(position).getSpecialization());
-        address.setText(results.get(position).getAddress());
+        profileName.setText(results.get(position).getProfile());
+
+        if(results.get(position).getPicture()==1) profileImage.setImageResource(R.drawable.profilee);
+        else profileImage.setImageResource(R.drawable.profileee);
 
         v.setTag(results.get(position).getId());
 

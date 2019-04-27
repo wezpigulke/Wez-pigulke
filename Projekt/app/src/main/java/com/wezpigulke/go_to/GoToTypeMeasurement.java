@@ -12,11 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.classes.MeasurementType;
-import com.wezpigulke.list_adapter.MeasurementTypeListAdapter;
+import com.wezpigulke.adapters.MeasurementTypeListAdapter;
 import com.wezpigulke.R;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 import com.wezpigulke.add.AddTypeMeasurement;
@@ -93,6 +92,7 @@ public class GoToTypeMeasurement extends Fragment {
                 results.add(new MeasurementType(c.getInt(0), c.getString(1)));
             }
         }
+        c.close();
 
         MeasurementTypeListAdapter adapter = new MeasurementTypeListAdapter(getActivity(), results);
         listView.setAdapter(adapter);
@@ -111,6 +111,7 @@ public class GoToTypeMeasurement extends Fragment {
                     myDb.removeType_POMIARY(cp.getString(0));
                     myDb.remove_TYP_POMIAR(id);
                     aktualizujBaze();
+                    cp.close();
 
                 })
                 .setNegativeButton("Nie", (dialog, which) -> dialog.cancel());

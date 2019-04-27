@@ -51,6 +51,7 @@ public class GoToWelcome extends AppCompatActivity {
         Cursor cs = myDb.getAllData_STATYSTYKI();
 
         if (cs.getCount() == 0) myDb.insert_STATYSTYKI(0, 0, 0);
+        cs.close();
 
         facetObr = findViewById(R.id.imageView10);
         kobietaObr = findViewById(R.id.imageView11);
@@ -73,6 +74,8 @@ public class GoToWelcome extends AppCompatActivity {
             Intent cel = new Intent(this, SideMenu.class);
             startActivity(cel);
         }
+
+        res.close();
 
         facetObr.setOnClickListener(v -> {
             Drawable highlight = ContextCompat.getDrawable(getApplicationContext(), R.drawable.highlight);

@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.classes.Medicine;
-import com.wezpigulke.list_adapter.MedicineListAdapter;
+import com.wezpigulke.adapters.MedicineListAdapter;
 import com.wezpigulke.other.DecimalDigitsInputFilter;
 import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.R;

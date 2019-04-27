@@ -1,7 +1,6 @@
 package com.wezpigulke.go_to;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -17,11 +16,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.classes.Notes;
-import com.wezpigulke.list_adapter.NotesListAdapter;
+import com.wezpigulke.adapters.NotesListAdapter;
 import com.wezpigulke.R;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 import com.wezpigulke.add.AddNotes;
@@ -90,6 +88,7 @@ public class GoToNotes extends Fragment {
                 spinner.setAdapter(dataAdapter);
             }
         }
+        cxz.close();
 
     }
 
@@ -126,6 +125,7 @@ public class GoToNotes extends Fragment {
             Cursor c = myDb.getNotes_NOTATKI(idd);
             c.moveToFirst();
             notatka = c.getString(0);
+            c.close();
             dialogShowNotes();
 
         });

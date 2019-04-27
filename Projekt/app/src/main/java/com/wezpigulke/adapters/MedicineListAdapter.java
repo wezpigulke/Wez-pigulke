@@ -1,4 +1,4 @@
-package com.wezpigulke.list_adapter;
+package com.wezpigulke.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

@@ -22,7 +22,7 @@ import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.classes.Profiles;
-import com.wezpigulke.list_adapter.ProfilesListAdapter;
+import com.wezpigulke.adapters.ProfilesListAdapter;
 import com.wezpigulke.R;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 import com.wezpigulke.add.AddProfile;
