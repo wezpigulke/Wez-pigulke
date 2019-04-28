@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp"
+    android:background="#FFFFFF"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/profileReminderWidget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="20dp"
+        android:text="Nazwa profilu" />
+
+    <TextView
+        android:id="@+id/medicineReminderWidget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profileReminderWidget"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="00dp"
+        android:layout_marginEnd="20dp"
+        android:text="Nazwa tabletki"
+        android:textColor="#00a7f5"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/dateVisitWidget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/medicineReminderWidget"
+        android:layout_alignLeft="@+id/profileReminderWidget"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="20dp"
+        android:text="Godzina"
+        android:textColor="#f92a3f"
+        android:textSize="18dp" />
+
+</RelativeLayout>
