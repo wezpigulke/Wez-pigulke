@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -21,6 +22,14 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onCreate() {
+        Log.d("WidgetAdapter", "onCreate()");
+    }
+
+    @Override
+    public void onDataSetChanged() {
+
+        Log.d("WidgetAdapter", "onDataSetChanged()");
+
         DatabaseHelper myDb = new DatabaseHelper(context);
         Cursor cursor = myDb.getAllData_NOTYFIKACJA();
         todayArrayList = new ArrayList<>();
@@ -30,11 +39,6 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
                 todayArrayList.add(new Today(cursor.getInt(0), cursor.getString(1) + " (Dawka: " + cursor.getString(2) + ")", "Godzina: " + cursor.getString(3), cursor.getString(4)));
             }
         }
-    }
-
-    @Override
-    public void onDataSetChanged() {
-
     }
 
     @Override
@@ -49,6 +53,9 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public RemoteViews getViewAt(int position) {
+
+        Log.d("WidgetAdapter", "getViewAt()");
+
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.list_item);
         remoteViews.setTextViewText(R.id.profileReminderWidget, todayArrayList.get(position).getProfile());
         remoteViews.setTextViewText(R.id.medicineReminderWidget, todayArrayList.get(position).getMedicine());
