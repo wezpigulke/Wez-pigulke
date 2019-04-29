@@ -13,9 +13,9 @@
 
     <Button
         android:id="@+id/buttonAkt"
-        android:layout_width="64dp"
-        android:layout_height="37dp"
-        android:layout_marginLeft="200dp"
-        android:text="Akt" />
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="330dp"
+        android:background="@drawable/update" />
 
 </FrameLayout>

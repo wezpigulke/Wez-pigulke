@@ -17,7 +17,7 @@ public class MeasurementType {
         this.id = id;
     }
 
-    public String getProfile() {
+    public String getName() {
         return name;
     }
 

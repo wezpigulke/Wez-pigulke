@@ -3,6 +3,7 @@ package com.wezpigulke.notification;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -304,6 +305,8 @@ public class NotificationReceiver extends BroadcastReceiver {
                         no.putExtra("rand_val", rand_val);
                         PendingIntent noIntent = PendingIntent.getBroadcast(context, rand_val - 2, no, PendingIntent.FLAG_UPDATE_CURRENT);
 
+                        initChannels(context);
+
                         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default");
                         builder.setContentIntent(pendingIntent);
                         builder.setSmallIcon(R.drawable.logo);
@@ -449,6 +452,8 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                             alarmSound = Uri.parse("android.resource://com.wezpigulke/" + R.raw.alarm1);
 
+                            initChannels(context);
+
                             builder = new NotificationCompat.Builder(context, "default")
                                     .setContentIntent(pendingIntent)
                                     .setSmallIcon(R.drawable.logo)
@@ -574,6 +579,8 @@ public class NotificationReceiver extends BroadcastReceiver {
                         break;
                 }
 
+                initChannels(context);
+
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default")
                         .setContentIntent(pendingIntent)
                         .setSmallIcon(R.drawable.logo)
@@ -590,13 +597,25 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                 notificationManager.notify(rand_val, notification);
 
-                myDb.remove_WIZYTY(id_v);
-
             }
 
         }
 
     }
+
+    public void initChannels(Context context) {
+        if (Build.VERSION.SDK_INT < 26) {
+            return;
+        }
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannel channel = new NotificationChannel("default",
+                "Weź pigułkę",
+                NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription("Powiadomienie");
+        notificationManager.createNotificationChannel(channel);
+    }
+
 }
 
 

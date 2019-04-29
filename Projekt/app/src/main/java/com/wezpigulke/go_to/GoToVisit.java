@@ -29,8 +29,12 @@ import com.wezpigulke.classes.Visit;
 import com.wezpigulke.adapters.VisitListAdapter;
 import com.wezpigulke.add.AddVisit;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class GoToVisit extends Fragment {
@@ -155,12 +159,45 @@ public class GoToVisit extends Fragment {
         myDb = new DatabaseHelper(getActivity());
         Cursor c;
 
+        String godzina, data;
+
         if (uzytkownik.equals("Wszyscy")) c = myDb.getAllData_WIZYTY();
         else c = myDb.getUserData_WIZYTY(uzytkownik);
 
+        String dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
+
+        Date firstDate = null;
+        Date secondDate = null;
+
         if (c.getCount() != 0) {
             while (c.moveToNext()) {
-                results.add(new Visit(c.getInt(0), c.getString(5), c.getString(3), c.getString(4), c.getString(1) + " | " + c.getString(2)));
+
+                godzina = c.getString(1);
+                data = c.getString(2);
+
+                try {
+                    firstDate = sdf.parse(dzisiejszaData);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    secondDate = sdf.parse(godzina + " " + data);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                long diff = 0;
+
+                if (secondDate != null && firstDate != null) {
+                    diff = secondDate.getTime() - firstDate.getTime();
+                }
+
+                if(diff<0) {
+                    myDb.remove_WIZYTY(c.getInt(0));
+                } else {
+                    results.add(new Visit(c.getInt(0), c.getString(5), c.getString(3), c.getString(4), c.getString(1) + " | " + c.getString(2)));
+                }
             }
         }
 

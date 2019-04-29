@@ -183,7 +183,7 @@ public class GoToToday extends Fragment {
             long diffInMillis = Objects.requireNonNull(secondTime).getTime() - Objects.requireNonNull(firstTime).getTime();
 
             if (diffDays == 0 && diffInMillis >= 0) {
-                results.add(new Today(c.getInt(0), c.getString(1) + " (Dawka: " + c.getString(2) + ")", "Godzina: " + c.getString(3), c.getString(4)));
+                results.add(new Today(c.getInt(0), c.getString(1) + " (Dawka: " + c.getString(2) + ")", "Godzina: " + c.getString(3), c.getString(5)));
             }
         }
 
