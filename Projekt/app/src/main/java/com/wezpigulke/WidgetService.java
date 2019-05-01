@@ -1,6 +1,5 @@
 package com.wezpigulke;
 
-
 import android.content.Intent;
 import android.widget.RemoteViewsService;
 

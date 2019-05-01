@@ -182,6 +182,7 @@ public class GoToMedicine extends Fragment {
                 results.add(new Medicine(c.getInt(0), c.getString(1), c.getString(2)));
             }
         }
+        c.close();
 
         adapter = new MedicineListAdapter(getActivity(), results);
         lv.setAdapter(adapter);

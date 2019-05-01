@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,6 +92,8 @@ public class GoToReminder extends Fragment {
             }
         }
 
+        allName_uzytkownicy.close();
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -154,9 +157,12 @@ public class GoToReminder extends Fragment {
 
         if (c.getCount() != 0) {
             while (c.moveToNext()) {
-                if (Integer.parseInt(c.getString(5)) > 0) results.add(new Reminder(c.getInt(0), c.getString(3) + " (Dawka: " + c.getString(4) + ")", c.getString(8), "Pozostało dni: " + c.getString(5), c.getString(6)));
+                if (Integer.parseInt(c.getString(5)) >= 0) {
+                    results.add(new Reminder(c.getInt(0), c.getString(3) + " (Dawka: " + c.getString(4) + ")", c.getString(8), "Pozostało dni: " + c.getString(5), c.getString(6)));
+                }
             }
         }
+        c.close();
 
         adapter = new ReminderListAdapter(getActivity(), results);
         lv.setAdapter(adapter);
@@ -194,14 +200,21 @@ public class GoToReminder extends Fragment {
                 assert alarmManager != null;
                 alarmManager.cancel(pendingIntent);
 
-                Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
+                Log.d("GoToReminder", "Anulacja:" + crand.getInt(0));
 
                 myDb.remove_NOTYFIKACJA(dbIDNotyfikacja.getInt(0));
+
+                Log.d("GoToReminder", "Usunięcie notyfikacji o id:" + crand.getInt(0));
+
+                crand.close();
 
             }
         }
 
+        dbIDNotyfikacja.close();
+
         myDb.remove_PRZYPOMNIENIE(idd);
+        Log.d("GoToReminder", "Usunięcie przypomnienia o id: " + idd);
 
         aktualizujBaze();
 

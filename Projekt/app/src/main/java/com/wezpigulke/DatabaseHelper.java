@@ -860,8 +860,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         statement.bindLong(10, dzwiek);
         statement.bindLong(11, wibracja);
 
-        Log.d("OCOCHO", statement.toString());
-
         statement.executeInsert();
     }
 
@@ -906,6 +904,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void remove_PRZYPOMNIENIE(Integer id) {
+
         SQLiteDatabase db = this.getWritableDatabase();
 
         try {

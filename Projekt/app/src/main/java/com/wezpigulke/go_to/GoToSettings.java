@@ -126,8 +126,6 @@ public class GoToSettings extends Fragment {
                             cancelAlarm(crand.getInt(0));
                             cancelAlarm(crand.getInt(0)-1);
 
-                            Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
-
                         }
                     }
 

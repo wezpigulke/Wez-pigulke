@@ -132,7 +132,6 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
 
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         displaySelectedScreen(item.getItemId());

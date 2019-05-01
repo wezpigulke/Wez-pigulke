@@ -6,11 +6,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
+import static android.content.Context.ALARM_SERVICE;
 
 public class GoToToday extends Fragment {
 
@@ -259,7 +263,10 @@ public class GoToToday extends Fragment {
         crand.moveToFirst();
 
         if (dni > 1) myDb.updateDate_NOTYFIKACJA(id, dataJutrzejsza);
-        else myDb.remove_NOTYFIKACJA(id);
+        else {
+            myDb.remove_NOTYFIKACJA(id);
+            Log.d("NotificationReceiver", "Usunięcie notyfikacji o id:" + id);
+        }
 
         AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
         Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
@@ -268,8 +275,6 @@ public class GoToToday extends Fragment {
                 PendingIntent.FLAG_UPDATE_CURRENT);
         assert alarmManager != null;
         alarmManager.cancel(pendingIntent);
-
-        Toast.makeText(getContext(), "Anulacja: " + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
 
         Cursor policz = myDb.getCount_NOTYFIKACJA(id_p, dzisiejszaData);
         int ile = 0;
@@ -292,15 +297,18 @@ public class GoToToday extends Fragment {
                     getContext(), crand.getInt(0), intx,
                     PendingIntent.FLAG_UPDATE_CURRENT);
 
+
             alarmManager = (AlarmManager) Objects.requireNonNull(getContext()).getSystemService(Context.ALARM_SERVICE);
             assert alarmManager != null;
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cz.getTimeInMillis(), AlarmManager.INTERVAL_DAY * typ, pendingIntent);
 
-            Toast.makeText(getContext(), "Dodanie: " + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
+            if(Build.VERSION.SDK_INT < 23){
+                if(Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cz.getTimeInMillis(), pendingIntent);
+                else alarmManager.set(AlarmManager.RTC, cz.getTimeInMillis(), pendingIntent);
+            } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cz.getTimeInMillis(), pendingIntent);
 
             if (ile == 0) myDb.updateDays_PRZYPOMNIENIE(id_p, dni - 1);
 
-        } else if (ile == 0) myDb.remove_PRZYPOMNIENIE(id_p);
+        }
 
         crand.close();
         aktualizujBaze();

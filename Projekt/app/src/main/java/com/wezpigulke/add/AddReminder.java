@@ -1032,12 +1032,12 @@ public class AddReminder extends AppCompatActivity {
 
                             if (czyDwucyfrowa.equals(":")) {
                                 hour = Integer.parseInt(String.valueOf(godzinaPrzypomnienia.charAt(0)));
-                                minutes = Integer.parseInt(String.valueOf(godzinaPrzypomnienia.charAt(2))
+                                minutes = Integer.parseInt(godzinaPrzypomnienia.charAt(2)
                                         + String.valueOf(godzinaPrzypomnienia.charAt(3)));
                             } else {
-                                hour = Integer.parseInt(String.valueOf(godzinaPrzypomnienia.charAt(0))
+                                hour = Integer.parseInt(godzinaPrzypomnienia.charAt(0)
                                         + String.valueOf(godzinaPrzypomnienia.charAt(1)));
-                                minutes = Integer.parseInt(String.valueOf(godzinaPrzypomnienia.charAt(3))
+                                minutes = Integer.parseInt(godzinaPrzypomnienia.charAt(3)
                                         + String.valueOf(godzinaPrzypomnienia.charAt(4)));
                             }
 
@@ -1101,7 +1101,7 @@ public class AddReminder extends AppCompatActivity {
                                         iloscDni,
                                         uzytkownik,
                                         1,
-                                        String.valueOf(ileRazyDziennie) + " razy dziennie: " + wszystkieGodziny,
+                                        ileRazyDziennie + " razy dziennie: " + wszystkieGodziny,
                                         dzwiek,
                                         czyWibracja
                                 );
@@ -1116,6 +1116,8 @@ public class AddReminder extends AppCompatActivity {
                                         uzytkownik + " | " + godzinaPrzypomnienia + " | Weź: " + nazwaLeku + " (Dawka: " + jakaDawka + ")",
                                         iloscDni-1,
                                         cal);
+
+                                Log.d("AddReminder", "Dodanie alarmu dla: " + godzinaPrzypomnienia);
 
                             }
 
@@ -1141,10 +1143,13 @@ public class AddReminder extends AppCompatActivity {
                 rand_val
         );
 
+
         Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
         c1.moveToFirst();
         id = Integer.parseInt(c1.getString(0));
         c1.close();
+
+        Log.d("AddReminder", "Dodanie notyfikacji o id: " + id);
 
         Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
 
@@ -1171,7 +1176,6 @@ public class AddReminder extends AppCompatActivity {
             else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
         } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
 
-        Toast.makeText(getApplicationContext(), "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16), Toast.LENGTH_LONG).show();
         Log.d("========ALARM==========", "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16));
 
     }

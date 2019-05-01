@@ -173,6 +173,7 @@ public class GoToNotes extends Fragment {
                 results.add(new Notes(c.getInt(0), c.getString(1), c.getString(3), c.getString(4)));
             }
         }
+        c.close();
 
         adapter = new NotesListAdapter(getActivity(), results);
         lv.setAdapter(adapter);

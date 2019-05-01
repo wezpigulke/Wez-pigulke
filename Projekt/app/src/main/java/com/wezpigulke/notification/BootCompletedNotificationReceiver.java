@@ -27,8 +27,6 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Toast.makeText(context, "DODAJE ALARMY PO RESTARCIE", Toast.LENGTH_LONG).show();
-
         myDb = new DatabaseHelper(context);
 
         Cursor c = myDb.getAllData_NOTYFIKACJA();
@@ -113,8 +111,6 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                         assert alarmManagerr != null;
                         alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
 
-                        Toast.makeText(context, "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
-
                     }
 
                     rand_val--;
@@ -131,8 +127,6 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                     AlarmManager alarmManagerr = (AlarmManager) context.getSystemService(ALARM_SERVICE);
                     assert alarmManagerr != null;
                     alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
-
-                    Toast.makeText(context, "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
 
                 }
 
@@ -235,7 +229,9 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                     Cursor cds = myDb.getCountType_NOTYFIKACJA(id_p);
                     cds.moveToFirst();
 
-                    if (cds.getInt(0) == 0) myDb.remove_PRZYPOMNIENIE(id_p);
+                    if (cds.getInt(0) == 0) {
+                        myDb.remove_PRZYPOMNIENIE(id_p);
+                    }
                     else if (cds.getInt(0) == 1) myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
                     else {
                         Cursor cee = myDb.getCount_NOTYFIKACJA(id_p, dataPrzyszla);
@@ -289,8 +285,6 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                         if (Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
                         else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
                     } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
-
-                    Toast.makeText(context, "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0, 16), Toast.LENGTH_LONG).show();
 
                 }
 

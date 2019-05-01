@@ -20,6 +20,9 @@ import java.util.Objects;
 public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
     private Context context;
     private ArrayList<Today> todayArrayList;
+    private long diff;
+    private long diffDays;
+    private long diffInMillis;
 
     WidgetAdapter(Context context) {
         this.context = context;
@@ -39,47 +42,52 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
         Cursor cursor = myDb.getAllData_NOTYFIKACJA();
         todayArrayList = new ArrayList<>();
 
+        if(cursor.getCount()!=0) {
+            while(cursor.moveToNext()) {
+
+                countDiff(cursor.getString(3), cursor.getString(4));
+
+                if (diffDays == 0 && diffInMillis >= 0) {
+                    todayArrayList.add(new Today(cursor.getInt(0), cursor.getString(1) + " (Dawka: " + cursor.getString(2) + ")", "Godzina: " + cursor.getString(3), cursor.getString(5)));
+                }
+            }
+        } else {
+            todayArrayList.add(new Today(-1, "Brak przypomnień w dniu dzisiejszym", "", ""));
+        }
+        cursor.close();
+    }
+
+    private void countDiff(String time, String date) {
+
         String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         String dzisiejszyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         SimpleDateFormat tdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
-        if(cursor.getCount()!=0) {
-            while(cursor.moveToNext()) {
+        Date firstDate = null;
+        Date secondDate = null;
 
-                Date firstDate = null;
-                Date secondDate = null;
+        Date firstTime = null;
+        Date secondTime = null;
 
-                Date firstTime = null;
-                Date secondTime = null;
-
-                try {
-                    firstDate = sdf.parse(dzisiejszaData);
-                    firstTime = tdf.parse(dzisiejszyCzas);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    secondDate = sdf.parse(cursor.getString(4));
-                    secondTime = tdf.parse(cursor.getString(3));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                long diff = Objects.requireNonNull(secondDate).getTime() - Objects.requireNonNull(firstDate).getTime();
-                long diffDays = diff / (24 * 60 * 60 * 1000);
-                long diffInMillis = Objects.requireNonNull(secondTime).getTime() - Objects.requireNonNull(firstTime).getTime();
-
-                if (diffDays == 0 && diffInMillis >= 0) {
-                    todayArrayList.add(new Today(cursor.getInt(0), cursor.getString(1) + " (Dawka: " + cursor.getString(2) + ")", "Godzina: " + cursor.getString(3), cursor.getString(5)));
-                }
-
-            }
-        } else {
-            todayArrayList.add(new Today(-1, "Brak przypomnień w dniu dzisiejszym", "", ""));
+        try {
+            firstDate = sdf.parse(dzisiejszaData);
+            firstTime = tdf.parse(dzisiejszyCzas);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        cursor.close();
+        try {
+            secondDate = sdf.parse(date);
+            secondTime = tdf.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        diff = Objects.requireNonNull(secondDate).getTime() - Objects.requireNonNull(firstDate).getTime();
+        diffDays = diff / (24 * 60 * 60 * 1000);
+        diffInMillis = Objects.requireNonNull(secondTime).getTime() - Objects.requireNonNull(firstTime).getTime();
+
     }
 
     @Override

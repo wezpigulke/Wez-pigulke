@@ -153,9 +153,6 @@ public class GoToProfiles extends Fragment {
                                         assert alarmManager != null;
                                         alarmManager.cancel(pendingIntent);
 
-                                        Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
-
-
                                     }
                                 }
                             }
@@ -182,9 +179,6 @@ public class GoToProfiles extends Fragment {
                                         getActivity(), crand.getInt(0)-1, myIntent,
                                         PendingIntent.FLAG_UPDATE_CURRENT);
                                 alarmManager.cancel(pendingIntent);
-
-                                Toast.makeText(getContext(), "Anulacja:" + String.valueOf(crand.getInt(0)), Toast.LENGTH_LONG).show();
-
 
                             }
                         }

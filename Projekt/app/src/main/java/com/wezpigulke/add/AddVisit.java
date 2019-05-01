@@ -234,8 +234,6 @@ public class AddVisit extends AppCompatActivity {
         assert alarmManagerr != null;
         alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
 
-        Toast.makeText(getApplicationContext(), "Dodanie: " + rand_val, Toast.LENGTH_LONG).show();
-
     }
 
     private Intent putExtraToIntent(Integer id, Integer rand_val, String tresc) {
