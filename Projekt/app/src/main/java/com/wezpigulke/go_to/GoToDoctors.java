@@ -73,7 +73,8 @@ public class GoToDoctors extends Fragment {
             c.moveToFirst();
             nrtel = c.getString(3);
             adres = c.getString(4);
-            if(!nrtel.equals("0")) dialogCallOrNavigate();
+            if(nrtel.equals("0")) dialogCallOrNavigate(false);
+            else dialogCallOrNavigate(true);
             c.close();
 
         });
@@ -140,13 +141,13 @@ public class GoToDoctors extends Fragment {
 
     }
 
-    public void dialogCallOrNavigate() {
+    public void dialogCallOrNavigate(boolean showIt) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AlertDialog);
 
-        builder.setMessage("Co chcesz zrobić?").setCancelable(true)
-                .setNegativeButton("Zadzwoń", (dialog, which) -> dialContactPhone(nrtel))
-                .setPositiveButton("Nawiguj", (dialog, which) -> openMap());
+        builder.setMessage("Co chcesz zrobić?").setCancelable(true);
+        if(showIt) builder.setNegativeButton("Zadzwoń", (dialog, which) -> dialContactPhone(nrtel));
+        builder.setPositiveButton("Nawiguj", (dialog, which) -> openMap());
 
         builder.show();
 

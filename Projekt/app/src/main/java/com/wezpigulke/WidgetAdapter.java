@@ -20,7 +20,6 @@ import java.util.Objects;
 public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
     private Context context;
     private ArrayList<Today> todayArrayList;
-    private long diff;
     private long diffDays;
     private long diffInMillis;
 
@@ -84,7 +83,7 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
             e.printStackTrace();
         }
 
-        diff = Objects.requireNonNull(secondDate).getTime() - Objects.requireNonNull(firstDate).getTime();
+        long diff = Objects.requireNonNull(secondDate).getTime() - Objects.requireNonNull(firstDate).getTime();
         diffDays = diff / (24 * 60 * 60 * 1000);
         diffInMillis = Objects.requireNonNull(secondTime).getTime() - Objects.requireNonNull(firstTime).getTime();
 

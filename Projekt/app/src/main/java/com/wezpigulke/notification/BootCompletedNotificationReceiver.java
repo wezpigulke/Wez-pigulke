@@ -27,6 +27,8 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        Toast.makeText(context, "Dodaje alarmy po restarcie", Toast.LENGTH_LONG).show();
+
         myDb = new DatabaseHelper(context);
 
         Cursor c = myDb.getAllData_NOTYFIKACJA();
@@ -109,7 +111,10 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                         PendingIntent pendingIntentt = PendingIntent.getBroadcast(context, rand_val, intxz, PendingIntent.FLAG_UPDATE_CURRENT);
                         AlarmManager alarmManagerr = (AlarmManager) context.getSystemService(ALARM_SERVICE);
                         assert alarmManagerr != null;
-                        alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
+                        if (Build.VERSION.SDK_INT < 23) {
+                            if (Build.VERSION.SDK_INT >= 19) alarmManagerr.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
+                            else alarmManagerr.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
+                        } else alarmManagerr.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
 
                     }
 
@@ -126,7 +131,11 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                     PendingIntent pendingIntentt = PendingIntent.getBroadcast(context, rand_val, intxz, PendingIntent.FLAG_UPDATE_CURRENT);
                     AlarmManager alarmManagerr = (AlarmManager) context.getSystemService(ALARM_SERVICE);
                     assert alarmManagerr != null;
-                    alarmManagerr.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntentt);
+
+                    if (Build.VERSION.SDK_INT < 23) {
+                        if (Build.VERSION.SDK_INT >= 19) alarmManagerr.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
+                        else alarmManagerr.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
+                    } else alarmManagerr.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
 
                 }
 
@@ -280,6 +289,8 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(context, rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
                     AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
                     assert alarmManager != null;
+
+                    Toast.makeText(context, "Dodany alarm: " + id_n + " godzina: " + godzina + " " + data, Toast.LENGTH_LONG).show();
 
                     if (Build.VERSION.SDK_INT < 23) {
                         if (Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);

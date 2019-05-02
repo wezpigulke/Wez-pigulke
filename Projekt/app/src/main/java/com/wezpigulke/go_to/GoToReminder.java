@@ -151,6 +151,7 @@ public class GoToReminder extends Fragment {
 
         myDb = new DatabaseHelper(getActivity());
         Cursor c;
+        Cursor c_ch;
 
         if (uzytkownik.equals("Wszyscy")) c = myDb.getAllData_PRZYPOMNIENIE();
         else c = myDb.getUserData_PRZYPOMNIENIE(uzytkownik);
@@ -158,8 +159,14 @@ public class GoToReminder extends Fragment {
         if (c.getCount() != 0) {
             while (c.moveToNext()) {
                 if (Integer.parseInt(c.getString(5)) >= 0) {
-                    results.add(new Reminder(c.getInt(0), c.getString(3) + " (Dawka: " + c.getString(4) + ")", c.getString(8), "Pozostało dni: " + c.getString(5), c.getString(6)));
-                }
+
+                    c_ch = myDb.getCountType_NOTYFIKACJA(c.getInt(0));
+                    c_ch.moveToFirst();
+
+                    if(c_ch.getInt(0)!=0) results.add(new Reminder(c.getInt(0), c.getString(3) + " (Dawka: " + c.getString(4) + ")", c.getString(8), "Pozostało dni: " + c.getString(5), c.getString(6)));
+                    else myDb.remove_PRZYPOMNIENIE(c.getInt(0));
+
+                } else myDb.remove_PRZYPOMNIENIE(c.getInt(0));
             }
         }
         c.close();

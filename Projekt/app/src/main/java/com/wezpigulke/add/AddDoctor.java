@@ -39,7 +39,7 @@ public class AddDoctor extends AppCompatActivity {
         phone_number = findViewById(R.id.editText8);
 
         add.setOnClickListener(v -> {
-            if (name.getText().length() > 0 && specialization.getText().length() > 0) {
+            if (name.getText().length() > 0 && specialization.getText().length() > 0 && (phone_number.getText().length()==0 || phone_number.getText().length()==9)) {
                 String numerTelefonu = phone_number.getText().toString();
                 if(numerTelefonu.length()==0) numerTelefonu="0";
 
@@ -53,6 +53,7 @@ public class AddDoctor extends AppCompatActivity {
                 onBackPressed();
             } else if (name.getText().length() == 0) openDialog("Wpisz imie i nazwisko lekarza");
             else if (specialization.getText().length() == 0) openDialog("Wpisz specjalizacje lekarza");
+            else if (phone_number.getText().length() < 9 && phone_number.length() > 0) openDialog("Wpisz prawidłowy numer telefonu (9 cyfr)");
         });
     }
 
@@ -70,12 +71,9 @@ public class AddDoctor extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                onBackPressed();
-
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

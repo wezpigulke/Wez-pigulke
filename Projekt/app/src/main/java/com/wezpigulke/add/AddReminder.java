@@ -282,8 +282,7 @@ public class AddReminder extends AppCompatActivity {
     }
 
     public void goBack() {
-        super.onBackPressed();
-        finish();
+        onBackPressed();
     }
 
     @Override
@@ -341,12 +340,9 @@ public class AddReminder extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                goBack();
-
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            goBack();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -684,6 +680,7 @@ public class AddReminder extends AppCompatActivity {
     private void setDalejOnClickListener() {
         dalej.setOnClickListener(v -> {
 
+            closeKeyboard();
             stopPlaying();
 
             if (spinnerNazwaLeku.getSelectedItem().toString().equals("Wybierz lek") || spinnerNazwaLeku.getSelectedItem().toString().equals("Dodaj nowy lek")) {
@@ -865,7 +862,11 @@ public class AddReminder extends AppCompatActivity {
                     String godzinaPrzypomnienia = godzinaTabletka.getText().toString();
                     calculateDiff(godzinaPrzypomnienia, dataPrzypomnienia);
 
-                    if (diffDays == 0 && diffInMillis < 0) openDialog("Godzina dzisiejszego powiadomienia minęła, wybierz inną godzinę lub ustaw przyszłą datę");
+                    if (diffDays == 0 && diffInMillis < 0) {
+                        openDialog("Godzina dzisiejszego powiadomienia minęła, wybierz inną godzinę lub ustaw przyszłą datę");
+                        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+                        godzinaTabletka.setText(time);
+                    }
                     else {
 
                         Integer idd = 0;
@@ -899,7 +900,7 @@ public class AddReminder extends AppCompatActivity {
                                 0,
                                 cal);
 
-                        goBack();
+                        super.onBackPressed();
 
                     }
 
@@ -992,7 +993,7 @@ public class AddReminder extends AppCompatActivity {
 
                             }
 
-                            goBack();
+                            super.onBackPressed();
 
                         }
 
@@ -1121,7 +1122,7 @@ public class AddReminder extends AppCompatActivity {
 
                             }
 
-                            goBack();
+                            super.onBackPressed();
                         }
                     } else openDialog("Wypełnij wszystkie pola");
                 }
@@ -1228,7 +1229,7 @@ public class AddReminder extends AppCompatActivity {
 
         builderw.setNegativeButton("Anuluj dodawanie", (dialogg, whichh) -> {
             dialogg.cancel();
-            goBack();
+            super.onBackPressed();
         });
 
         AlertDialog alertDialog = builderw.show();

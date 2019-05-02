@@ -90,12 +90,10 @@ public class AddProfile extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                onBackPressed();
-                closeKeyboard();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            closeKeyboard();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

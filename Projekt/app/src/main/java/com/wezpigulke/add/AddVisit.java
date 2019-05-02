@@ -18,17 +18,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.adapters.DoctorListAdapter;
+import com.wezpigulke.R;
 import com.wezpigulke.adapters.DoctorSpinnerAdapter;
 import com.wezpigulke.classes.Doctor;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.other.OpenDialog;
-import com.wezpigulke.R;
-
-import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,7 +35,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import static java.lang.Integer.MAX_VALUE;
-import static java.util.Calendar.*;
+import static java.util.Calendar.getInstance;
 
 public class AddVisit extends AppCompatActivity {
 
@@ -393,7 +389,7 @@ public class AddVisit extends AppCompatActivity {
         labelDzwiek.add("Brak");
 
         for (int i = 1; i <= 9; i++) {
-            labelDzwiek.add("Alarm nr " + String.valueOf(i));
+            labelDzwiek.add("Alarm nr " + i);
         }
         labelDzwiek.add("Dźwięk domyślny");
 
@@ -432,11 +428,9 @@ public class AddVisit extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

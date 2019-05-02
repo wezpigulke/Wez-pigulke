@@ -110,11 +110,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                 if (ct.getCount() != 0 && diff+delay < 0) {
 
-                    Log.d("NotificationReceiver", "Linia 112");
-
                         while (diff < 0) {
-
-                            Log.d("NotificationReceiver", "Linia 116");
 
                             diff += 24*60*60*100;
                             iloscDni--;
@@ -344,7 +340,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default");
                         builder.setContentIntent(pendingIntent);
-                        builder.setSmallIcon(R.drawable.logo);
+                        builder.setSmallIcon(R.mipmap.ic_launcher_round);
                         builder.setContentTitle("Weź pigułke");
                         builder.setContentText(powiadomienie);
                         builder.setAutoCancel(true);
@@ -499,7 +495,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                             builder = new NotificationCompat.Builder(context, "default")
                                     .setContentIntent(pendingIntent)
-                                    .setSmallIcon(R.drawable.logo)
+                                    .setSmallIcon(R.mipmap.ic_launcher_round)
                                     .setContentTitle("Weź pigułke")
                                     .setContentText("UWAGA | Pozostało tylko " + iloscLeku + " tabletek leku " + cl.getString(1))
                                     .setAutoCancel(true)
@@ -596,7 +592,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default")
                         .setContentIntent(pendingIntent)
-                        .setSmallIcon(R.drawable.logo)
+                        .setSmallIcon(R.mipmap.ic_launcher_round)
                         .setContentTitle("Weź pigułke")
                         .setContentText(powiadomienie)
                         .setAutoCancel(true)
@@ -651,21 +647,26 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     public void initChannels(Context context, int wybranyDzwiek) {
+
         if (Build.VERSION.SDK_INT < 26) {
             return;
         }
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
         NotificationChannel channel = new NotificationChannel("default",
                 "Weź pigułkę",
                 NotificationManager.IMPORTANCE_DEFAULT);
+
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .setUsage(AudioAttributes.USAGE_ALARM)
                 .build();
+
         if(wybranyDzwiek!=0) channel.setSound(alarmSound, audioAttributes);
         channel.setDescription("Powiadomienie");
         notificationManager.createNotificationChannel(channel);
+
     }
 
 }
