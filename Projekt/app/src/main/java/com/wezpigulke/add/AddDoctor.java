@@ -20,40 +20,49 @@ public class AddDoctor extends AppCompatActivity {
     private EditText address;
     private EditText specialization;
     private EditText phone_number;
+    private Button add;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        myDb = new DatabaseHelper(this);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_doctor);
-
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        initializeVariables();
+        addButtonListener();
 
-        Button add = findViewById(R.id.button);
+    }
 
+    private void initializeVariables() {
+        myDb = new DatabaseHelper(this);
+        add = findViewById(R.id.button);
         name = findViewById(R.id.editText5);
         address = findViewById(R.id.editText6);
         specialization = findViewById(R.id.editText7);
         phone_number = findViewById(R.id.editText8);
+    }
 
+    private void addButtonListener() {
         add.setOnClickListener(v -> {
+
             if (name.getText().length() > 0 && specialization.getText().length() > 0 && (phone_number.getText().length()==0 || phone_number.getText().length()==9)) {
+
                 String numerTelefonu = phone_number.getText().toString();
+
                 if(numerTelefonu.length()==0) numerTelefonu="0";
 
-                    myDb.insert_DOKTORZY(
-                            name.getText().toString(),
-                            specialization.getText().toString(),
-                            Integer.valueOf(numerTelefonu),
-                            address.getText().toString()
-                    );
-
+                myDb.insert_DOKTORZY(
+                        name.getText().toString(),
+                        specialization.getText().toString(),
+                        Integer.valueOf(numerTelefonu),
+                        address.getText().toString()
+                );
                 onBackPressed();
+
             } else if (name.getText().length() == 0) openDialog("Wpisz imie i nazwisko lekarza");
             else if (specialization.getText().length() == 0) openDialog("Wpisz specjalizacje lekarza");
             else if (phone_number.getText().length() < 9 && phone_number.length() > 0) openDialog("Wpisz prawidłowy numer telefonu (9 cyfr)");
+
         });
     }
 

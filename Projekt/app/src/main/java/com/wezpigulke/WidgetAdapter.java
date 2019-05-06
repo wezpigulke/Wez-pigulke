@@ -3,7 +3,6 @@ package com.wezpigulke;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -18,10 +17,12 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
+
     private Context context;
     private ArrayList<Today> todayArrayList;
     private long diffDays;
     private long diffInMillis;
+    private Cursor cursor;
 
     WidgetAdapter(Context context) {
         this.context = context;
@@ -38,7 +39,7 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
         Log.d("WidgetAdapter", "onDataSetChanged()");
 
         DatabaseHelper myDb = new DatabaseHelper(context);
-        Cursor cursor = myDb.getAllData_NOTYFIKACJA();
+        cursor = myDb.getAllData_NOTYFIKACJA();
         todayArrayList = new ArrayList<>();
 
         if(cursor.getCount()!=0) {

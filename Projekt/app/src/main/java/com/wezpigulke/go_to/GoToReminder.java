@@ -44,6 +44,8 @@ public class GoToReminder extends Fragment {
     private ArrayList<String> label;
     private String uzytkownik;
     private Integer idd;
+    private Cursor cursor;
+    private Cursor cursorTemp;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -77,22 +79,20 @@ public class GoToReminder extends Fragment {
 
         label.clear();
 
-        Cursor allName_uzytkownicy = myDb.getAllName_UZYTKOWNICY();
+        cursor = myDb.getAllName_UZYTKOWNICY();
 
         label.add("Wszyscy");
 
-        if (allName_uzytkownicy.getCount() == 1) {
+        if (cursor.getCount() == 1) {
             spinner.setVisibility(View.GONE);
         } else {
-            while (allName_uzytkownicy.moveToNext()) {
-                label.add(allName_uzytkownicy.getString(0));
+            while (cursor.moveToNext()) {
+                label.add(cursor.getString(0));
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, label);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(dataAdapter);
             }
         }
-
-        allName_uzytkownicy.close();
 
     }
 
@@ -150,26 +150,23 @@ public class GoToReminder extends Fragment {
         lv.setAdapter(adapter);
 
         myDb = new DatabaseHelper(getActivity());
-        Cursor c;
-        Cursor c_ch;
 
-        if (uzytkownik.equals("Wszyscy")) c = myDb.getAllData_PRZYPOMNIENIE();
-        else c = myDb.getUserData_PRZYPOMNIENIE(uzytkownik);
+        if (uzytkownik.equals("Wszyscy")) cursor = myDb.getAllData_PRZYPOMNIENIE();
+        else cursor = myDb.getUserData_PRZYPOMNIENIE(uzytkownik);
 
-        if (c.getCount() != 0) {
-            while (c.moveToNext()) {
-                if (Integer.parseInt(c.getString(5)) >= 0) {
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                if (Integer.parseInt(cursor.getString(5)) >= 0) {
 
-                    c_ch = myDb.getCountType_NOTYFIKACJA(c.getInt(0));
-                    c_ch.moveToFirst();
+                    cursorTemp = myDb.getCountType_NOTYFIKACJA(cursor.getInt(0));
+                    cursorTemp.moveToFirst();
 
-                    if(c_ch.getInt(0)!=0) results.add(new Reminder(c.getInt(0), c.getString(3) + " (Dawka: " + c.getString(4) + ")", c.getString(8), "Pozostało dni: " + c.getString(5), c.getString(6)));
-                    else myDb.remove_PRZYPOMNIENIE(c.getInt(0));
+                    if(cursorTemp.getInt(0)!=0) results.add(new Reminder(cursor.getInt(0), cursor.getString(3) + " (Dawka: " + cursor.getString(4) + ")", cursor.getString(8), "Pozostało dni: " + cursor.getString(5), cursor.getString(6)));
+                    else myDb.remove_PRZYPOMNIENIE(cursor.getInt(0));
 
-                } else myDb.remove_PRZYPOMNIENIE(c.getInt(0));
+                } else myDb.remove_PRZYPOMNIENIE(cursor.getInt(0));
             }
         }
-        c.close();
 
         adapter = new ReminderListAdapter(getActivity(), results);
         lv.setAdapter(adapter);
@@ -188,37 +185,40 @@ public class GoToReminder extends Fragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        cursor.close();
+        cursorTemp.close();
+        super.onDestroy();
+    }
+
     private void usunDane() {
 
         myDb = new DatabaseHelper(getActivity());
-        Cursor dbIDNotyfikacja = myDb.getID_NOTYFIKACJA(idd);
+        cursorTemp = myDb.getID_NOTYFIKACJA(idd);
 
-        if (dbIDNotyfikacja.getCount() != 0) {
-            while (dbIDNotyfikacja.moveToNext()) {
+        if (cursorTemp.getCount() != 0) {
+            while (cursorTemp.moveToNext()) {
 
-                Cursor crand = myDb.getRand_NOTYFIKACJA(dbIDNotyfikacja.getInt(0));
-                crand.moveToFirst();
+                cursor = myDb.getRand_NOTYFIKACJA(cursorTemp.getInt(0));
+                cursor.moveToFirst();
 
                 AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
                 Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                        getActivity(), crand.getInt(0), myIntent,
+                        getActivity(), cursor.getInt(0), myIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 assert alarmManager != null;
                 alarmManager.cancel(pendingIntent);
 
-                Log.d("GoToReminder", "Anulacja:" + crand.getInt(0));
+                Log.d("========ALARM==========", "Anulacja:" + cursor.getInt(0));
 
-                myDb.remove_NOTYFIKACJA(dbIDNotyfikacja.getInt(0));
+                myDb.remove_NOTYFIKACJA(cursorTemp.getInt(0));
 
-                Log.d("GoToReminder", "Usunięcie notyfikacji o id:" + crand.getInt(0));
-
-                crand.close();
+                Log.d("GoToReminder", "Usunięcie notyfikacji o id:" + cursor.getInt(0));
 
             }
         }
-
-        dbIDNotyfikacja.close();
 
         myDb.remove_PRZYPOMNIENIE(idd);
         Log.d("GoToReminder", "Usunięcie przypomnienia o id: " + idd);

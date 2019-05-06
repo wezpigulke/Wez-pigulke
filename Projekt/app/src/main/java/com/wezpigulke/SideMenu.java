@@ -32,6 +32,8 @@ import com.wezpigulke.go_to.GoToToday;
 
 public class SideMenu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private Cursor cursor;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,19 +56,23 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
         TextView headerName = headerView.findViewById(R.id.isName);
         headerName.setText("Weź\npigułkę");
 
-        Cursor cr = myDb.getAllData_PRZYPOMNIENIE();
+        cursor = myDb.getAllData_PRZYPOMNIENIE();
 
-        if (cr.getCount() == 0) {
+        if (cursor.getCount() == 0) {
             displaySelectedScreen(R.id.reminder);
         } else displaySelectedScreen(R.id.today);
         navigationView.setNavigationItemSelectedListener(this);
-
-        cr.close();
     }
 
     @Override
     public void onBackPressed() {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        cursor.close();
+        super.onDestroy();
     }
 
     @Override

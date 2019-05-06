@@ -26,7 +26,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
@@ -50,8 +49,7 @@ import static java.util.Calendar.getInstance;
 
 public class AddReminder extends AppCompatActivity {
 
-    DatabaseHelper myDb;
-
+    private DatabaseHelper myDb;
     private TextView dataTabletka;
     private TextView godzinaTabletka;
     private String nazwaLeku;
@@ -98,6 +96,7 @@ public class AddReminder extends AppCompatActivity {
     private Long diffInMillis;
     private Calendar cal;
     private SimpleDateFormat sdf;
+    private Cursor cursor;
 
     private TextView setTime1;
     private TextView setTime2;
@@ -133,13 +132,7 @@ public class AddReminder extends AppCompatActivity {
         setContentView(R.layout.add_reminder);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        myDb = new DatabaseHelper(this);
         intializeAllVariables();
-        checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if(isChecked) czyWibracja = 1;
-            else czyWibracja = 0;
-        });
-
         setSpinnerNazwaLekuOnClickListener();
         setSpinnerIleRazyDziennieOnClickListener();
         setSpinnerOnClickListener();
@@ -154,13 +147,13 @@ public class AddReminder extends AppCompatActivity {
 
     private void loadSpinnerData() {
 
-        Cursor cxz = myDb.getAllName_UZYTKOWNICY();
+        cursor = myDb.getAllName_UZYTKOWNICY();
 
-        if (cxz.getCount() == 1) {
+        if (cursor.getCount() == 1) {
             spinner.setVisibility(View.GONE);
         } else {
-            while (cxz.moveToNext()) {
-                label.add(cxz.getString(0));
+            while (cursor.moveToNext()) {
+                label.add(cursor.getString(0));
 
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, label);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -168,22 +161,19 @@ public class AddReminder extends AppCompatActivity {
             }
         }
 
-        cxz.close();
     }
 
     private void loadSpinnerNazwaLeku() {
 
         labelNazwaLeku.clear();
 
-        Cursor cxz = myDb.getData_LEK();
+        cursor = myDb.getData_LEK();
 
-        if (cxz.getCount() != 0) {
-            while (cxz.moveToNext()) {
-                labelNazwaLeku.add(cxz.getString(1));
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                labelNazwaLeku.add(cursor.getString(1));
             }
         }
-
-        cxz.close();
 
         labelNazwaLeku.add("Dodaj nowy typ");
         labelNazwaLeku.add("Wybierz lek");
@@ -208,7 +198,7 @@ public class AddReminder extends AppCompatActivity {
     private void loadSpinnerIleRazyDziennie() {
 
         for (int i = 2; i <= 12; i++) {
-            labelIleRazyDziennie.add(String.valueOf(i) + " razy dziennie");
+            labelIleRazyDziennie.add(i + " razy dziennie");
         }
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, labelIleRazyDziennie);
@@ -235,7 +225,7 @@ public class AddReminder extends AppCompatActivity {
         labelDzwiek.add("Brak");
 
         for (int i = 1; i <= 9; i++) {
-            labelDzwiek.add("Alarm nr " + String.valueOf(i));
+            labelDzwiek.add("Alarm nr " + i);
         }
 
         labelDzwiek.add("Dźwięk domyślny");
@@ -260,7 +250,7 @@ public class AddReminder extends AppCompatActivity {
         labelDawka.clear();
 
         for (double i = 0.5; i <= 3; i += 0.5) {
-            labelDawka.add("Dawka: " + String.valueOf(i));
+            labelDawka.add("Dawka: " + i);
         }
 
         if(!wlasnaDawka.equals("")) {
@@ -291,6 +281,7 @@ public class AddReminder extends AppCompatActivity {
         stopPlaying();
 
         if(dodaj.getVisibility()==View.GONE) {
+            cursor.close();
             super.onBackPressed();
             finish();
         } else {
@@ -312,12 +303,10 @@ public class AddReminder extends AppCompatActivity {
             spinnerNazwaLeku.setVisibility(View.VISIBLE);
             checkBox.setVisibility(View.VISIBLE);
 
-            Cursor cxz = myDb.getAllName_UZYTKOWNICY();
-            if (cxz.getCount() > 1) {
+            cursor = myDb.getAllName_UZYTKOWNICY();
+            if (cursor.getCount() > 1) {
                 spinner.setVisibility(View.VISIBLE);
             }
-
-            cxz.close();
 
             dalej.setVisibility(View.VISIBLE);
             spinnerDzwiek.setVisibility(View.VISIBLE);
@@ -354,17 +343,13 @@ public class AddReminder extends AppCompatActivity {
 
     private void randomChanger(int rand_val) {
 
-        Cursor cursorCheckRandN = myDb.getRandId_NOTYFIKACJA(rand_val);
-        cursorCheckRandN.moveToNext();
-        int rand_val_n = cursorCheckRandN.getInt(0);
+        cursor = myDb.getRandId_NOTYFIKACJA(rand_val);
+        cursor.moveToNext();
+        int rand_val_n = cursor.getInt(0);
 
-        cursorCheckRandN.close();
-
-        Cursor cursorCheckRandW = myDb.getRandId_NOTYFIKACJA(rand_val);
-        cursorCheckRandW.moveToNext();
-        int rand_val_w = cursorCheckRandW.getInt(0);
-
-        cursorCheckRandW.close();
+        cursor = myDb.getRandId_NOTYFIKACJA(rand_val);
+        cursor.moveToNext();
+        int rand_val_w = cursor.getInt(0);
 
         while(rand_val == rand_val_n &&
                 rand_val == rand_val_n-1 &&
@@ -393,6 +378,8 @@ public class AddReminder extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void intializeAllVariables() {
+
+        myDb = new DatabaseHelper(this);
 
         czyWibracja = 0;
 
@@ -472,11 +459,8 @@ public class AddReminder extends AppCompatActivity {
             array.get(i).setText("00:00");
         }
 
-        Cursor res = myDb.getAllName_UZYTKOWNICY();
-        res.moveToFirst();
-        uzytkownik = res.getString(0);
-        res.close();
-
+        cursor.moveToFirst();
+        uzytkownik = cursor.getString(0);
         wlasnaDawka = "";
 
         loadSpinnerData();
@@ -504,6 +488,11 @@ public class AddReminder extends AppCompatActivity {
         dawka.setSelection(1);
 
         sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+        checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            if(isChecked) czyWibracja = 1;
+            else czyWibracja = 0;
+        });
 
     }
 
@@ -848,11 +837,10 @@ public class AddReminder extends AppCompatActivity {
     private void setDodajOnClickListener() {
         dodaj.setOnClickListener(view -> {
 
-            Cursor cl = myDb.getDataName_LEK(nazwaLeku);
-            cl.moveToFirst();
-            Double iloscTabletek = Double.valueOf(cl.getString(2));
+            cursor = myDb.getDataName_LEK(nazwaLeku);
+            cursor.moveToFirst();
+            Double iloscTabletek = Double.valueOf(cursor.getString(2));
             Double jakaDawkaTabletki = jakaDawka;
-            cl.close();
 
             if ((iloscTabletek - jakaDawkaTabletki) >= 0) {
 
@@ -870,13 +858,12 @@ public class AddReminder extends AppCompatActivity {
                     else {
 
                         Integer idd = 0;
-                        Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
-                        if(cx.getCount() != 0) {
-                            cx.moveToFirst();
-                            idd = Integer.parseInt(cx.getString(0));
+                        cursor = myDb.getMAXid_PRZYPOMNIENIE();
+                        if(cursor.getCount() != 0) {
+                            cursor.moveToFirst();
+                            idd = Integer.parseInt(cursor.getString(0));
                             idd++;
                         }
-                        cx.close();
 
                         myDb.insert_PRZYPOMNIENIE(
                                 idd,
@@ -927,13 +914,12 @@ public class AddReminder extends AppCompatActivity {
 
                                 Integer idd = 0;
 
-                                Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
-                                if(cx.getCount()!=0) {
-                                    cx.moveToFirst();
-                                    idd = Integer.parseInt(cx.getString(0));
+                                cursor = myDb.getMAXid_PRZYPOMNIENIE();
+                                if(cursor.getCount()!=0) {
+                                    cursor.moveToFirst();
+                                    idd = Integer.parseInt(cursor.getString(0));
                                     idd++;
                                 }
-                                cx.close();
 
                                 myDb.insert_PRZYPOMNIENIE(
                                         idd,
@@ -961,13 +947,12 @@ public class AddReminder extends AppCompatActivity {
 
                                 Integer idd = 0;
 
-                                Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
-                                if(cx.getCount() != 0) {
-                                    cx.moveToFirst();
-                                    idd = Integer.parseInt(cx.getString(0));
+                                cursor = myDb.getMAXid_PRZYPOMNIENIE();
+                                if(cursor.getCount() != 0) {
+                                    cursor.moveToFirst();
+                                    idd = Integer.parseInt(cursor.getString(0));
                                     idd++;
                                 }
-                                cx.close();
 
                                 myDb.insert_PRZYPOMNIENIE(
                                         idd,
@@ -978,7 +963,7 @@ public class AddReminder extends AppCompatActivity {
                                         iloscDni,
                                         uzytkownik,
                                         coIleDni,
-                                        "Co " + String.valueOf(coIleDni) + " dni: " + godzinaTabletka.getText().toString(),
+                                        "Co " + coIleDni + " dni: " + godzinaTabletka.getText().toString(),
                                         dzwiek,
                                         czyWibracja
                                 );
@@ -1004,7 +989,6 @@ public class AddReminder extends AppCompatActivity {
                     if(ileDni.getText().length() > 0) {
 
                         int czyUsunacDzien = 0;
-                        Integer czyUsunacWszystkieDni = 0;
 
                         for (Integer i = 1; i <= ileRazyDziennie; i++) {
 
@@ -1050,7 +1034,6 @@ public class AddReminder extends AppCompatActivity {
 
                                 if (iloscDni==1) {
                                     czyUsunacDzien = 1;
-                                    czyUsunacWszystkieDni++;
                                 } else if (iloscDni>1) {
                                     Calendar cx = Calendar.getInstance();
                                     try {
@@ -1068,18 +1051,14 @@ public class AddReminder extends AppCompatActivity {
 
                             Integer idd = 0;
 
-                            Cursor cx = myDb.getMAXid_PRZYPOMNIENIE();
-                            if(cx.getCount() != 0) {
-                                cx.moveToFirst();
-                                idd = Integer.parseInt(cx.getString(0));
+                            cursor = myDb.getMAXid_PRZYPOMNIENIE();
+                            if(cursor.getCount() != 0) {
+                                cursor.moveToFirst();
+                                idd = Integer.parseInt(cursor.getString(0));
                                 idd++;
                             }
-                            cx.close();
 
                             if (i.equals(ileRazyDziennie)) {
-                                if (i.equals(czyUsunacWszystkieDni)) {
-                                    iloscDni--;
-                                }
 
                                 String[] wszystkie = wszystkieGodziny.toString().replaceAll(" ", "").split(",");
                                 List<String> tempList = Arrays.asList(wszystkie);
@@ -1145,10 +1124,9 @@ public class AddReminder extends AppCompatActivity {
         );
 
 
-        Cursor c1 = myDb.getMAXid_NOTYFIKACJA();
-        c1.moveToFirst();
-        id = Integer.parseInt(c1.getString(0));
-        c1.close();
+        cursor = myDb.getMAXid_NOTYFIKACJA();
+        cursor.moveToFirst();
+        id = Integer.parseInt(cursor.getString(0));
 
         Log.d("AddReminder", "Dodanie notyfikacji o id: " + id);
 
@@ -1177,7 +1155,7 @@ public class AddReminder extends AppCompatActivity {
             else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
         } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
 
-        Log.d("========ALARM==========", "Dodanie: " + String.valueOf(rand_val) + "\n" + cal.getTime().toString().substring(0,16));
+        Log.d("========ALARM==========", "Dodanie: " + rand_val + "\n" + cal.getTime().toString().substring(0,16));
 
     }
 
@@ -1188,15 +1166,13 @@ public class AddReminder extends AppCompatActivity {
 
         builderw.setPositiveButton("Zaktualizuj ilość", (dialogg, whichh) -> {
 
-            Cursor clr = myDb.getID_LEK(nazwaLeku);
-            clr.moveToFirst();
-            Integer id_l = Integer.parseInt(clr.getString(0));
-            clr.close();
+            cursor = myDb.getID_LEK(nazwaLeku);
+            cursor.moveToFirst();
+            Integer id_l = Integer.parseInt(cursor.getString(0));
 
-            Cursor clrr = myDb.getNumber_LEK(id_l);
-            clrr.moveToFirst();
-            String ilosc = clrr.getString(0);
-            clrr.close();
+            cursor = myDb.getNumber_LEK(id_l);
+            cursor.moveToFirst();
+            String ilosc = cursor.getString(0);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(AddReminder.this, R.style.AlertDialog);
             builder.setTitle("Aktualizacja ilości");

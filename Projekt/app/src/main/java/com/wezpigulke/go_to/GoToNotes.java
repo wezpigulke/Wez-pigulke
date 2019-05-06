@@ -39,6 +39,7 @@ public class GoToNotes extends Fragment {
     private String uzytkownik;
     private Integer idd;
     private String notatka;
+    private Cursor cursor;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -75,20 +76,19 @@ public class GoToNotes extends Fragment {
 
         label.clear();
 
-        Cursor cxz = myDb.getAllName_UZYTKOWNICY();
+        cursor = myDb.getAllName_UZYTKOWNICY();
 
         label.add("Wszyscy");
-        if (cxz.getCount() == 1) {
+        if (cursor.getCount() == 1) {
             spinner.setVisibility(View.GONE);
         } else {
-            while (cxz.moveToNext()) {
-                label.add(cxz.getString(0));
+            while (cursor.moveToNext()) {
+                label.add(cursor.getString(0));
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, label);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(dataAdapter);
             }
         }
-        cxz.close();
 
     }
 
@@ -122,10 +122,9 @@ public class GoToNotes extends Fragment {
         lv.setOnItemClickListener((parent, view, position, id) -> {
 
             idd = results.get(position).getId();
-            Cursor c = myDb.getNotes_NOTATKI(idd);
-            c.moveToFirst();
-            notatka = c.getString(0);
-            c.close();
+            cursor = myDb.getNotes_NOTATKI(idd);
+            cursor.moveToFirst();
+            notatka = cursor.getString(0);
             dialogShowNotes();
 
         });
@@ -161,19 +160,30 @@ public class GoToNotes extends Fragment {
         lv.setAdapter(adapter);
 
         myDb = new DatabaseHelper(getActivity());
-        Cursor c;
 
-        if (uzytkownik.equals("Wszyscy")) c = myDb.getAllData_NOTATKI();
-        else c = myDb.getUserData_NOTATKI(uzytkownik);
+        if (uzytkownik.equals("Wszyscy")) cursor = myDb.getAllData_NOTATKI();
+        else cursor = myDb.getUserData_NOTATKI(uzytkownik);
 
-        if (c.getCount() != 0) {
-            c.moveToLast();
-            results.add(new Notes(c.getInt(0), c.getString(1), c.getString(3), c.getString(4)));
-            while (c.moveToPrevious()) {
-                results.add(new Notes(c.getInt(0), c.getString(1), c.getString(3), c.getString(4)));
+        String[] parts;
+        String part1, part2;
+
+        if (cursor.getCount() != 0) {
+            cursor.moveToLast();
+
+            parts = cursor.getString(4).split(" ");
+            part1 = parts[0].substring(0,parts[0].length()-5);
+            part2 = parts[1];
+
+            results.add(new Notes(cursor.getInt(0), cursor.getString(1), cursor.getString(3), part1 + " | " + part2));
+            while (cursor.moveToPrevious()) {
+
+                parts = cursor.getString(4).split(" ");
+                part1 = parts[0].substring(0,parts[0].length()-5);
+                part2 = parts[1];
+
+                results.add(new Notes(cursor.getInt(0), cursor.getString(1), cursor.getString(3), part1 + " | " + part2));
             }
         }
-        c.close();
 
         adapter = new NotesListAdapter(getActivity(), results);
         lv.setAdapter(adapter);
@@ -193,6 +203,12 @@ public class GoToNotes extends Fragment {
 
         builder.show();
 
+    }
+
+    @Override
+    public void onDestroy() {
+        cursor.close();
+        super.onDestroy();
     }
 
     public void dialogShowNotes() {

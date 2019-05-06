@@ -19,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.notification.NotificationReceiver;
@@ -47,6 +46,7 @@ public class GoToVisit extends Fragment {
     private ArrayList<String> label;
     private String uzytkownik;
     private Integer idd;
+    private Cursor cursor;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -83,22 +83,20 @@ public class GoToVisit extends Fragment {
 
         label.clear();
 
-        Cursor cxz = myDb.getAllName_UZYTKOWNICY();
+        cursor = myDb.getAllName_UZYTKOWNICY();
 
         label.add("Wszyscy");
 
-        if (cxz.getCount() == 1) {
+        if (cursor.getCount() == 1) {
             spinner.setVisibility(View.GONE);
         } else {
-            while (cxz.moveToNext()) {
-                label.add(cxz.getString(0));
+            while (cursor.moveToNext()) {
+                label.add(cursor.getString(0));
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, label);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(dataAdapter);
             }
         }
-
-        cxz.close();
 
     }
 
@@ -157,12 +155,11 @@ public class GoToVisit extends Fragment {
         lv.setAdapter(adapter);
 
         myDb = new DatabaseHelper(getActivity());
-        Cursor c;
 
         String godzina, data;
 
-        if (uzytkownik.equals("Wszyscy")) c = myDb.getAllData_WIZYTY();
-        else c = myDb.getUserData_WIZYTY(uzytkownik);
+        if (uzytkownik.equals("Wszyscy")) cursor = myDb.getAllData_WIZYTY();
+        else cursor = myDb.getUserData_WIZYTY(uzytkownik);
 
         String dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
@@ -170,11 +167,11 @@ public class GoToVisit extends Fragment {
         Date firstDate = null;
         Date secondDate = null;
 
-        if (c.getCount() != 0) {
-            while (c.moveToNext()) {
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
 
-                godzina = c.getString(1);
-                data = c.getString(2);
+                godzina = cursor.getString(1);
+                data = cursor.getString(2);
 
                 try {
                     firstDate = sdf.parse(dzisiejszaData);
@@ -194,16 +191,15 @@ public class GoToVisit extends Fragment {
                 }
 
                 if(diff<0) {
-                    myDb.remove_WIZYTY(c.getInt(0));
+                    myDb.remove_WIZYTY(cursor.getInt(0));
                 } else {
-                    results.add(new Visit(c.getInt(0), c.getString(5), c.getString(3), c.getString(4), c.getString(1) + " | " + c.getString(2)));
+                    results.add(new Visit(cursor.getInt(0), cursor.getString(5), cursor.getString(3), cursor.getString(4), cursor.getString(1) + " | " + cursor.getString(2)));
                 }
             }
         }
 
         adapter = new VisitListAdapter(getActivity(), results);
         lv.setAdapter(adapter);
-        c.close();
 
     }
 
@@ -211,24 +207,23 @@ public class GoToVisit extends Fragment {
 
         AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
 
-        Cursor crand = myDb.getRand_WIZYTY(idd);
-        crand.moveToFirst();
+        cursor = myDb.getRand_WIZYTY(idd);
+        cursor.moveToFirst();
 
         Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                getActivity(), crand.getInt(0), myIntent,
+                getActivity(), cursor.getInt(0), myIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         assert alarmManager != null;
         alarmManager.cancel(pendingIntent);
 
         myIntent = new Intent(getActivity(), NotificationReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(
-                getActivity(), crand.getInt(0)+1, myIntent,
+                getActivity(), cursor.getInt(0)+1, myIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
         myDb.remove_WIZYTY(idd);
 
-        crand.close();
         aktualizujBaze();
 
     }
@@ -245,4 +240,9 @@ public class GoToVisit extends Fragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        cursor.close();
+        super.onDestroy();
+    }
 }

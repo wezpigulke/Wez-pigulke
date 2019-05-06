@@ -40,6 +40,7 @@ public class GoToMeasurement extends Fragment {
     private String uzytkownik;
     private String typ;
     private Integer idd;
+    private Cursor cursor;
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -75,6 +76,12 @@ public class GoToMeasurement extends Fragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        cursor.close();
+        super.onDestroy();
+    }
+
     private void loadSpinnerData() {
 
         label.clear();
@@ -83,35 +90,35 @@ public class GoToMeasurement extends Fragment {
         measurementSpinner.setVisibility(View.VISIBLE);
         measurementTypeSpinner.setVisibility(View.VISIBLE);
 
-        Cursor cxz = myDb.getAllName_UZYTKOWNICY();
-        Cursor cxs = myDb.getAllData_TYP_POMIAR();
 
         label.add("Wszyscy");
         labelx.add("Wszystko");
 
-        if (cxz.getCount() == 1) {
+        cursor = myDb.getAllName_UZYTKOWNICY();
+
+        if (cursor.getCount() == 1) {
             measurementSpinner.setVisibility(View.GONE);
         } else {
-            while (cxz.moveToNext()) {
-                label.add(cxz.getString(0));
+            while (cursor.moveToNext()) {
+                label.add(cursor.getString(0));
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, label);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 measurementSpinner.setAdapter(dataAdapter);
             }
         }
-        cxz.close();
 
-        if (cxs.getCount() <= 1) {
+        cursor = myDb.getAllData_TYP_POMIAR();
+
+        if (cursor.getCount() <= 1) {
             measurementTypeSpinner.setVisibility(View.GONE);
         } else {
-            while (cxs.moveToNext()) {
-                labelx.add(cxs.getString(1));
+            while (cursor.moveToNext()) {
+                labelx.add(cursor.getString(1));
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, labelx);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 measurementTypeSpinner.setAdapter(dataAdapter);
             }
         }
-        cxs.close();
 
     }
 
@@ -185,22 +192,19 @@ public class GoToMeasurement extends Fragment {
         lv.setAdapter(adapter);
 
         myDb = new DatabaseHelper(getActivity());
-        Cursor c;
 
-        if (uzytkownik.equals("Wszyscy") && typ.equals("Wszystko")) c = myDb.getAllData_POMIARY();
-        else if (!uzytkownik.equals("Wszyscy") && typ.equals("Wszystko")) c = myDb.getUserData_POMIARY(uzytkownik);
-        else if (uzytkownik.equals("Wszyscy") && !typ.equals("Wszystko")) c = myDb.getUserType_POMIARY(typ);
-        else c = myDb.getUserTypeData_POMIARY(uzytkownik, typ);
+        if (uzytkownik.equals("Wszyscy") && typ.equals("Wszystko")) cursor = myDb.getAllData_POMIARY();
+        else if (!uzytkownik.equals("Wszyscy") && typ.equals("Wszystko")) cursor = myDb.getUserData_POMIARY(uzytkownik);
+        else if (uzytkownik.equals("Wszyscy") && !typ.equals("Wszystko")) cursor = myDb.getUserType_POMIARY(typ);
+        else cursor = myDb.getUserTypeData_POMIARY(uzytkownik, typ);
 
-        if (c.getCount() != 0) {
-            c.moveToLast();
-            results.add(new Measurement(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(5), c.getString(4)));
-            while (c.moveToPrevious()) {
-                results.add(new Measurement(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(5), c.getString(4)));
+        if (cursor.getCount() != 0) {
+            cursor.moveToLast();
+            results.add(new Measurement(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(5), cursor.getString(4)));
+            while (cursor.moveToPrevious()) {
+                results.add(new Measurement(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(5), cursor.getString(4)));
             }
         }
-
-        c.close();
 
         adapter = new MeasurementListAdapter(getActivity(), results);
         lv.setAdapter(adapter);

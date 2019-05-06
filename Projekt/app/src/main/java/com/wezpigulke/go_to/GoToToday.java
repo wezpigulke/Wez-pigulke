@@ -20,7 +20,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
@@ -40,8 +39,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import static android.content.Context.ALARM_SERVICE;
-
 public class GoToToday extends Fragment {
 
     DatabaseHelper myDb;
@@ -56,6 +53,7 @@ public class GoToToday extends Fragment {
     private String godzina;
     private String data;
     private Integer idd;
+    private Cursor cursor;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -81,20 +79,19 @@ public class GoToToday extends Fragment {
     private void loadSpinnerData() {
 
         label.clear();
-        Cursor cxz = myDb.getAllName_UZYTKOWNICY();
+        cursor = myDb.getAllName_UZYTKOWNICY();
         label.add("Wszyscy");
 
-        if (cxz.getCount() == 1) {
+        if (cursor.getCount() == 1) {
             spinner.setVisibility(View.GONE);
         } else {
-            while (cxz.moveToNext()) {
-                label.add(cxz.getString(0));
+            while (cursor.moveToNext()) {
+                label.add(cursor.getString(0));
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, label);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(dataAdapter);
             }
         }
-        cxz.close();
 
     }
 
@@ -149,10 +146,9 @@ public class GoToToday extends Fragment {
         lv.setAdapter(adapter);
 
         myDb = new DatabaseHelper(getActivity());
-        final Cursor c;
 
-        if (uzytkownik.equals("Wszyscy")) c = myDb.getAllData_NOTYFIKACJA();
-        else c = myDb.getUserData_NOTYFIKACJA(uzytkownik);
+        if (uzytkownik.equals("Wszyscy")) cursor = myDb.getAllData_NOTYFIKACJA();
+        else cursor = myDb.getUserData_NOTYFIKACJA(uzytkownik);
 
         String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         String dzisiejszyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
@@ -161,7 +157,7 @@ public class GoToToday extends Fragment {
         SimpleDateFormat tdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
 
-        while (c.moveToNext()) {
+        while (cursor.moveToNext()) {
 
             Date firstDate = null;
             Date secondDate = null;
@@ -176,8 +172,8 @@ public class GoToToday extends Fragment {
                 e.printStackTrace();
             }
             try {
-                secondDate = sdf.parse(c.getString(4));
-                secondTime = tdf.parse(c.getString(3));
+                secondDate = sdf.parse(cursor.getString(4));
+                secondTime = tdf.parse(cursor.getString(3));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -187,11 +183,9 @@ public class GoToToday extends Fragment {
             long diffInMillis = Objects.requireNonNull(secondTime).getTime() - Objects.requireNonNull(firstTime).getTime();
 
             if (diffDays == 0 && diffInMillis >= 0) {
-                results.add(new Today(c.getInt(0), c.getString(1) + " (Dawka: " + c.getString(2) + ")", "Godzina: " + c.getString(3), c.getString(5)));
+                results.add(new Today(cursor.getInt(0), cursor.getString(1) + " (Dawka: " + cursor.getString(2) + ")", "Godzina: " + cursor.getString(3), cursor.getString(5)));
             }
         }
-
-        c.close();
 
         Collections.sort(results, new CustomComparator());
 
@@ -210,21 +204,20 @@ public class GoToToday extends Fragment {
         int id_p = 0;
         int dni = 0;
 
-        Cursor ccc = myDb.getdataID_NOTYFIKACJA(idd);
+        cursor = myDb.getdataID_NOTYFIKACJA(idd);
 
-        if (ccc.getCount() != 0) {
-            while (ccc.moveToNext()) {
-                nazwaLeku = ccc.getString(1);
-                dawka = ccc.getDouble(2);
-                godzina = ccc.getString(3);
-                data = ccc.getString(4);
-                id = ccc.getInt(6);
-                id_p = ccc.getInt(7);
-                typ = ccc.getInt(8);
-                dni = ccc.getInt(9);
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                nazwaLeku = cursor.getString(1);
+                dawka = cursor.getDouble(2);
+                godzina = cursor.getString(3);
+                data = cursor.getString(4);
+                id = cursor.getInt(6);
+                id_p = cursor.getInt(7);
+                typ = cursor.getInt(8);
+                dni = cursor.getInt(9);
             }
         }
-        ccc.close();
 
         String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
         SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -241,12 +234,12 @@ public class GoToToday extends Fragment {
         if (czyDwucyfrowa.equals(":")) {
             hour = Integer.parseInt(String.valueOf(godzina.charAt(0)));
             minutes = Integer.parseInt(String.valueOf(godzina.charAt(2))
-                    + String.valueOf(godzina.charAt(3)));
+                    + godzina.charAt(3));
         } else {
             hour = Integer.parseInt(String.valueOf(godzina.charAt(0))
-                    + String.valueOf(godzina.charAt(1)));
+                    + godzina.charAt(1));
             minutes = Integer.parseInt(String.valueOf(godzina.charAt(3))
-                    + String.valueOf(godzina.charAt(4)));
+                    + godzina.charAt(4));
         }
 
         Calendar cz = Calendar.getInstance();
@@ -259,8 +252,8 @@ public class GoToToday extends Fragment {
 
         cz.add(Calendar.DATE, typ);
 
-        Cursor crand = myDb.getRand_NOTYFIKACJA(id);
-        crand.moveToFirst();
+        cursor = myDb.getRand_NOTYFIKACJA(id);
+        cursor.moveToFirst();
 
         if (dni > 1) myDb.updateDate_NOTYFIKACJA(id, dataJutrzejsza);
         else {
@@ -271,30 +264,29 @@ public class GoToToday extends Fragment {
         AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
         Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                getActivity(), crand.getInt(0), myIntent,
+                getActivity(), cursor.getInt(0), myIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         assert alarmManager != null;
         alarmManager.cancel(pendingIntent);
 
-        Cursor policz = myDb.getCount_NOTYFIKACJA(id_p, dzisiejszaData);
+        cursor = myDb.getCount_NOTYFIKACJA(id_p, dzisiejszaData);
         int ile = 0;
 
-        if (policz.getCount() != 0) {
-            policz.moveToNext();
-            ile = Integer.parseInt(policz.getString(0));
+        if (cursor.getCount() != 0) {
+            cursor.moveToNext();
+            ile = Integer.parseInt(cursor.getString(0));
         }
-        policz.close();
 
         if (dni > 1) {
 
             Intent intx = new Intent(getContext(), NotificationReceiver.class);
             intx.putExtra("Value", uzytkownik + " " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + dawka + ")");
 
-            crand = myDb.getRand_NOTYFIKACJA(id);
-            crand.moveToFirst();
+            cursor = myDb.getRand_NOTYFIKACJA(id);
+            cursor.moveToFirst();
 
             pendingIntent = PendingIntent.getBroadcast(
-                    getContext(), crand.getInt(0), intx,
+                    getContext(), cursor.getInt(0), intx,
                     PendingIntent.FLAG_UPDATE_CURRENT);
 
 
@@ -310,7 +302,6 @@ public class GoToToday extends Fragment {
 
         }
 
-        crand.close();
         aktualizujBaze();
 
     }
@@ -331,6 +322,12 @@ public class GoToToday extends Fragment {
 
         builder.show();
 
+    }
+
+    @Override
+    public void onDestroy() {
+        cursor.close();
+        super.onDestroy();
     }
 
     public class CustomComparator implements Comparator<Today> {

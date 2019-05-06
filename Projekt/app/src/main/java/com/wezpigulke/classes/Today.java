@@ -37,4 +37,11 @@ public class Today {
         return profile;
     }
 
+    public void setMedicine(String medicine) {
+        this.medicine = medicine;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
 }

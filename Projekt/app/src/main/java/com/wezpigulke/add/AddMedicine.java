@@ -23,33 +23,28 @@ public class AddMedicine extends AppCompatActivity {
 
     private EditText nazwaLeku;
     private EditText iloscTabletek;
+    private Button dodajButton;
+    private int id;
+    private Cursor cursor;
 
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        myDb = new DatabaseHelper(this);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_medicine);
-
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        Button dodajButton = findViewById(R.id.dodajLekButton);
-        nazwaLeku = findViewById(R.id.nazwaLeku);
-        iloscTabletek = findViewById(R.id.iloscTabletek);
+        initializeVariables();
+        dodajButtonListener();
 
-        iloscTabletek.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
-        iloscTabletek.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(5, 2)});
+    }
 
-        Cursor c = myDb.getMAXid_LEK();
-        c.moveToFirst();
-        int id = Integer.parseInt(c.getString(0)) + 1;
-
+    private void dodajButtonListener() {
         dodajButton.setOnClickListener(v -> {
             if (nazwaLeku.getText().length() > 0 && iloscTabletek.getText().length() > 0) {
-                Cursor cl = myDb.getDataName_LEK(nazwaLeku.getText().toString());
-                if (cl.getCount() == 0) {
+                cursor = myDb.getDataName_LEK(nazwaLeku.getText().toString());
+                if (cursor.getCount() == 0) {
                     myDb.insert_LEK(
                             id,
                             nazwaLeku.getText().toString(),
@@ -59,6 +54,21 @@ public class AddMedicine extends AppCompatActivity {
                 } else openDialog("Już istnieje lek o takiej nazwie w naszej bazie danych");
             } else openDialog("Wpisz typ badania");
         });
+    }
+
+    private void initializeVariables() {
+
+        myDb = new DatabaseHelper(this);
+        dodajButton = findViewById(R.id.dodajLekButton);
+        nazwaLeku = findViewById(R.id.nazwaLeku);
+        iloscTabletek = findViewById(R.id.iloscTabletek);
+
+        iloscTabletek.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+        iloscTabletek.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(5, 2)});
+
+        cursor = myDb.getMAXid_LEK();
+        cursor.moveToFirst();
+        id = Integer.parseInt(cursor.getString(0)) + 1;
 
     }
 
@@ -70,6 +80,7 @@ public class AddMedicine extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        cursor.close();
         super.onBackPressed();
         finish();
     }

@@ -44,58 +44,51 @@ public class AddVisit extends AppCompatActivity {
     private TextView data;
     private TextView godzina;
     private Button dodaj;
+    private DatePickerDialog.OnDateSetListener dataListener;
+    private TimePickerDialog.OnTimeSetListener godzinaListener;
+    private Spinner spinner;
+    private Spinner spinnerDoctor;
+    private Spinner spinnerDzwiek;
 
     private String name;
     private String specialization;
     private Integer czyWibracja;
-
-    private DatePickerDialog.OnDateSetListener dataListener;
-    private TimePickerDialog.OnTimeSetListener godzinaListener;
-
     private int year;
     private int month;
     private int day;
     private int hour;
     private int minutes;
-
-    private Spinner spinnerDzwiek;
     private ArrayList<String> labelDzwiek;
     private ArrayList<String> label;
     private Integer dzwiek;
     private MediaPlayer mp;
-
-    private Spinner spinner;
-    private Spinner spinnerDoctor;
     private String uzytkownik;
     private Long diff;
     private Calendar cal;
-
     private ArrayList<Doctor> doctorArrayList;
+    private Cursor cursor;
 
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        myDb = new DatabaseHelper(this);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_visit);
-
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         intializeAllVariables();
         loadSpinnerData();
         loadSpinnerDzwiek();
         loadSpinnerDoctor();
-        setSpinnerOnItemSelectedListener();
-        setSpinnerDoctorOnItemSelectedListener();
-        setSpinnerDzwiekOnItemSelectedListener();
-        setDodajOnClickListener();
-        setAllTimeOnClickListener();
+        spinnerListener();
+        spinnerDoctorListener();
+        spinnerDzwiekListener();
+        dodajListener();
+        allTimeListener();
 
     }
 
-    private void setDodajOnClickListener() {
+    private void dodajListener() {
 
         dodaj.setOnClickListener(v -> {
 
@@ -126,10 +119,10 @@ public class AddVisit extends AppCompatActivity {
                     );
 
                     int id = 0;
-                    Cursor cw = myDb.getMaxId_WIZYTY();
-                    if(cw.getCount() != 0) {
-                        cw.moveToFirst();
-                        id = cw.getInt(0);
+                    cursor = myDb.getMaxId_WIZYTY();
+                    if(cursor.getCount() != 0) {
+                        cursor.moveToFirst();
+                        id = cursor.getInt(0);
                     }
 
                     Intent intxz = putExtraToIntent(id, rand_val, uzytkownik + "  |  wizyta u " + specialization + ": " + name + " jutro o " + godzina.getText().toString());
@@ -154,7 +147,7 @@ public class AddVisit extends AppCompatActivity {
 
     }
 
-    private void setSpinnerOnItemSelectedListener() {
+    private void spinnerListener() {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -169,7 +162,7 @@ public class AddVisit extends AppCompatActivity {
         });
     }
 
-    private void setSpinnerDoctorOnItemSelectedListener() {
+    private void spinnerDoctorListener() {
 
         spinnerDoctor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -251,7 +244,7 @@ public class AddVisit extends AppCompatActivity {
 
     }
 
-    private void setSpinnerDzwiekOnItemSelectedListener() {
+    private void spinnerDzwiekListener() {
 
         spinnerDzwiek.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -310,7 +303,7 @@ public class AddVisit extends AppCompatActivity {
 
     }
 
-    private void setAllTimeOnClickListener() {
+    private void allTimeListener() {
 
         godzina.setOnClickListener(view -> {
             TimePickerDialog dialog = new TimePickerDialog(AddVisit.this,godzinaListener, hour, minutes, true);
@@ -347,11 +340,11 @@ public class AddVisit extends AppCompatActivity {
 
     private void loadSpinnerData() {
 
-        Cursor cxz = myDb.getAllName_UZYTKOWNICY();
+        cursor = myDb.getAllName_UZYTKOWNICY();
 
-        if (cxz.getCount() != 0) {
-            while (cxz.moveToNext()) {
-                label.add(cxz.getString(0));
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                label.add(cursor.getString(0));
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, label);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(dataAdapter);
@@ -363,13 +356,13 @@ public class AddVisit extends AppCompatActivity {
 
         doctorArrayList.clear();
 
-        Cursor c = myDb.getAllData_DOKTORZY();
+        cursor = myDb.getAllData_DOKTORZY();
 
-        if (c.getCount() != 0) {
-            while (c.moveToNext()) {
-                if(c.getString(3).equals("0")) {
-                    doctorArrayList.add(new Doctor(c.getInt(0), c.getString(1), c.getString(2), c.getString(4)));
-                } else doctorArrayList.add(new Doctor(c.getInt(0), c.getString(1), c.getString(2), c.getString(4)));
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                if(cursor.getString(3).equals("0")) {
+                    doctorArrayList.add(new Doctor(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(4)));
+                } else doctorArrayList.add(new Doctor(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(4)));
             }
         }
 
@@ -416,6 +409,7 @@ public class AddVisit extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        cursor.close();
         stopPlaying();
         super.onBackPressed();
         finish();
@@ -445,13 +439,13 @@ public class AddVisit extends AppCompatActivity {
 
     private void randomChanger(int rand_val) {
 
-        Cursor cursorCheckRandN = myDb.getRandId_NOTYFIKACJA(rand_val);
-        cursorCheckRandN.moveToNext();
-        int rand_val_n = cursorCheckRandN.getInt(0);
+        cursor = myDb.getRandId_NOTYFIKACJA(rand_val);
+        cursor.moveToNext();
+        int rand_val_n = cursor.getInt(0);
 
-        Cursor cursorCheckRandW = myDb.getRandId_NOTYFIKACJA(rand_val);
-        cursorCheckRandW.moveToNext();
-        int rand_val_w = cursorCheckRandW.getInt(0);
+        cursor = myDb.getRandId_NOTYFIKACJA(rand_val);
+        cursor.moveToNext();
+        int rand_val_w = cursor.getInt(0);
 
         while(rand_val == rand_val_n &&
                 rand_val == rand_val_n-1 &&
@@ -473,7 +467,12 @@ public class AddVisit extends AppCompatActivity {
 
     private void intializeAllVariables() {
 
+        myDb = new DatabaseHelper(this);
+
         czyWibracja = 0;
+
+        String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
         String rok = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
         String miesiac = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
@@ -495,9 +494,6 @@ public class AddVisit extends AppCompatActivity {
         godzina = findViewById(R.id.timeVisit);
         CheckBox checkBox = findViewById(R.id.checkBoxx);
 
-        final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-
         data.setText(date);
         godzina.setText(time);
 
@@ -507,9 +503,9 @@ public class AddVisit extends AppCompatActivity {
 
         spinnerDoctor = findViewById(R.id.spinnerDoctor);
 
-        Cursor res = myDb.getAllName_UZYTKOWNICY();
-        res.moveToFirst();
-        uzytkownik = res.getString(0);
+        cursor = myDb.getAllName_UZYTKOWNICY();
+        cursor.moveToFirst();
+        uzytkownik = cursor.getString(0);
 
         checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if(isChecked) czyWibracja = 1;

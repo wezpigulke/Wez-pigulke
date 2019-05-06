@@ -14,6 +14,8 @@ import java.util.Locale;
 
 public class ButtonIntent extends BroadcastReceiver {
 
+    private Cursor cursor;
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -27,9 +29,9 @@ public class ButtonIntent extends BroadcastReceiver {
                 int rand_val = intent.getIntExtra("rand_val", 0);
                 String obecnyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
-                Cursor cw = myDb.getWziete_STATYSTYKI(0);
-                cw.moveToFirst();
-                myDb.update_STATYSTYKI_WZIETE(0, Integer.parseInt(cw.getString(0)) + 1);
+                cursor = myDb.getWziete_STATYSTYKI(0);
+                cursor.moveToFirst();
+                myDb.update_STATYSTYKI_WZIETE(0, Integer.parseInt(cursor.getString(0)) + 1);
 
                 myDb.update_HISTORIA(id_h, obecnyCzas, "WZIETE");
 
@@ -47,14 +49,14 @@ public class ButtonIntent extends BroadcastReceiver {
                 Double jakaDawka = intent.getDoubleExtra("jakaDawka", 0);
                 rand_val = intent.getIntExtra("rand_val", 0);
 
-                Cursor cn = myDb.getNiewziete_STATYSTYKI(0);
-                cn.moveToFirst();
-                myDb.update_STATYSTYKI_NIEWZIETE(0, Integer.parseInt(cn.getString(0)) + 1);
+                cursor = myDb.getNiewziete_STATYSTYKI(0);
+                cursor.moveToFirst();
+                myDb.update_STATYSTYKI_NIEWZIETE(0, Integer.parseInt(cursor.getString(0)) + 1);
 
-                Cursor cl = myDb.getDataName_LEK(nazwaLeku);
-                cl.moveToFirst();
-                double iloscLeku = cl.getDouble(2) + jakaDawka;
-                myDb.update_LEK(cl.getInt(0), iloscLeku);
+                cursor = myDb.getDataName_LEK(nazwaLeku);
+                cursor.moveToFirst();
+                double iloscLeku = cursor.getDouble(2) + jakaDawka;
+                myDb.update_LEK(cursor.getInt(0), iloscLeku);
 
                 myDb.update_HISTORIA(id_h, obecnyCzas, "NIEWZIETE");
 
@@ -67,6 +69,7 @@ public class ButtonIntent extends BroadcastReceiver {
 
         }
 
+        cursor.close();
     }
 
 }

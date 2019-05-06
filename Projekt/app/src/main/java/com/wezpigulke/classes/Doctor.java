@@ -25,6 +25,14 @@ public class Doctor {
         return name;
     }
 
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

@@ -18,11 +18,19 @@ import static com.wezpigulke.R.layout.about_author;
 
 public class GoToAuthor extends Fragment {
 
+    private View view;
+
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+
         super.onViewCreated(view, savedInstanceState);
         Objects.requireNonNull(getActivity()).setTitle("Autor");
+        this.view = view;
+        createViewForAuthor();
 
+    }
+
+    private void createViewForAuthor() {
         ImageView imageView = view.findViewById(R.id.imageView2);
         imageView.setImageAlpha(0);
 
@@ -40,7 +48,6 @@ public class GoToAuthor extends Fragment {
             }
 
         }.start();
-
     }
 
     @Override

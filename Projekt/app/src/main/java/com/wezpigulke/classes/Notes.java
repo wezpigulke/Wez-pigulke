@@ -7,6 +7,10 @@ public class Notes {
     private String profile;
     private String date;
 
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
     public Notes(int id, String title, String profile, String date) {
         this.id = id;
         this.title = title;

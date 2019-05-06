@@ -31,4 +31,7 @@ public class Medicine {
         return quantity;
     }
 
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
 }

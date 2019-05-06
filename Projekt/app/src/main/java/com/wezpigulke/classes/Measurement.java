@@ -49,4 +49,19 @@ public class Measurement {
         return hour;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
+    public void setHour(String hour) {
+        this.hour = hour;
+    }
 }

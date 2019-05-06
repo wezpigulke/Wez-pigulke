@@ -27,4 +27,11 @@ public class Profiles {
         return picture;
     }
 
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
+    public void setPicture(Integer picture) {
+        this.picture = picture;
+    }
 }

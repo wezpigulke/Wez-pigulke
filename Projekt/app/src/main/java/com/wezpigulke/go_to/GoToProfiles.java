@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.notification.NotificationReceiver;
@@ -38,6 +37,8 @@ public class GoToProfiles extends Fragment {
     private List<Profiles> results;
     private ListView lv;
     private Integer idd;
+    private Cursor cursor;
+    private Cursor cursorTemp;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -102,14 +103,13 @@ public class GoToProfiles extends Fragment {
         lv.setAdapter(adapter);
 
         myDb = new DatabaseHelper(getActivity());
-        Cursor c = myDb.getAllData_UZYTKOWNICY();
+        cursor = myDb.getAllData_UZYTKOWNICY();
 
-        if (c.getCount() != 0) {
-            while (c.moveToNext()) {
-                results.add(new Profiles(c.getInt(0), c.getString(1), c.getInt(2)));
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                results.add(new Profiles(cursor.getInt(0), cursor.getString(1), cursor.getInt(2)));
             }
         }
-
 
         adapter = new ProfilesListAdapter(getActivity(), results);
         lv.setAdapter(adapter);
@@ -123,60 +123,61 @@ public class GoToProfiles extends Fragment {
         builder.setMessage("Czy na pewno chcesz usunąć? Usunie to wszystkie powiązane rzeczy z tym profilem.").setCancelable(false)
                 .setPositiveButton("Tak", (dialog, which) -> {
 
-                    Cursor cc = myDb.getAllData_UZYTKOWNICY();
+                    cursor = myDb.getAllData_UZYTKOWNICY();
 
-                    if (cc.getCount() > 1) {
+                    if (cursor.getCount() > 1) {
 
-                        Cursor cu = myDb.getNameFromID_UZYTKOWNICY(idd);
-                        cu.moveToFirst();
-                        String nazwaUzytkownika = cu.getString(0);
+                        cursor = myDb.getNameFromID_UZYTKOWNICY(idd);
+                        cursor.moveToFirst();
+                        String nazwaUzytkownika = cursor.getString(0);
 
-                        Cursor cp = myDb.getIDforUser_PRZYPOMNIENIE(nazwaUzytkownika);
+                        cursor = myDb.getIDforUser_PRZYPOMNIENIE(nazwaUzytkownika);
 
-                        if (cp.getCount() != 0) {
-                            while (cp.moveToNext()) {
+                        if (cursor.getCount() != 0) {
+                            while (cursor.moveToNext()) {
 
-                                Integer id_p = cp.getInt(0);
-                                final Cursor cn = myDb.getID_NOTYFIKACJA(id_p);
+                                Integer id_p = cursor.getInt(0);
+                                cursorTemp = myDb.getID_NOTYFIKACJA(id_p);
 
-                                Cursor crand = myDb.getRand_NOTYFIKACJA(cn.getInt(0));
-                                crand.moveToFirst();
+                                cursor = myDb.getRand_NOTYFIKACJA(cursorTemp.getInt(0));
+                                cursor.moveToFirst();
 
-                                if (cn.getCount() != 0) {
-                                    while (cn.moveToNext()) {
+                                if (cursorTemp.getCount() != 0) {
+                                    while (cursorTemp.moveToNext()) {
 
                                         AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
                                         Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
                                         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                                getActivity(), crand.getInt(0), myIntent,
+                                                getActivity(), cursor.getInt(0), myIntent,
                                                 PendingIntent.FLAG_UPDATE_CURRENT);
                                         assert alarmManager != null;
                                         alarmManager.cancel(pendingIntent);
 
                                     }
                                 }
+
                             }
                         }
 
-                        Cursor cw = myDb.getIdForUser_WIZYTY(nazwaUzytkownika);
+                        cursorTemp = myDb.getIdForUser_WIZYTY(nazwaUzytkownika);
 
-                        if (cw.getCount() != 0) {
-                            while (cw.moveToNext()) {
+                        if (cursorTemp.getCount() != 0) {
+                            while (cursorTemp.moveToNext()) {
 
-                                Cursor crand = myDb.getRand_WIZYTY(cw.getInt(0));
-                                crand.moveToFirst();
+                                cursor = myDb.getRand_WIZYTY(cursorTemp.getInt(0));
+                                cursor.moveToFirst();
 
                                 AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
 
                                 Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
                                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                        getActivity(), crand.getInt(0), myIntent,
+                                        getActivity(), cursor.getInt(0), myIntent,
                                         PendingIntent.FLAG_UPDATE_CURRENT);
                                 assert alarmManager != null;
                                 alarmManager.cancel(pendingIntent);
 
                                 pendingIntent = PendingIntent.getBroadcast(
-                                        getActivity(), crand.getInt(0)-1, myIntent,
+                                        getActivity(), cursor.getInt(0)-1, myIntent,
                                         PendingIntent.FLAG_UPDATE_CURRENT);
                                 alarmManager.cancel(pendingIntent);
 

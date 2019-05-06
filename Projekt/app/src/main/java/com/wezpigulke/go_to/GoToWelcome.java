@@ -36,6 +36,8 @@ public class GoToWelcome extends AppCompatActivity {
     private ImageView facetObr;
     private ImageView kobietaObr;
 
+    private Cursor cursor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -48,10 +50,9 @@ public class GoToWelcome extends AppCompatActivity {
 
         myDb = new DatabaseHelper(this);
 
-        Cursor cs = myDb.getAllData_STATYSTYKI();
+        cursor = myDb.getAllData_STATYSTYKI();
 
-        if (cs.getCount() == 0) myDb.insert_STATYSTYKI(0, 0, 0);
-        cs.close();
+        if (cursor.getCount() == 0) myDb.insert_STATYSTYKI(0, 0, 0);
 
         facetObr = findViewById(R.id.imageView10);
         kobietaObr = findViewById(R.id.imageView11);
@@ -69,13 +70,11 @@ public class GoToWelcome extends AppCompatActivity {
         kobietaObr.setVisibility(View.INVISIBLE);
         facetObr.setVisibility(View.INVISIBLE);
 
-        Cursor res = myDb.getAllData_UZYTKOWNICY();
-        if (res.getCount() > 0) {
+        cursor = myDb.getAllData_UZYTKOWNICY();
+        if (cursor.getCount() > 0) {
             Intent cel = new Intent(this, SideMenu.class);
             startActivity(cel);
         }
-
-        res.close();
 
         facetObr.setOnClickListener(v -> {
             Drawable highlight = ContextCompat.getDrawable(getApplicationContext(), R.drawable.highlight);

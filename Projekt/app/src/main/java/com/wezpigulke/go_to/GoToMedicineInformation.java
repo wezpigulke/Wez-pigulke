@@ -27,7 +27,6 @@ import java.util.Objects;
 
 public class GoToMedicineInformation extends AppCompatActivity {
 
-    DatabaseHelper myDb;
     private String medicineName;
     private List<String> contentHeaders;
     private List<String> contentInformation;
@@ -37,8 +36,6 @@ public class GoToMedicineInformation extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        myDb = new DatabaseHelper(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.medicine_information);
@@ -166,13 +163,15 @@ public class GoToMedicineInformation extends AppCompatActivity {
 
                 if(medicineCount >50) medicineCount =50;
 
+                String medicineLink, medicineType, medicineDose, medicinePack, medicinePrice;
+
                 for(int i = 0; i< medicineCount; i++) {
                     medicineName = elements.get(i).select("td.name-column > div.name > a").text();
-                    String medicineLink = elements.get(i).select("td.name-column > div.name > a").attr("href");
-                    String medicineType = elements.get(i).select("td").get(3).text();
-                    String medicineDose = elements.get(i).select("td").get(4).text();
-                    String medicinePack = elements.get(i).select("td").get(5).text();
-                    String medicinePrice = elements.get(i).select("td.price-column > span.full-price-block > span.price").text();
+                    medicineLink = elements.get(i).select("td.name-column > div.name > a").attr("href");
+                    medicineType = elements.get(i).select("td").get(3).text();
+                    medicineDose = elements.get(i).select("td").get(4).text();
+                    medicinePack = elements.get(i).select("td").get(5).text();
+                    medicinePrice = elements.get(i).select("td.price-column > span.full-price-block > span.price").text();
                     results.add(new MedicineInformation(medicineName, medicineLink, medicineType, medicineDose, medicinePack, medicinePrice));
                 }
 

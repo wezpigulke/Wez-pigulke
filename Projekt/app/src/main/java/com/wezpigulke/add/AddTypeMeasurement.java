@@ -16,28 +16,39 @@ import java.util.Objects;
 
 public class AddTypeMeasurement extends AppCompatActivity {
 
+    private DatabaseHelper myDb;
+    private Button dodaj;
+    private EditText typBadania;
+    private Cursor cursor;
+
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        DatabaseHelper myDb = new DatabaseHelper(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_type_measurement);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        Button przyciskDodawania = findViewById(R.id.addTypeMeasurementButton);
-        EditText typBadania = findViewById(R.id.typBadania);
+        initializeVariables();
+        dodajListener();
+    }
 
-        przyciskDodawania.setOnClickListener(v -> {
+    private void dodajListener() {
+        dodaj.setOnClickListener(v -> {
             if (typBadania.getText().length() > 0) {
-                Cursor cursor = myDb.getDataID_TYP_POMIAR(typBadania.getText().toString());
+                cursor = myDb.getDataID_TYP_POMIAR(typBadania.getText().toString());
                 if (cursor.getCount() == 0) {
                     myDb.insert_TYP_POMIAR(typBadania.getText().toString());
                     onBackPressed();
                 } else openDialog("Już istnieje typ badania o takiej samej nazwie w naszej bazie danych");
             } else openDialog("Wpisz typ badania");
         });
+    }
+
+    private void initializeVariables() {
+        myDb = new DatabaseHelper(this);
+        dodaj = findViewById(R.id.addTypeMeasurementButton);
+        typBadania = findViewById(R.id.typBadania);
     }
 
     public void openDialog(String warning) {
@@ -48,6 +59,7 @@ public class AddTypeMeasurement extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        cursor.close();
         super.onBackPressed();
         finish();
     }

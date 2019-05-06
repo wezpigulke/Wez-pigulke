@@ -26,6 +26,8 @@ import java.util.Locale;
 
 public class RepeatingActivityReminder extends Activity {
 
+    private Cursor cursor;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -78,14 +80,14 @@ public class RepeatingActivityReminder extends Activity {
 
             b3.setOnClickListener(v -> {
 
-                Cursor cn = myDb.getNiewziete_STATYSTYKI(0);
-                cn.moveToFirst();
-                myDb.update_STATYSTYKI_NIEWZIETE(0, Integer.parseInt(cn.getString(0)) + 1);
+                cursor = myDb.getNiewziete_STATYSTYKI(0);
+                cursor.moveToFirst();
+                myDb.update_STATYSTYKI_NIEWZIETE(0, Integer.parseInt(cursor.getString(0)) + 1);
 
-                Cursor cl = myDb.getDataName_LEK(nazwaLeku);
-                cl.moveToFirst();
-                double iloscLeku = cl.getDouble(2) + jakaDawka;
-                myDb.update_LEK(Integer.parseInt(cl.getString(0)), iloscLeku);
+                cursor = myDb.getDataName_LEK(nazwaLeku);
+                cursor.moveToFirst();
+                double iloscLeku = cursor.getDouble(2) + jakaDawka;
+                myDb.update_LEK(Integer.parseInt(cursor.getString(0)), iloscLeku);
 
                 myDb.update_HISTORIA(id_h, obecnyCzas, "NIEWZIETE");
 
@@ -96,9 +98,9 @@ public class RepeatingActivityReminder extends Activity {
 
             b4.setOnClickListener(v -> {
 
-                Cursor cw = myDb.getWziete_STATYSTYKI(0);
-                cw.moveToFirst();
-                myDb.update_STATYSTYKI_WZIETE(0, Integer.parseInt(cw.getString(0)) + 1);
+                cursor = myDb.getWziete_STATYSTYKI(0);
+                cursor.moveToFirst();
+                myDb.update_STATYSTYKI_WZIETE(0, Integer.parseInt(cursor.getString(0)) + 1);
 
                 myDb.update_HISTORIA(id_h, obecnyCzas, "WZIETE");
 
@@ -122,10 +124,9 @@ public class RepeatingActivityReminder extends Activity {
             String nazwa = getIntent().getStringExtra("nazwa");
             String sumujTypy = getIntent().getStringExtra("sumujTypy");
 
-            Cursor cl = myDb.getNumber_LEK(id);
-            cl.moveToFirst();
-            String ilosc = cl.getString(0);
-
+            cursor = myDb.getNumber_LEK(id);
+            cursor.moveToFirst();
+            String ilosc = cursor.getString(0);
 
             if (Build.VERSION.SDK_INT >= 24) {
                 tNazwa.setText(Html.fromHtml("Nazwa leku: " + "<b>" + nazwa + "</b> ", 0));

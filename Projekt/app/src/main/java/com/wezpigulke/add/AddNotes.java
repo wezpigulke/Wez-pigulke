@@ -33,37 +33,25 @@ public class AddNotes extends AppCompatActivity {
     private Spinner spinner;
     private ArrayList<String> label;
     private String uzytkownik;
+    private ImageView add;
+    private Cursor cursor;
 
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        label = new ArrayList<>();
-        myDb = new DatabaseHelper(this);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_notes);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-
-        setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        ImageView add = findViewById(R.id.saveNotes);
-        nazwaNotatki = findViewById(R.id.notesName);
-        trescNotatki = findViewById(R.id.editNotes);
-
-        nazwaNotatki.requestFocus();
-
-        spinner = findViewById(R.id.profileNotes);
-
-        Cursor res = myDb.getAllName_UZYTKOWNICY();
-        res.moveToFirst();
-        uzytkownik = res.getString(0);
-        res.close();
-
+        initializeVariables();
         loadSpinnerData();
+        addListener();
+        spinnerListener();
 
+    }
+
+    private void spinnerListener() {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -76,7 +64,9 @@ public class AddNotes extends AppCompatActivity {
             }
 
         });
+    }
 
+    private void addListener() {
         add.setOnClickListener(v -> {
 
             if (nazwaNotatki.getText().length() > 0 && trescNotatki.getText().length() > 0) {
@@ -97,6 +87,23 @@ public class AddNotes extends AppCompatActivity {
         });
     }
 
+    private void initializeVariables() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        label = new ArrayList<>();
+        myDb = new DatabaseHelper(this);
+        add = findViewById(R.id.saveNotes);
+        nazwaNotatki = findViewById(R.id.notesName);
+        trescNotatki = findViewById(R.id.editNotes);
+        nazwaNotatki.requestFocus();
+        spinner = findViewById(R.id.profileNotes);
+
+        cursor = myDb.getAllName_UZYTKOWNICY();
+        cursor.moveToFirst();
+        uzytkownik = cursor.getString(0);
+    }
+
     public void openDialog(String text) {
         OpenDialog openDialog = new OpenDialog();
         openDialog.setValue(text);
@@ -105,23 +112,26 @@ public class AddNotes extends AppCompatActivity {
 
     private void loadSpinnerData() {
 
-        try (Cursor cxz = myDb.getAllName_UZYTKOWNICY()) {
+        cursor = myDb.getAllName_UZYTKOWNICY();
 
-            if (cxz.getCount() == 1) {
+        if (cursor.getCount() != 0) {
+            if (cursor.getCount() == 1) {
                 spinner.setVisibility(View.GONE);
             } else {
-                while (cxz.moveToNext()) {
-                    label.add(cxz.getString(0));
+                while (cursor.moveToNext()) {
+                    label.add(cursor.getString(0));
                     ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, label);
                     dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner.setAdapter(dataAdapter);
                 }
             }
         }
+
     }
 
     @Override
     public void onBackPressed() {
+        cursor.close();
         super.onBackPressed();
         finish();
     }

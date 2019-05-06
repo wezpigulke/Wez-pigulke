@@ -43,4 +43,15 @@ public class Reminder {
         return profile;
     }
 
+    public void setMedicine(String medicine) {
+        this.medicine = medicine;
+    }
+
+    public void setHowManyDays(String howManyDays) {
+        this.howManyDays = howManyDays;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
 }

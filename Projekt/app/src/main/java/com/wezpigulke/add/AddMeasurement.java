@@ -35,8 +35,8 @@ public class AddMeasurement extends AppCompatActivity {
 
     DatabaseHelper myDb;
 
-    private Button add;
-    private Button goThen;
+    private Button dodaj;
+    private Button idzDalej;
 
     private TextView dataBadania;
     private DatePickerDialog.OnDateSetListener dataBadaniaListener;
@@ -60,6 +60,7 @@ public class AddMeasurement extends AppCompatActivity {
 
     private int labelSize;
     private int labelSizeCopy;
+    private Cursor cursor;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -71,88 +72,17 @@ public class AddMeasurement extends AppCompatActivity {
         setContentView(R.layout.add_measurement);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        intializeAllElements();
-
-        wynikPomiaru.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(6,2)});
-        wynikPomiaru.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
-
-        Cursor res = myDb.getAllName_UZYTKOWNICY();
-        res.moveToFirst();
-        uzytkownik = res.getString(0);
-
-        res.close();
-
-        wynikPomiaru.setVisibility(View.GONE);
-        add.setVisibility(View.GONE);
-
+        initializeVariables();
         loadSpinnerData();
-        labelSizeCopy = labelSize;
+        typProfiluListener();
+        typBadaniaListener();
+        idzDalejListener();
+        dodajListener();
+        godzinaAndDataListener();
 
-        typProfilu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                uzytkownik = typProfilu.getItemAtPosition(position).toString();
-            }
+    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-
-            }
-        });
-
-        typBadania.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                typ_badania = typBadania.getItemAtPosition(position).toString();
-                if (typ_badania.equals("Dodaj nowy typ")) {
-                    Intent cel = new Intent(parentView.getContext(), AddTypeMeasurement.class);
-                    startActivity(cel);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-
-            }
-        });
-
-        goThen.setOnClickListener(v -> {
-
-            if (!typBadania.getSelectedItem().toString().equals("Wybierz typ badania")) {
-
-                typProfilu.setVisibility(View.GONE);
-                typBadania.setVisibility(View.GONE);
-                dataBadania.setVisibility(View.GONE);
-                godzinaBadania.setVisibility(View.GONE);
-                goThen.setVisibility(View.GONE);
-
-                wynikPomiaru.setVisibility(View.VISIBLE);
-                add.setVisibility(View.VISIBLE);
-
-                wynikPomiaru.requestFocus();
-                showKeyboard();
-
-            } else openDialog("Wybierz typ badania lub dodaj nowy");
-
-        });
-
-        add.setOnClickListener(v -> {
-
-            if (wynikPomiaru.getText().length() <= 16 && wynikPomiaru.getText().length() > 0 && !typBadania.getSelectedItem().toString().equals("Wybierz typ badania") && !typBadania.getSelectedItem().toString().equals("Dodaj nowy typ")) {
-
-                myDb.insert_POMIARY(
-                        typBadania.getSelectedItem().toString(),
-                        Double.valueOf(wynikPomiaru.getText().toString()),
-                        uzytkownik,
-                        godzinaBadania.getText().toString(),
-                        dataBadania.getText().toString()
-                );
-
-                onBackPressed();
-            } else if (wynikPomiaru.getText().length() <= 0) openDialog("Wpisz wynik pomiaru");
-            else openDialog("Wybierz lub dodaj nowy typ badania");
-        });
-
+    private void godzinaAndDataListener() {
         godzinaBadania.setOnClickListener(view -> {
             TimePickerDialog dialog = new TimePickerDialog(AddMeasurement.this, godzinaBadaniaListener, hour, minutes, true);
             dialog.show();
@@ -178,7 +108,79 @@ public class AddMeasurement extends AppCompatActivity {
             else date1 = dayOfMonth + "/" + moonth + "/" + yeear;
             dataBadania.setText(date1);
         };
+    }
 
+    private void dodajListener() {
+        dodaj.setOnClickListener(v -> {
+
+            if (wynikPomiaru.getText().length() <= 16 && wynikPomiaru.getText().length() > 0 && !typBadania.getSelectedItem().toString().equals("Wybierz typ badania") && !typBadania.getSelectedItem().toString().equals("Dodaj nowy typ")) {
+
+                myDb.insert_POMIARY(
+                        typBadania.getSelectedItem().toString(),
+                        Double.valueOf(wynikPomiaru.getText().toString()),
+                        uzytkownik,
+                        godzinaBadania.getText().toString(),
+                        dataBadania.getText().toString()
+                );
+
+                onBackPressed();
+            } else if (wynikPomiaru.getText().length() <= 0) openDialog("Wpisz wynik pomiaru");
+            else openDialog("Wybierz lub dodaj nowy typ badania");
+        });
+    }
+
+    private void idzDalejListener() {
+        idzDalej.setOnClickListener(v -> {
+
+            if (!typBadania.getSelectedItem().toString().equals("Wybierz typ badania")) {
+
+                typProfilu.setVisibility(View.GONE);
+                typBadania.setVisibility(View.GONE);
+                dataBadania.setVisibility(View.GONE);
+                godzinaBadania.setVisibility(View.GONE);
+                idzDalej.setVisibility(View.GONE);
+
+                wynikPomiaru.setVisibility(View.VISIBLE);
+                dodaj.setVisibility(View.VISIBLE);
+
+                wynikPomiaru.requestFocus();
+                showKeyboard();
+
+            } else openDialog("Wybierz typ badania lub dodaj nowy");
+
+        });
+    }
+
+    private void typProfiluListener() {
+        typProfilu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                uzytkownik = typProfilu.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+
+            }
+        });
+    }
+
+    private void typBadaniaListener() {
+        typBadania.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                typ_badania = typBadania.getItemAtPosition(position).toString();
+                if (typ_badania.equals("Dodaj nowy typ")) {
+                    Intent cel = new Intent(parentView.getContext(), AddTypeMeasurement.class);
+                    startActivity(cel);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+
+            }
+        });
     }
 
     public void showKeyboard(){
@@ -195,30 +197,26 @@ public class AddMeasurement extends AppCompatActivity {
 
     private void loadSpinnerData() {
 
-        Cursor cxz = myDb.getAllName_UZYTKOWNICY();
+        cursor = myDb.getAllName_UZYTKOWNICY();
         label.clear();
         labelx.clear();
 
-        if (cxz.getCount() != 0) {
-            while (cxz.moveToNext()) {
-                label.add(cxz.getString(0));
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                label.add(cursor.getString(0));
                 ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, label);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 typProfilu.setAdapter(dataAdapter);
             }
         }
 
-        cxz.close();
+        cursor = myDb.getPomiar_TYP_POMIAR();
 
-        Cursor cxs = myDb.getPomiar_TYP_POMIAR();
-
-        if (cxs.getCount() != 0) {
-            while (cxs.moveToNext()) {
-                labelx.add(cxs.getString(0));
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                labelx.add(cursor.getString(0));
             }
         }
-
-        cxs.close();
 
         labelx.add("Dodaj nowy typ");
         labelx.add("Wybierz typ badania");
@@ -237,6 +235,8 @@ public class AddMeasurement extends AppCompatActivity {
         if (labelSize != labelSizeCopy) typBadania.setSelection(labelSize - 2);
         else typBadania.setSelection(labelSize);
 
+        labelSizeCopy = labelSize;
+
     }
 
     public void openDialog(String text) {
@@ -252,6 +252,7 @@ public class AddMeasurement extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        cursor.close();
         closeKeyboard();
         super.onBackPressed();
         finish();
@@ -261,16 +262,15 @@ public class AddMeasurement extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
-
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void intializeAllElements() {
+    private void initializeVariables() {
 
-        add = findViewById(R.id.dodajMeasurement);
-        goThen = findViewById(R.id.goThen3);
+        dodaj = findViewById(R.id.dodajMeasurement);
+        idzDalej = findViewById(R.id.goThen3);
         typProfilu = findViewById(R.id.spinnerProfileMeasurement);
         typBadania = findViewById(R.id.spinnerTypeMeasurement);
         dataBadania = findViewById(R.id.dateMeasurement);
@@ -297,6 +297,16 @@ public class AddMeasurement extends AppCompatActivity {
 
         dataBadania.setText(date);
         godzinaBadania.setText(time);
+
+        wynikPomiaru.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(6,2)});
+        wynikPomiaru.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+
+        cursor = myDb.getAllName_UZYTKOWNICY();
+        cursor.moveToFirst();
+        uzytkownik = cursor.getString(0);
+
+        wynikPomiaru.setVisibility(View.GONE);
+        dodaj.setVisibility(View.GONE);
 
     }
 

@@ -52,6 +52,7 @@ public class GoToMedicine extends Fragment {
     private Integer medicineCount;
     private View v;
     private Integer id_l;
+    private Cursor cursor;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -131,9 +132,9 @@ public class GoToMedicine extends Fragment {
 
         id_l = results.get(position).getId();
 
-        Cursor cl = myDb.getNumber_LEK(id_l);
-        cl.moveToFirst();
-        String ilosc = cl.getString(0);
+        cursor = myDb.getNumber_LEK(id_l);
+        cursor.moveToFirst();
+        String ilosc = cursor.getString(0);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AlertDialog);
         builder.setTitle("Aktualizacja ilości");
@@ -173,20 +174,24 @@ public class GoToMedicine extends Fragment {
         lv.setAdapter(adapter);
 
         myDb = new DatabaseHelper(getActivity());
-        Cursor c;
 
-        c = myDb.getData_LEK();
+        cursor = myDb.getData_LEK();
 
-        if (c.getCount() != 0) {
-            while (c.moveToNext()) {
-                results.add(new Medicine(c.getInt(0), c.getString(1), c.getString(2)));
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                results.add(new Medicine(cursor.getInt(0), cursor.getString(1), cursor.getString(2)));
             }
         }
-        c.close();
 
         adapter = new MedicineListAdapter(getActivity(), results);
         lv.setAdapter(adapter);
 
+    }
+
+    @Override
+    public void onDestroy() {
+        cursor.close();
+        super.onDestroy();
     }
 
     public void dialogRemove() {
@@ -203,13 +208,13 @@ public class GoToMedicine extends Fragment {
 
     private void usunDane() {
 
-        Cursor cl = myDb.getDataNameFromId_LEK(id);
-        cl.moveToFirst();
-        String nazwa = cl.getString(0);
+        cursor = myDb.getDataNameFromId_LEK(id);
+        cursor.moveToFirst();
+        String nazwa = cursor.getString(0);
 
-        Cursor cp = myDb.getAllDataMedicine_PRZYPOMNIENIE(nazwa);
+        cursor = myDb.getAllDataMedicine_PRZYPOMNIENIE(nazwa);
 
-        if (cp.getCount() == 0) {
+        if (cursor.getCount() == 0) {
             myDb.remove_LEK(id);
             aktualizujBaze();
         } else openDialog("Nie można usunąć. Posiadasz aktywne przypomnienie z tym lekiem.");

@@ -48,4 +48,11 @@ public class Visit {
     }
 
 
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
 }

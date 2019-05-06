@@ -66,6 +66,9 @@ public class GoToSettings extends Fragment {
     private PdfPCell cell;
     private PdfPTable table;
 
+    private Cursor cursor;
+    private Cursor cursorTemp;
+
     private PdfPTable table_result;
 
     private File pdfFile;
@@ -104,27 +107,27 @@ public class GoToSettings extends Fragment {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
 
-                    Cursor cursorAllDataNotyfikacja = myDb.getAllData_NOTYFIKACJA();
+                    cursor = myDb.getAllData_NOTYFIKACJA();
 
-                    if(cursorAllDataNotyfikacja.getCount() != 0) {
-                        while(cursorAllDataNotyfikacja.moveToNext()) {
+                    if(cursor.getCount() != 0) {
+                        while(cursor.moveToNext()) {
 
-                            Cursor cursorRandNotyfikacja = myDb.getRand_NOTYFIKACJA(cursorAllDataNotyfikacja.getInt(0));
-                            cursorRandNotyfikacja.moveToFirst();
-                            cancelAlarm(cursorRandNotyfikacja.getInt(0));
+                            cursor = myDb.getRand_NOTYFIKACJA(cursor.getInt(0));
+                            cursor.moveToFirst();
+                            cancelAlarm(cursor.getInt(0));
 
                         }
                     }
 
-                    Cursor cw = myDb.getAllData_WIZYTY();
+                    cursor = myDb.getAllData_WIZYTY();
 
-                    if(cw.getCount() != 0) {
-                        while(cw.moveToNext()) {
+                    if(cursor.getCount() != 0) {
+                        while(cursor.moveToNext()) {
 
-                            Cursor crand = myDb.getRand_WIZYTY(cw.getInt(0));
-                            crand.moveToFirst();
-                            cancelAlarm(crand.getInt(0));
-                            cancelAlarm(crand.getInt(0)-1);
+                            cursorTemp = myDb.getRand_WIZYTY(cursor.getInt(0));
+                            cursorTemp.moveToFirst();
+                            cancelAlarm(cursorTemp.getInt(0));
+                            cancelAlarm(cursorTemp.getInt(0)-1);
 
                         }
                     }
@@ -157,16 +160,16 @@ public class GoToSettings extends Fragment {
         int wziete = 0;
         int niewziete = 0;
 
-        Cursor cw = myDb.getWziete_STATYSTYKI(0);
-        if(cw.getCount() != 0) {
-            cw.moveToFirst();
-            wziete = Integer.parseInt(cw.getString(0));
+        cursor = myDb.getWziete_STATYSTYKI(0);
+        if(cursor.getCount() != 0) {
+            cursor.moveToFirst();
+            wziete = Integer.parseInt(cursor.getString(0));
         }
 
-        Cursor cn = myDb.getNiewziete_STATYSTYKI(0);
-        if(cn.getCount() != 0) {
-            cn.moveToFirst();
-            niewziete = Integer.parseInt(cn.getString(0));
+        cursor = myDb.getNiewziete_STATYSTYKI(0);
+        if(cursor.getCount() != 0) {
+            cursor.moveToFirst();
+            niewziete = Integer.parseInt(cursor.getString(0));
         }
 
         if (niewziete >= 0 && wziete == 0) progress = 0;
@@ -281,11 +284,11 @@ public class GoToSettings extends Fragment {
         document.add(p);
         document.add(Chunk.NEWLINE);
 
-        Cursor cu = myDb.getAllName_UZYTKOWNICY();
+        cursor = myDb.getAllName_UZYTKOWNICY();
 
-        if (cu.getCount()!=0) {
-            while (cu.moveToNext()) {
-                String user = cu.getString(0);
+        if (cursor.getCount()!=0) {
+            while (cursor.moveToNext()) {
+                String user = cursor.getString(0);
 
                 Paragraph pz = new Paragraph("Profil: " + user,
                         FontFactory.getFont(FontFactory.TIMES_BOLD, 15, Font.BOLD, BaseColor.BLUE));
@@ -303,19 +306,19 @@ public class GoToSettings extends Fragment {
                 generateNewCell("Status");
                 document.add(table);
 
-                Cursor cp = myDb.getUserData_HISTORIA(user);
-                if (cp.getCount() != 0) {
-                    while (cp.moveToNext()) {
+                cursor = myDb.getUserData_HISTORIA(user);
+                if (cursor.getCount() != 0) {
+                    while (cursor.moveToNext()) {
 
                         table_result = new PdfPTable(6);
 
-                        addNewCell(cp.getString(2));
-                        addNewCell(cp.getString(3).substring(0, 5));
-                        addNewCell(cp.getString(4));
-                        addNewCell(cp.getString(5));
-                        addNewCell(cp.getString(6));
+                        addNewCell(cursor.getString(2));
+                        addNewCell(cursor.getString(3).substring(0, 5));
+                        addNewCell(cursor.getString(4));
+                        addNewCell(cursor.getString(5));
+                        addNewCell(cursor.getString(6));
 
-                        String statusHistorii = cp.getString(7);
+                        String statusHistorii = cursor.getString(7);
 
                         switch (statusHistorii) {
                             case "WZIETE":
@@ -380,6 +383,13 @@ public class GoToSettings extends Fragment {
 
         super.onResume();
 
+    }
+
+    @Override
+    public void onDestroy() {
+        cursor.close();
+        cursorTemp.close();
+        super.onDestroy();
     }
 
     private void cancelAlarm(Integer id) {

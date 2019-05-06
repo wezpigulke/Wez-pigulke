@@ -21,7 +21,9 @@ import static android.content.Context.ALARM_SERVICE;
 
 public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
-    DatabaseHelper myDb;
+    private DatabaseHelper myDb;
+    private Cursor cursor;
+    private Cursor cursorTemp;
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
@@ -31,27 +33,27 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
         myDb = new DatabaseHelper(context);
 
-        Cursor c = myDb.getAllData_NOTYFIKACJA();
-        Cursor cv = myDb.getAllData_WIZYTY();
-
         String dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
 
         Date firstDate = null;
         Date secondDate = null;
 
-        if (cv.getCount() != 0) {
-            while(cv.moveToNext()) {
 
-                Integer id = cv.getInt(0);
-                String godzina = cv.getString(1);
-                String data = cv.getString(2);
-                String imie_nazwisko = cv.getString(3);
-                String specjalizacja = cv.getString(4);
-                String profil = cv.getString(5);
-                Integer rand_val = cv.getInt(6);
-                Integer dzwiek = cv.getInt(7);
-                Integer czyWibracja = cv.getInt(8);
+        cursor = myDb.getAllData_WIZYTY();
+
+        if (cursor.getCount() != 0) {
+            while(cursor.moveToNext()) {
+
+                Integer id = cursor.getInt(0);
+                String godzina = cursor.getString(1);
+                String data = cursor.getString(2);
+                String imie_nazwisko = cursor.getString(3);
+                String specjalizacja = cursor.getString(4);
+                String profil = cursor.getString(5);
+                Integer rand_val = cursor.getInt(6);
+                Integer dzwiek = cursor.getInt(7);
+                Integer czyWibracja = cursor.getInt(8);
 
                 try {
                     firstDate = sdf.parse(dzisiejszaData);
@@ -144,21 +146,23 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
         }
 
-        if (c.getCount() != 0) {
-            while (c.moveToNext()) {
+        cursor = myDb.getAllData_NOTYFIKACJA();
+
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
 
 
-                Integer id_n = c.getInt(0);
-                String nazwaLeku = c.getString(1);
-                Double jakaDawka = c.getDouble(2);
-                String godzina = c.getString(3);
-                String data = c.getString(4);
-                String uzytkownik = c.getString(5);
-                Integer id_p = c.getInt(6);
-                Integer iloscDni = c.getInt(7);
-                Integer rand_val = c.getInt(9);
-                Integer dzwiek = c.getInt(10);
-                Integer czyWibracja = c.getInt(11);
+                Integer id_n = cursor.getInt(0);
+                String nazwaLeku = cursor.getString(1);
+                Double jakaDawka = cursor.getDouble(2);
+                String godzina = cursor.getString(3);
+                String data = cursor.getString(4);
+                String uzytkownik = cursor.getString(5);
+                Integer id_p = cursor.getInt(6);
+                Integer iloscDni = cursor.getInt(7);
+                Integer rand_val = cursor.getInt(9);
+                Integer dzwiek = cursor.getInt(10);
+                Integer czyWibracja = cursor.getInt(11);
 
                 try {
                     firstDate = sdf.parse(dzisiejszaData);
@@ -195,12 +199,12 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
                         if (iloscDni <= 0) {
 
-                            Cursor cw = myDb.getCountType_NOTYFIKACJA(id_p);
-                            cw.moveToNext();
+                            cursor = myDb.getCountType_NOTYFIKACJA(id_p);
+                            cursor.moveToNext();
 
                             myDb.remove_NOTYFIKACJA(id_n);
 
-                            if (cw.getInt(0) == 1) myDb.remove_PRZYPOMNIENIE(id_p);
+                            if (cursor.getInt(0) == 1) myDb.remove_PRZYPOMNIENIE(id_p);
 
                             return;
 
@@ -209,51 +213,48 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                             Calendar cz = Calendar.getInstance();
                             SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
-                            Cursor ccc = myDb.getdataID_NOTYFIKACJA(id_n);
-                            ccc.moveToNext();
+                            cursor = myDb.getdataID_NOTYFIKACJA(id_n);
+                            cursor.moveToNext();
 
                             try {
-                                cz.setTime(dt.parse(ccc.getString(4)));
+                                cz.setTime(dt.parse(cursor.getString(4)));
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
 
-                            cz.add(Calendar.DATE, ccc.getInt(8));
+                            cz.add(Calendar.DATE, cursor.getInt(8));
                             dataPrzyszla = dt.format(cz.getTime());
 
                             myDb.updateDate_NOTYFIKACJA(id_n, dataPrzyszla);
 
-                            Cursor cl = myDb.getDataName_LEK(nazwaLeku);
-                            cl.moveToFirst();
+                            cursor = myDb.getDataName_LEK(nazwaLeku);
+                            cursor.moveToFirst();
 
-                            double iloscLeku = cl.getDouble(2) - jakaDawka;
+                            double iloscLeku = cursor.getDouble(2) - jakaDawka;
 
                             if (iloscLeku < 0) iloscLeku = 0;
-                            myDb.update_LEK(cl.getInt(0), iloscLeku);
+                            myDb.update_LEK(cursor.getInt(0), iloscLeku);
 
                         }
 
                     }
 
-                    Cursor cds = myDb.getCountType_NOTYFIKACJA(id_p);
-                    cds.moveToFirst();
+                    cursor = myDb.getCountType_NOTYFIKACJA(id_p);
+                    cursor.moveToFirst();
 
-                    if (cds.getInt(0) == 0) {
+                    if (cursor.getInt(0) == 0) {
                         myDb.remove_PRZYPOMNIENIE(id_p);
                     }
-                    else if (cds.getInt(0) == 1) myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
+                    else if (cursor.getInt(0) == 1) myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
                     else {
-                        Cursor cee = myDb.getCount_NOTYFIKACJA(id_p, dataPrzyszla);
-                        cee.moveToNext();
-                        Cursor ceee = myDb.getCountType_NOTYFIKACJA(id_p);
-                        ceee.moveToNext();
-                        if (cee.getInt(0) == ceee.getInt(0))
+                        cursor = myDb.getCount_NOTYFIKACJA(id_p, dataPrzyszla);
+                        cursor.moveToNext();
+                        cursorTemp = myDb.getCountType_NOTYFIKACJA(id_p);
+                        cursorTemp.moveToNext();
+                        if (cursor.getInt(0) == cursorTemp.getInt(0))
                             myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
                     }
                 } else {
-
-                    Cursor csszz = myDb.getType_PRZYPOMNIENIE(id_p);
-                    csszz.moveToFirst();
 
                     @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfz = new SimpleDateFormat("HH:mm dd/MM/yyyy");
 
@@ -302,6 +303,9 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
             }
 
         }
+
+        cursor.close();
+        cursorTemp.close();
 
     }
 

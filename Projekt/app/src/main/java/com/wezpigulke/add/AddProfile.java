@@ -25,40 +25,23 @@ public class AddProfile extends AppCompatActivity {
     private ImageView facetObr;
     private ImageView kobietaObr;
     private Integer ktoryObrazek;
+    private Button add;
+    private Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        myDb = new DatabaseHelper(this);
-
-        ktoryObrazek = 0;
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_profile);
-
-        facetObr = findViewById(R.id.imageView7);
-        kobietaObr = findViewById(R.id.imageView8);
-
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        Button add = findViewById(R.id.adBut);
-        txt = findViewById(R.id.namField);
+        initializeVariables();
+        addListener();
+        obrazkiListener();
 
-        showKeyboard();
+    }
 
-        add.setOnClickListener(v -> {
-            if (txt.getText().length() > 0) {
-                if(ktoryObrazek!=0) {
-                    Cursor cp = myDb.getId_UZYTKOWNICY(txt.getText().toString());
-                    if (cp.getCount() == 0) {
-                        myDb.insert_UZYTKOWNICY(txt.getText().toString(), ktoryObrazek);
-                        closeKeyboard();
-                        onBackPressed();
-                    } else openDialog("Już istnieje osoba o takim imieniu w naszej bazie danych");
-                } else openDialog("Musisz wybrać obrazek");
-            } else openDialog("Wpisz imie");
-        });
-
+    private void obrazkiListener() {
         facetObr.setOnClickListener(v -> {
             Drawable highlight = ContextCompat.getDrawable(getApplicationContext(), R.drawable.highlight);
             facetObr.setBackground(highlight);
@@ -73,7 +56,34 @@ public class AddProfile extends AppCompatActivity {
             ktoryObrazek = 2;
 
         });
+    }
 
+    private void addListener(){
+        add.setOnClickListener(v -> {
+            if (txt.getText().length() > 0) {
+                if(ktoryObrazek!=0) {
+                    cursor = myDb.getId_UZYTKOWNICY(txt.getText().toString());
+                    if (cursor.getCount() == 0) {
+                        myDb.insert_UZYTKOWNICY(txt.getText().toString(), ktoryObrazek);
+                        closeKeyboard();
+                        onBackPressed();
+                    }
+                    else openDialog("Już istnieje osoba o takim imieniu w naszej bazie danych");
+                } else openDialog("Musisz wybrać obrazek");
+            } else openDialog("Wpisz imie");
+        });
+    }
+
+    private void initializeVariables() {
+        myDb = new DatabaseHelper(this);
+        ktoryObrazek = 0;
+        facetObr = findViewById(R.id.imageView7);
+        kobietaObr = findViewById(R.id.imageView8);
+
+        add = findViewById(R.id.adBut);
+        txt = findViewById(R.id.namField);
+
+        showKeyboard();
     }
 
     public void openDialog(String warning) {
@@ -84,6 +94,7 @@ public class AddProfile extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        cursor.close();
         super.onBackPressed();
         finish();
     }

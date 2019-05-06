@@ -34,6 +34,7 @@ public class GoToDoctors extends Fragment {
     private Integer idd;
     private String nrtel;
     private String adres;
+    private Cursor cursor;
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -60,6 +61,12 @@ public class GoToDoctors extends Fragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        cursor.close();
+        super.onDestroy();
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     public void onResume() {
 
@@ -69,13 +76,17 @@ public class GoToDoctors extends Fragment {
         lv.setOnItemClickListener((parent, view, i, l) -> {
 
             int idd = (int) view.getTag();
-            Cursor c = myDb.getIdData_DOKTORZY(idd);
-            c.moveToFirst();
-            nrtel = c.getString(3);
-            adres = c.getString(4);
-            if(nrtel.equals("0")) dialogCallOrNavigate(false);
-            else dialogCallOrNavigate(true);
-            c.close();
+            cursor = myDb.getIdData_DOKTORZY(idd);
+
+            if(cursor.getCount()!=0) {
+                cursor.moveToFirst();
+                nrtel = cursor.getString(3);
+                adres = cursor.getString(4);
+            }
+
+            if(nrtel.equals("0")) {
+                dialogCallOrNavigate(false);
+            } else dialogCallOrNavigate(true);
 
         });
 
@@ -110,16 +121,15 @@ public class GoToDoctors extends Fragment {
         results.clear();
 
         myDb = new DatabaseHelper(getActivity());
-        Cursor c = myDb.getAllData_DOKTORZY();
+        cursor = myDb.getAllData_DOKTORZY();
 
-        if (c.getCount() != 0) {
-            while (c.moveToNext()) {
-                if(c.getString(3).equals("0")) {
-                    results.add(new Doctor(c.getInt(0), c.getString(1), c.getString(2), c.getString(4)));
-                } else results.add(new Doctor(c.getInt(0), c.getString(1), c.getString(2), c.getString(4)));
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+                if(cursor.getString(3).equals("0")) {
+                    results.add(new Doctor(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(4)));
+                } else results.add(new Doctor(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(4)));
             }
         }
-        c.close();
 
         DoctorListAdapter adapter = new DoctorListAdapter(getActivity(), results);
         lv.setAdapter(adapter);

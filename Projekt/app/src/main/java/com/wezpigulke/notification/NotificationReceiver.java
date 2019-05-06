@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
@@ -31,6 +30,8 @@ import static android.content.Context.ALARM_SERVICE;
 public class NotificationReceiver extends BroadcastReceiver {
 
     private Uri alarmSound;
+    private Cursor cursor;
+    private Cursor cursorTemp;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -60,12 +61,12 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             int delay = 60*60*100;
 
-            Cursor col = myDb.getdataID_NOTYFIKACJA(id_n);
+            cursor = myDb.getdataID_NOTYFIKACJA(id_n);
 
-            if (col.getCount() != 0) {
-                col.moveToNext();
-                data = col.getString(4);
-                iloscDni = col.getInt(9);
+            if (cursor.getCount() != 0) {
+                cursor.moveToNext();
+                data = cursor.getString(4);
+                iloscDni = cursor.getInt(9);
             }
 
             String uzytkownik = intent.getStringExtra("uzytkownik");
@@ -75,9 +76,6 @@ public class NotificationReceiver extends BroadcastReceiver {
             int wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
             int czyWibracja = intent.getIntExtra("czyWibracja", 0);
             Integer rand_val = intent.getIntExtra("rand_val", 0);
-
-            Cursor cs = myDb.getdataID_NOTYFIKACJA(id_n);
-            cs.moveToNext();
 
             try {
                 firstDate = sdf.parse(dzisiejszaData);
@@ -106,9 +104,9 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                 String dataPrzyszla = data;
 
-                Cursor ct = myDb.getdataID_NOTYFIKACJA(id_n);
+                cursor = myDb.getdataID_NOTYFIKACJA(id_n);
 
-                if (ct.getCount() != 0 && diff+delay < 0) {
+                if (cursor.getCount() != 0 && diff+delay < 0) {
 
                         while (diff < 0) {
 
@@ -117,14 +115,14 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                             if (iloscDni <= 0) {
 
-                                Cursor cw = myDb.getCountType_NOTYFIKACJA(id_p);
-                                cw.moveToNext();
+                                cursor = myDb.getCountType_NOTYFIKACJA(id_p);
+                                cursor.moveToNext();
 
                                 myDb.remove_NOTYFIKACJA(id_n);
 
                                 Log.d("NotificationReceiver", "Usunięcie notyfikacji o id:" + id_n);
 
-                                if (cw.getInt(0) == 1) {
+                                if (cursor.getInt(0) == 1) {
                                     myDb.remove_PRZYPOMNIENIE(id_p);
                                     Log.d("NotificationReceiver", "Usunięcie przypomnienia o id: " + id_p);
                                 }
@@ -136,31 +134,31 @@ public class NotificationReceiver extends BroadcastReceiver {
                                 Calendar cz = Calendar.getInstance();
                                 SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
-                                Cursor ccc = myDb.getdataID_NOTYFIKACJA(id_n);
-                                ccc.moveToNext();
+                                cursor = myDb.getdataID_NOTYFIKACJA(id_n);
+                                cursor.moveToNext();
 
                                 try {
-                                    cz.setTime(dt.parse(ccc.getString(4)));
+                                    cz.setTime(dt.parse(cursor.getString(4)));
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
 
-                                cz.add(Calendar.DATE, ccc.getInt(8));
+                                cz.add(Calendar.DATE, cursor.getInt(8));
                                 dataPrzyszla = dt.format(cz.getTime());
 
                                 myDb.updateDate_NOTYFIKACJA(id_n, dataPrzyszla);
 
-                                Cursor cl = myDb.getDataName_LEK(nazwaLeku);
-                                cl.moveToFirst();
+                                cursor = myDb.getDataName_LEK(nazwaLeku);
+                                cursor.moveToFirst();
 
-                                double iloscLeku = cl.getDouble(2) - jakaDawka;
+                                double iloscLeku = cursor.getDouble(2) - jakaDawka;
 
                                 if (iloscLeku < 0) iloscLeku = 0;
-                                myDb.update_LEK(cl.getInt(0), iloscLeku);
+                                myDb.update_LEK(cursor.getInt(0), iloscLeku);
 
-                                Cursor csszz = myDb.getType_PRZYPOMNIENIE(id_p);
-                                csszz.moveToFirst();
-                                int typPrz = csszz.getInt(0);
+                                cursor = myDb.getType_PRZYPOMNIENIE(id_p);
+                                cursor.moveToFirst();
+                                int typPrz = cursor.getInt(0);
 
                                 @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfz = new SimpleDateFormat("HH:mm dd/MM/yyyy");
                                 @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfzx = new SimpleDateFormat("dd/MM/yyyy");
@@ -212,44 +210,43 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                         }
 
-                        Cursor cds = myDb.getCountType_NOTYFIKACJA(id_p);
-                        cds.moveToFirst();
+                        cursor = myDb.getCountType_NOTYFIKACJA(id_p);
+                        cursor.moveToFirst();
 
-                        if (cds.getInt(0) == 0) {
+                        if (cursor.getInt(0) == 0) {
                             myDb.remove_PRZYPOMNIENIE(id_p);
                             Log.d("NotificationReceiver", "Usunięcie przypomnienia o id: " + id_p);
-                        } else if (cds.getInt(0) == 1) {
+                        } else if (cursor.getInt(0) == 1) {
                             myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
                         } else {
-                            Cursor cee = myDb.getCount_NOTYFIKACJA(id_p, dataPrzyszla);
-                            cee.moveToNext();
-                            Cursor ceee = myDb.getCountType_NOTYFIKACJA(id_p);
-                            ceee.moveToNext();
-                            if (cee.getInt(0) == ceee.getInt(0)) {
+                            cursor = myDb.getCount_NOTYFIKACJA(id_p, dataPrzyszla);
+                            cursor.moveToNext();
+                            cursorTemp = myDb.getCountType_NOTYFIKACJA(id_p);
+                            cursorTemp.moveToNext();
+                            if (cursor.getInt(0) == cursorTemp.getInt(0)) {
                                 myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
                             }
-
                     }
 
                 } else {
 
                     myDb.insert_HISTORIA(uzytkownik, godzina, data, nazwaLeku, jakaDawka, "BRAK", "BRAK");
 
-                    Cursor cm = myDb.getMAXid_HISTORIA();
-                    cm.moveToFirst();
-                    Integer id_h = Integer.parseInt(cm.getString(0));
+                    cursor = myDb.getMAXid_HISTORIA();
+                    cursor.moveToFirst();
+                    Integer id_h = Integer.parseInt(cursor.getString(0));
 
-                    Cursor cssss = myDb.getDays_PRZYPOMNIENIE(id_p);
-                    cssss.moveToFirst();
-                    iloscDni = cssss.getInt(0);
+                    cursor = myDb.getDays_PRZYPOMNIENIE(id_p);
+                    cursor.moveToFirst();
+                    iloscDni = cursor.getInt(0);
                     iloscDni--;
 
-                    Cursor cz = myDb.getCount_NOTYFIKACJA(id_p, data);
-                    cz.moveToFirst();
+                    cursor = myDb.getCount_NOTYFIKACJA(id_p, data);
+                    cursor.moveToFirst();
 
                     if (iloscDni < 0) {
 
-                        if (Integer.parseInt(cz.getString(0)) == 1) {
+                        if (Integer.parseInt(cursor.getString(0)) == 1) {
 
                             myDb.remove_PRZYPOMNIENIE(id_p);
                             Log.d("NotificationReceiver", "Usunięcie przypomnienia o id: " + id_p);
@@ -262,24 +259,21 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                     } else {
 
-                        if (Integer.parseInt(cz.getString(0)) == 1)  {
+                        if (Integer.parseInt(cursor.getString(0)) == 1)  {
 
                             myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
 
                         } else {
 
-                            Cursor coxl = myDb.getType_PRZYPOMNIENIE(id_p);
+                            cursor = myDb.getType_PRZYPOMNIENIE(id_p);
 
-                            if(coxl.getCount() != 0) {
-                                coxl.moveToNext();
+                            if(cursor.getCount() != 0) {
+                                cursor.moveToNext();
 
-                                int typ_p = coxl.getInt(0);
+                                int typ_p = cursor.getInt(0);
 
                                 Calendar calx = Calendar.getInstance();
                                 SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-
-                                Cursor ccc = myDb.getdataID_NOTYFIKACJA(id_n);
-                                ccc.moveToNext();
 
                                 try {
                                     calx.setTime(dt.parse(data));
@@ -359,9 +353,9 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                         if(iloscDni >= 1) {
 
-                            Cursor csszz = myDb.getType_PRZYPOMNIENIE(id_p);
-                            csszz.moveToFirst();
-                            int typPrz = csszz.getInt(0);
+                            cursor = myDb.getType_PRZYPOMNIENIE(id_p);
+                            cursor.moveToFirst();
+                            int typPrz = cursor.getInt(0);
 
                             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfz = new SimpleDateFormat("HH:mm dd/MM/yyyy");
                             @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfzx = new SimpleDateFormat("dd/MM/yyyy");
@@ -414,48 +408,44 @@ public class NotificationReceiver extends BroadcastReceiver {
                             myDb.remove_NOTYFIKACJA(id_n);
                             Log.d("NotificationReceiver", "Usunięcie notyfikacji: " + id_n);
 
-                            Cursor c_policz = myDb.getCountType_NOTYFIKACJA(id_p);
-                            if(c_policz != null) {
-                                c_policz.moveToFirst();
-                                if(c_policz.getInt(0)==0) {
+                            cursor = myDb.getCountType_NOTYFIKACJA(id_p);
+                            if(cursor != null) {
+                                cursor.moveToFirst();
+                                if(cursor.getInt(0)==0) {
                                     myDb.remove_PRZYPOMNIENIE(id_p);
                                     Log.d("NotificationReceiver", "Usunięcie przypomnienia o id: " + id_p);
                                 }
-                                c_policz.close();
                             }
 
                         }
 
-                        Cursor cd = myDb.getDays_PRZYPOMNIENIE(id_p);
-                        cd.moveToFirst();
+                        cursor = myDb.getDataName_LEK(nazwaLeku);
+                        cursor.moveToFirst();
 
-                        Cursor cl = myDb.getDataName_LEK(nazwaLeku);
-                        cl.moveToFirst();
-
-                        double iloscLeku = cl.getDouble(2) - jakaDawka;
+                        double iloscLeku = cursor.getDouble(2) - jakaDawka;
 
                         if (iloscLeku < 0) iloscLeku = 0;
 
-                        myDb.update_LEK(cl.getInt(0), iloscLeku);
-                        Integer id = Integer.parseInt(cl.getString(0));
+                        myDb.update_LEK(cursor.getInt(0), iloscLeku);
+                        Integer id = Integer.parseInt(cursor.getString(0));
 
-                        Cursor cp = myDb.getIDfromMedicine_PRZYPOMNIENIE(nazwaLeku);
+                        cursor = myDb.getIDfromMedicine_PRZYPOMNIENIE(nazwaLeku);
                         double ileNotyfikacji, typPrzypomnienia, pozostalaIloscDni;
                         double sumujTypy = 0.0;
 
-                        while (cp.moveToNext()) {
+                        while (cursor.moveToNext()) {
 
-                            Cursor csa = myDb.getCountType_NOTYFIKACJA(cp.getInt(0));
-                            csa.moveToFirst();
-                            ileNotyfikacji = csa.getDouble(0);
+                            cursor = myDb.getCountType_NOTYFIKACJA(cursor.getInt(0));
+                            cursor.moveToFirst();
+                            ileNotyfikacji = cursor.getDouble(0);
 
-                            Cursor css = myDb.getType_PRZYPOMNIENIE(cp.getInt(0));
-                            css.moveToFirst();
-                            typPrzypomnienia = css.getInt(0);
+                            cursor = myDb.getType_PRZYPOMNIENIE(cursor.getInt(0));
+                            cursor.moveToFirst();
+                            typPrzypomnienia = cursor.getInt(0);
 
-                            Cursor cssz = myDb.getDays_PRZYPOMNIENIE(cp.getInt(0));
-                            cssz.moveToFirst();
-                            pozostalaIloscDni = cssz.getDouble(0);
+                            cursor = myDb.getDays_PRZYPOMNIENIE(cursor.getInt(0));
+                            cursor.moveToFirst();
+                            pozostalaIloscDni = cursor.getDouble(0);
 
                             if (typPrzypomnienia > 1) {
 
@@ -481,7 +471,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                             repeating_intent.putExtra("coPokazac", 1);
                             repeating_intent.putExtra("id", id);
-                            repeating_intent.putExtra("nazwa", cl.getString(1));
+                            repeating_intent.putExtra("nazwa", cursor.getString(1));
                             repeating_intent.putExtra("sumujTypy", String.valueOf(sumujTypy));
                             repeating_intent.putExtra("rand_val", rand_val - 3);
 
@@ -497,7 +487,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                                     .setContentIntent(pendingIntent)
                                     .setSmallIcon(R.mipmap.ic_launcher_round)
                                     .setContentTitle("Weź pigułke")
-                                    .setContentText("UWAGA | Pozostało tylko " + iloscLeku + " tabletek leku " + cl.getString(1))
+                                    .setContentText("UWAGA | Pozostało tylko " + iloscLeku + " tabletek leku " + cursor.getString(1))
                                     .setAutoCancel(true)
                                     .setOnlyAlertOnce(true);
 
@@ -559,12 +549,10 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             if (diff+delay < 0) {
 
-                Cursor crand = myDb.getRand_WIZYTY(id_v);
+                cursor = myDb.getRand_WIZYTY(id_v);
 
-                if (crand.getCount() != 0) {
-
+                if (cursor.getCount() != 0) {
                     myDb.remove_WIZYTY(id_v);
-
                 }
 
             } else {
@@ -609,6 +597,9 @@ public class NotificationReceiver extends BroadcastReceiver {
             }
 
         }
+
+        cursor.close();
+        cursorTemp.close();
 
     }
 
