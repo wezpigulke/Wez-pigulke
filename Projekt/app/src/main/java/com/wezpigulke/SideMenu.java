@@ -71,7 +71,7 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
 
     @Override
     protected void onDestroy() {
-        cursor.close();
+        if(cursor!=null) cursor.close();
         super.onDestroy();
     }
 

@@ -409,7 +409,7 @@ public class AddVisit extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        cursor.close();
+        if(cursor!=null) cursor.close();
         stopPlaying();
         super.onBackPressed();
         finish();

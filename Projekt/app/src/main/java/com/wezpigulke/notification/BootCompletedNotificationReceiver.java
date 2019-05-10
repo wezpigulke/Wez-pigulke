@@ -304,8 +304,8 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
         }
 
-        cursor.close();
-        cursorTemp.close();
+        if(cursor!=null) cursor.close();
+        if(cursorTemp!=null) cursorTemp.close();
 
     }
 

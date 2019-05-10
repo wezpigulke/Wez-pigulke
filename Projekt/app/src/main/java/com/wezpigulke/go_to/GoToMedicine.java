@@ -190,7 +190,7 @@ public class GoToMedicine extends Fragment {
 
     @Override
     public void onDestroy() {
-        cursor.close();
+        if(cursor!=null) cursor.close();
         super.onDestroy();
     }
 

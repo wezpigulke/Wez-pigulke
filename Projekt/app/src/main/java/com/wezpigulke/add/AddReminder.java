@@ -98,6 +98,14 @@ public class AddReminder extends AppCompatActivity {
     private SimpleDateFormat sdf;
     private Cursor cursor;
 
+    private String data;
+    private String czas;
+    private String rok;
+    private String miesiac;
+    private String dzien;
+    private String godzina;
+    private String minuta;
+
     private TextView setTime1;
     private TextView setTime2;
     private TextView setTime3;
@@ -281,7 +289,7 @@ public class AddReminder extends AppCompatActivity {
         stopPlaying();
 
         if(dodaj.getVisibility()==View.GONE) {
-            cursor.close();
+            if(cursor!=null) cursor.close();
             super.onBackPressed();
             finish();
         } else {
@@ -376,15 +384,22 @@ public class AddReminder extends AppCompatActivity {
         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
     }
 
+    private void setDateToActual() {
+        data = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        czas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
+        rok = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
+        miesiac = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
+        dzien = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
+        godzina = new SimpleDateFormat("HH", Locale.getDefault()).format(new Date());
+        minuta = new SimpleDateFormat("mm", Locale.getDefault()).format(new Date());
+    }
+
     @SuppressLint("SetTextI18n")
     private void intializeAllVariables() {
 
         myDb = new DatabaseHelper(this);
 
         czyWibracja = 0;
-
-        final String date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
 
         label = new ArrayList<>();
         labelDawka = new ArrayList<>();
@@ -396,11 +411,7 @@ public class AddReminder extends AppCompatActivity {
         coWybrane = 0;
         ileRazyDziennie = 2;
 
-        String rok = new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date());
-        String miesiac = new SimpleDateFormat("MM", Locale.getDefault()).format(new Date());
-        String dzien = new SimpleDateFormat("dd", Locale.getDefault()).format(new Date());
-        String godzina = new SimpleDateFormat("HH", Locale.getDefault()).format(new Date());
-        String minuta = new SimpleDateFormat("mm", Locale.getDefault()).format(new Date());
+        setDateToActual();
 
         year = Integer.parseInt(rok);
         month = Integer.parseInt(miesiac);
@@ -452,13 +463,14 @@ public class AddReminder extends AppCompatActivity {
         array.add(setTime11);
         array.add(setTime12);
 
-        dataTabletka.setText(date);
-        godzinaTabletka.setText(time);
+        dataTabletka.setText(data);
+        godzinaTabletka.setText(czas);
 
         for (int i = 0; i < 12; i++) {
             array.get(i).setText("00:00");
         }
 
+        cursor = myDb.getAllName_UZYTKOWNICY();
         cursor.moveToFirst();
         uzytkownik = cursor.getString(0);
         wlasnaDawka = "";

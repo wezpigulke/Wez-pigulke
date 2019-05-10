@@ -187,7 +187,7 @@ public class GoToReminder extends Fragment {
 
     @Override
     public void onDestroy() {
-        cursor.close();
+        if(cursor!=null) cursor.close();
         cursorTemp.close();
         super.onDestroy();
     }

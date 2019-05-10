@@ -94,7 +94,7 @@ public class AddProfile extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        cursor.close();
+        if(cursor!=null) cursor.close();
         super.onBackPressed();
         finish();
     }

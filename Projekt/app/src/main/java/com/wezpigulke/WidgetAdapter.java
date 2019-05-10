@@ -12,6 +12,8 @@ import com.wezpigulke.classes.Today;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -54,7 +56,10 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
         } else {
             todayArrayList.add(new Today(-1, "Brak przypomnień w dniu dzisiejszym", "", ""));
         }
-        cursor.close();
+        if(cursor!=null) cursor.close();
+
+        Collections.sort(todayArrayList, new CustomComparator());
+
     }
 
     private void countDiff(String time, String date) {
@@ -134,5 +139,12 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public boolean hasStableIds() {
         return true;
+    }
+
+    public class CustomComparator implements Comparator<Today> {
+        @Override
+        public int compare(Today o1, Today o2) {
+            return o1.getDate().compareTo(o2.getDate());
+        }
     }
 }

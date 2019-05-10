@@ -27,17 +27,17 @@ public class WidgetProvider extends AppWidgetProvider {
             Intent serviceIntent = new Intent(context, WidgetService.class);
             remoteViews.setRemoteAdapter(R.id.listView, serviceIntent);
 
-            Intent intent = new Intent(context, WidgetProvider.class);
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            Intent update = new Intent();
+            update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+            update.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 
-            PendingIntent pendingSync = PendingIntent.getBroadcast(context,0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingSync = PendingIntent.getBroadcast(context,0, update, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.buttonAkt, pendingSync);
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     context,
                     0,
-                    intent,
+                    update,
                     PendingIntent.FLAG_UPDATE_CURRENT
             );
 

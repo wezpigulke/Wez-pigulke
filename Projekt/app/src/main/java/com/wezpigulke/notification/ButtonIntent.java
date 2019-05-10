@@ -69,7 +69,7 @@ public class ButtonIntent extends BroadcastReceiver {
 
         }
 
-        cursor.close();
+        if(cursor!=null) cursor.close();
     }
 
 }

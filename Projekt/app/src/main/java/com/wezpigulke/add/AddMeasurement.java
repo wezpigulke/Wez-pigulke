@@ -252,7 +252,7 @@ public class AddMeasurement extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        cursor.close();
+        if(cursor!=null) cursor.close();
         closeKeyboard();
         super.onBackPressed();
         finish();
