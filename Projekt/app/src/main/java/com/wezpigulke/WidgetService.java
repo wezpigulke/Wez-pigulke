@@ -1,7 +1,12 @@
 package com.wezpigulke;
 
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.widget.RemoteViewsService;
+
+@RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
+
 
 public class WidgetService extends RemoteViewsService {
     @Override

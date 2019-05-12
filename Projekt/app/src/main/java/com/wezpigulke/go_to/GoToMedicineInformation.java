@@ -10,7 +10,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
 import com.wezpigulke.classes.MedicineInformation;
 import com.wezpigulke.adapters.MedicineInformationListAdapter;
@@ -48,12 +47,12 @@ public class GoToMedicineInformation extends AppCompatActivity {
 
         medicineName = getIntent().getStringExtra("medicineName");
 
-        new getInformationAboutMedicine().execute();
+        new GetInformationAboutMedicine().execute();
 
         lv.setOnItemClickListener((parent, view, position, id) -> {
 
             url = results.get(position).getLink();
-            new getMedicineInformation().execute();
+            new GetMedicineInformation().execute();
 
         });
 
@@ -68,34 +67,28 @@ public class GoToMedicineInformation extends AppCompatActivity {
 
 
     @SuppressLint("StaticFieldLeak")
-    public class getMedicineInformation extends AsyncTask<Void, Void, Void> {
+    public class GetMedicineInformation extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
 
             try {
-
                 Document doc = Jsoup.connect("http://bazalekow.leksykon.com.pl/" + url).get();
                 int contentSize = doc.select("span.descr_common > span.descr_section").size();
-
                 contentHeaders.clear();
                 contentInformation.clear();
 
                 for(int i = 0; i< contentSize; i++) {
-
                     String content = doc.select("span.descr_common > span.descr_section").get(i).select("span.descr_head").text();
                     if(content.length()>0) {
                         contentHeaders.add(content);
                         content = doc.select("span.descr_common > span.descr_section").get(i).select("span.descr_body").text();
                         contentInformation.add(content);
                     }
-
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return null;
         }
 
@@ -147,22 +140,17 @@ public class GoToMedicineInformation extends AppCompatActivity {
 
 
     @SuppressLint("StaticFieldLeak")
-    public class getInformationAboutMedicine extends AsyncTask<Void, Void, Void> {
+    public class GetInformationAboutMedicine extends AsyncTask<Void, Void, Void> {
 
         @SuppressLint("ShowToast")
         @Override
         protected Void doInBackground(Void... params) {
-
             try {
-
                 Document doc = Jsoup.connect("http://bazalekow.leksykon.com.pl/szukaj-leku.html?a=search&o=0&p=50&cmn=" +  medicineName).get();
                 Elements elements = doc.select("div.results-drug-list-block.block-shadow > div.header-block > span.quantity-block > span.quantity");
                 int medicineCount = Integer.parseInt(elements.text());
-
                 elements = doc.select("div.results-drug-list-block.block-shadow > table > tbody > tr");
-
-                if(medicineCount >50) medicineCount =50;
-
+                if(medicineCount>50) medicineCount=50;
                 String medicineLink, medicineType, medicineDose, medicinePack, medicinePrice;
 
                 for(int i = 0; i< medicineCount; i++) {
@@ -174,11 +162,9 @@ public class GoToMedicineInformation extends AppCompatActivity {
                     medicinePrice = elements.get(i).select("td.price-column > span.full-price-block > span.price").text();
                     results.add(new MedicineInformation(medicineName, medicineLink, medicineType, medicineDose, medicinePack, medicinePrice));
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return null;
         }
 
@@ -199,12 +185,10 @@ public class GoToMedicineInformation extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                onBackPressed();
-                closeKeyboard();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            closeKeyboard();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

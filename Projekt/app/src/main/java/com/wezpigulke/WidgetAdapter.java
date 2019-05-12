@@ -24,7 +24,6 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
     private ArrayList<Today> todayArrayList;
     private long diffDays;
     private long diffInMillis;
-    private Cursor cursor;
 
     WidgetAdapter(Context context) {
         this.context = context;
@@ -32,34 +31,30 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onCreate() {
-        Log.d("WidgetAdapter", "onCreate()");
     }
 
     @Override
     public void onDataSetChanged() {
-
-        Log.d("WidgetAdapter", "onDataSetChanged()");
-
         DatabaseHelper myDb = new DatabaseHelper(context);
-        cursor = myDb.getAllData_NOTYFIKACJA();
+        Cursor cursor = myDb.getAllData_NOTYFIKACJA();
         todayArrayList = new ArrayList<>();
 
         if(cursor.getCount()!=0) {
             while(cursor.moveToNext()) {
-
                 countDiff(cursor.getString(3), cursor.getString(4));
-
                 if (diffDays == 0 && diffInMillis >= 0) {
-                    todayArrayList.add(new Today(cursor.getInt(0), cursor.getString(1) + " (Dawka: " + cursor.getString(2) + ")", "Godzina: " + cursor.getString(3), cursor.getString(5)));
+                    todayArrayList.add(new Today(cursor.getInt(0),
+                                        cursor.getString(1) + " (Dawka: " + cursor.getString(2) + ")",
+                                           "Godzina: " + cursor.getString(3),
+                                                 cursor.getString(5)));
                 }
             }
-        } else {
+        }
+        if(todayArrayList.size()==0){
             todayArrayList.add(new Today(-1, "Brak przypomnień w dniu dzisiejszym", "", ""));
         }
-        if(cursor!=null) cursor.close();
-
         Collections.sort(todayArrayList, new CustomComparator());
-
+        cursor.close();
     }
 
     private void countDiff(String time, String date) {
@@ -107,8 +102,6 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public RemoteViews getViewAt(int position) {
-
-        Log.d("WidgetAdapter", "getViewAt()");
 
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.list_item);
         remoteViews.setTextViewText(R.id.profileReminderWidget, todayArrayList.get(position).getProfile());

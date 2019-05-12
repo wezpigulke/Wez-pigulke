@@ -44,6 +44,7 @@ public class GoToWelcome extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.welcome);
 
         ktoryObrazek = 0;
