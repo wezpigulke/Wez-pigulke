@@ -54,6 +54,7 @@
             android:name=".add.AddReminder"
             android:configChanges="orientation"
             android:label="Dodawanie przypomnienia"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name=".add.AddDoctor"

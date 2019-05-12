@@ -1,7 +1,5 @@
 package com.wezpigulke.go_to;
 
-import android.annotation.SuppressLint;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -13,20 +11,17 @@ import android.widget.Toast;
 import com.wezpigulke.R;
 import com.wezpigulke.classes.MedicineInformation;
 import com.wezpigulke.adapters.MedicineInformationListAdapter;
+import com.wezpigulke.get.GetInformationAboutMedicine;
+import com.wezpigulke.get.GetMedicineInformation;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 
 public class GoToMedicineInformation extends AppCompatActivity {
 
-    private String medicineName;
     private List<String> contentHeaders;
     private List<String> contentInformation;
     private List<MedicineInformation> results;
@@ -45,14 +40,36 @@ public class GoToMedicineInformation extends AppCompatActivity {
         contentHeaders = new ArrayList<>();
         contentInformation = new ArrayList<>();
 
-        medicineName = getIntent().getStringExtra("medicineName");
-
-        new GetInformationAboutMedicine().execute();
+        String medicineName = getIntent().getStringExtra("medicineName");
+        GetInformationAboutMedicine getInformationAboutMedicine = new GetInformationAboutMedicine(medicineName);
+        getInformationAboutMedicine.execute();
+        try {
+            getInformationAboutMedicine.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        results = getInformationAboutMedicine.getResults();
+        aktualizujListe();
 
         lv.setOnItemClickListener((parent, view, position, id) -> {
 
             url = results.get(position).getLink();
-            new GetMedicineInformation().execute();
+            GetMedicineInformation getMedicineInformation= new GetMedicineInformation(url);
+            getMedicineInformation.execute();
+
+            try {
+                getMedicineInformation.get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            contentHeaders = getMedicineInformation.getContentHeaders();
+            contentInformation = getMedicineInformation.getContentInformation();
+            dialogShowInformation();
 
         });
 
@@ -62,42 +79,6 @@ public class GoToMedicineInformation extends AppCompatActivity {
 
         MedicineInformationListAdapter adapter = new MedicineInformationListAdapter(getApplicationContext(), results);
         lv.setAdapter(adapter);
-
-    }
-
-
-    @SuppressLint("StaticFieldLeak")
-    public class GetMedicineInformation extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            try {
-                Document doc = Jsoup.connect("http://bazalekow.leksykon.com.pl/" + url).get();
-                int contentSize = doc.select("span.descr_common > span.descr_section").size();
-                contentHeaders.clear();
-                contentInformation.clear();
-
-                for(int i = 0; i< contentSize; i++) {
-                    String content = doc.select("span.descr_common > span.descr_section").get(i).select("span.descr_head").text();
-                    if(content.length()>0) {
-                        contentHeaders.add(content);
-                        content = doc.select("span.descr_common > span.descr_section").get(i).select("span.descr_body").text();
-                        contentInformation.add(content);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @SuppressLint("ResourceType")
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            dialogShowInformation();
-        }
 
     }
 
@@ -135,45 +116,6 @@ public class GoToMedicineInformation extends AppCompatActivity {
                 });
 
         builder.show();
-
-    }
-
-
-    @SuppressLint("StaticFieldLeak")
-    public class GetInformationAboutMedicine extends AsyncTask<Void, Void, Void> {
-
-        @SuppressLint("ShowToast")
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                Document doc = Jsoup.connect("http://bazalekow.leksykon.com.pl/szukaj-leku.html?a=search&o=0&p=50&cmn=" +  medicineName).get();
-                Elements elements = doc.select("div.results-drug-list-block.block-shadow > div.header-block > span.quantity-block > span.quantity");
-                int medicineCount = Integer.parseInt(elements.text());
-                elements = doc.select("div.results-drug-list-block.block-shadow > table > tbody > tr");
-                if(medicineCount>50) medicineCount=50;
-                String medicineLink, medicineType, medicineDose, medicinePack, medicinePrice;
-
-                for(int i = 0; i< medicineCount; i++) {
-                    medicineName = elements.get(i).select("td.name-column > div.name > a").text();
-                    medicineLink = elements.get(i).select("td.name-column > div.name > a").attr("href");
-                    medicineType = elements.get(i).select("td").get(3).text();
-                    medicineDose = elements.get(i).select("td").get(4).text();
-                    medicinePack = elements.get(i).select("td").get(5).text();
-                    medicinePrice = elements.get(i).select("td.price-column > span.full-price-block > span.price").text();
-                    results.add(new MedicineInformation(medicineName, medicineLink, medicineType, medicineDose, medicinePack, medicinePrice));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @SuppressLint("ResourceType")
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            aktualizujListe();
-        }
 
     }
 

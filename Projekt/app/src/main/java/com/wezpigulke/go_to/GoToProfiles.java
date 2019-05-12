@@ -201,6 +201,13 @@ public class GoToProfiles extends Fragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        if(cursor!=null) cursor.close();
+        if(cursorTemp!=null) cursorTemp.close();
+        super.onDestroy();
+    }
+
     public void openDialog(String text) {
         OpenDialog openDialog = new OpenDialog();
         openDialog.setValue(text);

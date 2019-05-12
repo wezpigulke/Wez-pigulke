@@ -77,6 +77,8 @@ public class GoToWelcome extends AppCompatActivity {
             startActivity(cel);
         }
 
+        if(cursor!=null) cursor.close();
+
         facetObr.setOnClickListener(v -> {
             Drawable highlight = ContextCompat.getDrawable(getApplicationContext(), R.drawable.highlight);
 

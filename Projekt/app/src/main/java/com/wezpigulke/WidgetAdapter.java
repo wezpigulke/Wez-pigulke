@@ -51,10 +51,10 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
             }
         }
         if(todayArrayList.size()==0){
-            todayArrayList.add(new Today(-1, "Brak przypomnień w dniu dzisiejszym", "", ""));
+            todayArrayList.add(new Today(-1, "Brak na dziś", "", ""));
         }
         Collections.sort(todayArrayList, new CustomComparator());
-        cursor.close();
+        if(cursor!=null) cursor.close();
     }
 
     private void countDiff(String time, String date) {

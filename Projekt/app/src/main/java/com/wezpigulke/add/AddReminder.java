@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -449,6 +450,9 @@ public class AddReminder extends AppCompatActivity {
         setTime12 = findViewById(R.id.setTime12);
         spinnerIleRazyDziennie = findViewById(R.id.spinnerCoIleGodzin);
 
+        ileDni.clearFocus();
+        coIleDniEditText.clearFocus();
+
         array = new ArrayList<>();
         array.add(setTime1);
         array.add(setTime2);
@@ -757,8 +761,6 @@ public class AddReminder extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
-                closeKeyboard();
-
                 dataTabletka.setVisibility(View.GONE);
                 godzinaTabletka.setVisibility(View.GONE);
                 ileDni.setVisibility(View.GONE);
@@ -800,6 +802,9 @@ public class AddReminder extends AppCompatActivity {
                         spinnerIleRazyDziennie.setVisibility(View.GONE);
                         break;
                 }
+
+                ileDni.clearFocus();
+                coIleDniEditText.clearFocus();
 
             }
 
