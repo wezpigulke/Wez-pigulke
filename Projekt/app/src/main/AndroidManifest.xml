@@ -23,7 +23,7 @@
         <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/logo" />
 
-        <receiver android:name=".WidgetProvider">
+        <receiver android:name=".widget.WidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
@@ -31,7 +31,7 @@
                 android:resource="@xml/widget_info" />
         </receiver>
 
-        <service android:name=".WidgetService"
+        <service android:name=".widget.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
         <activity
@@ -54,7 +54,6 @@
             android:name=".add.AddReminder"
             android:configChanges="orientation"
             android:label="Dodawanie przypomnienia"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name=".add.AddDoctor"

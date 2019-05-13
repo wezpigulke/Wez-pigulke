@@ -30,9 +30,10 @@ public class GetInformationAboutMedicine extends AsyncTask<Void, Void, Void> {
             Document doc = Jsoup.connect("http://bazalekow.leksykon.com.pl/szukaj-leku.html?a=search&o=0&p=50&cmn=" +  medicineName).get();
             Elements elements = doc.select("div.results-drug-list-block.block-shadow > div.header-block > span.quantity-block > span.quantity");
             int medicineCount = Integer.parseInt(elements.text());
-            elements = doc.select("div.results-drug-list-block.block-shadow > table > tbody > tr");
             if(medicineCount>50) medicineCount=50;
             String medicineLink, medicineType, medicineDose, medicinePack, medicinePrice;
+
+            elements = doc.select("div.results-drug-list-block.block-shadow > table > tbody > tr");
 
             for(int i=0; i<medicineCount; i++) {
                 medicineName = elements.get(i).select("td.name-column > div.name > a").text();

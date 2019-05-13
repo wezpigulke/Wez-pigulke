@@ -25,161 +25,52 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
     private Cursor cursor;
     private Cursor cursorTemp;
 
+    private Integer id;
+    private String godzina;
+    private String data;
+    private String imie_nazwisko;
+    private String specjalizacja;
+    private String profil;
+    private Integer rand_val;
+    private Integer dzwiek;
+    private Integer czyWibracja;
+    private Date firstDate;
+    private Date secondDate;
+    private String dzisiejszaData;
+    private SimpleDateFormat sdf;
+    private long diff;
+    private Calendar cal;
+
+    private Integer id_n;
+    private String nazwaLeku;
+    private Double jakaDawka;
+    private String uzytkownik;
+    private Integer id_p;
+    private Integer iloscDni;
+    private Intent intent;
+    private Context context;
+
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
 
         Toast.makeText(context, "Dodaje alarmy po restarcie", Toast.LENGTH_LONG).show();
+        intializeVariables(context);
+        setNotificationForVisit();
+        setNotificationForReminder();
+        closeCursors();
 
-        myDb = new DatabaseHelper(context);
+    }
 
-        String dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
-
-        Date firstDate = null;
-        Date secondDate = null;
-
-
-        cursor = myDb.getAllData_WIZYTY();
-
-        if (cursor.getCount() != 0) {
-            while(cursor.moveToNext()) {
-
-                Integer id = cursor.getInt(0);
-                String godzina = cursor.getString(1);
-                String data = cursor.getString(2);
-                String imie_nazwisko = cursor.getString(3);
-                String specjalizacja = cursor.getString(4);
-                String profil = cursor.getString(5);
-                Integer rand_val = cursor.getInt(6);
-                Integer dzwiek = cursor.getInt(7);
-                Integer czyWibracja = cursor.getInt(8);
-
-                try {
-                    firstDate = sdf.parse(dzisiejszaData);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    secondDate = sdf.parse(godzina + " " + data);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                long diff = 0;
-
-                if (secondDate != null && firstDate != null) {
-                    diff = secondDate.getTime() - firstDate.getTime();
-                }
-
-                if (diff < 0) {
-
-                        myDb.remove_WIZYTY(id);
-
-                } else {
-
-                    Intent intxz = new Intent(context, NotificationReceiver.class);
-
-                    intxz.putExtra("coPokazac", 1);
-                    intxz.putExtra("tresc", profil + "  |  wizyta u " + imie_nazwisko + " jutro o " + godzina);
-                    intxz.putExtra("id", id);
-                    intxz.putExtra("godzina", godzina);
-                    intxz.putExtra("data", data);
-                    intxz.putExtra("imie_nazwisko", imie_nazwisko);
-                    intxz.putExtra("specjalizacja", specjalizacja);
-                    intxz.putExtra("uzytkownik", profil);
-                    intxz.putExtra("wybranyDzwiek", dzwiek);
-                    intxz.putExtra("czyWibracja", czyWibracja);
-                    intxz.putExtra("rand_val", rand_val);
-
-                    @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfz = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-
-                    String przetwarzanaData = godzina + " " + data;
-
-                    Date date = null;
-                    try {
-                        date = sdfz.parse(przetwarzanaData);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(date);
-
-                    cal.add(Calendar.DATE, -1);
-
-                    if(diff > 24*60*60*100) {
-
-                        PendingIntent pendingIntentt = PendingIntent.getBroadcast(context, rand_val, intxz, PendingIntent.FLAG_UPDATE_CURRENT);
-                        AlarmManager alarmManagerr = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-                        assert alarmManagerr != null;
-                        if (Build.VERSION.SDK_INT < 23) {
-                            if (Build.VERSION.SDK_INT >= 19) alarmManagerr.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
-                            else alarmManagerr.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
-                        } else alarmManagerr.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
-
-                    }
-
-                    rand_val--;
-                    intxz.putExtra("tresc", profil + "  |  wizyta u " + imie_nazwisko + " o " + godzina);
-                    intxz.putExtra("rand_val", rand_val);
-
-                    if(diff > 3*60*60*100) {
-                        cal.add(Calendar.DATE, +1);
-                        cal.add(Calendar.HOUR_OF_DAY, -3);
-                    } else cal.add(Calendar.MILLISECOND, (int)diff);
-
-
-                    PendingIntent pendingIntentt = PendingIntent.getBroadcast(context, rand_val, intxz, PendingIntent.FLAG_UPDATE_CURRENT);
-                    AlarmManager alarmManagerr = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-                    assert alarmManagerr != null;
-
-                    if (Build.VERSION.SDK_INT < 23) {
-                        if (Build.VERSION.SDK_INT >= 19) alarmManagerr.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
-                        else alarmManagerr.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
-                    } else alarmManagerr.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
-
-                }
-
-
-            }
-
-        }
+    private void setNotificationForReminder() {
 
         cursor = myDb.getAllData_NOTYFIKACJA();
 
         if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
 
-
-                Integer id_n = cursor.getInt(0);
-                String nazwaLeku = cursor.getString(1);
-                Double jakaDawka = cursor.getDouble(2);
-                String godzina = cursor.getString(3);
-                String data = cursor.getString(4);
-                String uzytkownik = cursor.getString(5);
-                Integer id_p = cursor.getInt(6);
-                Integer iloscDni = cursor.getInt(7);
-                Integer rand_val = cursor.getInt(9);
-                Integer dzwiek = cursor.getInt(10);
-                Integer czyWibracja = cursor.getInt(11);
-
-                try {
-                    firstDate = sdf.parse(dzisiejszaData);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    secondDate = sdf.parse(godzina + " " + data);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                long diff = 0;
-
-                if (secondDate != null && firstDate != null) {
-                    diff = secondDate.getTime() - firstDate.getTime();
-                }
+                intializeVariablesFromCursor(1);
+                countDiff();
 
                 if (iloscDni <= 0) {
 
@@ -201,11 +92,8 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
                             cursor = myDb.getCountType_NOTYFIKACJA(id_p);
                             cursor.moveToNext();
-
                             myDb.remove_NOTYFIKACJA(id_n);
-
                             if (cursor.getInt(0) == 1) myDb.remove_PRZYPOMNIENIE(id_p);
-
                             return;
 
                         } else {
@@ -245,7 +133,9 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                     if (cursor.getInt(0) == 0) {
                         myDb.remove_PRZYPOMNIENIE(id_p);
                     }
-                    else if (cursor.getInt(0) == 1) myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
+                    else if (cursor.getInt(0) == 1) {
+                        myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
+                    }
                     else {
                         cursor = myDb.getCount_NOTYFIKACJA(id_p, dataPrzyszla);
                         cursor.moveToNext();
@@ -256,47 +146,10 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                     }
                 } else {
 
-                    @SuppressLint("SimpleDateFormat") SimpleDateFormat sdfz = new SimpleDateFormat("HH:mm dd/MM/yyyy");
-
-                    String przetwarzanaData = godzina + " " + data;
-
-                    Date date = null;
-                    try {
-                        date = sdfz.parse(przetwarzanaData);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(date);
-
-                    Intent intx = new Intent(context, NotificationReceiver.class);
-
-                    intx.putExtra("tresc", uzytkownik + " |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
-                    intx.putExtra("coPokazac", 0);
-                    intx.putExtra("czyPowtarzanyAlarm", true);
-                    intx.putExtra("id", id_n);
-                    intx.putExtra("idd", id_p);
-                    intx.putExtra("godzina", godzina);
-                    intx.putExtra("data", data);
-                    intx.putExtra("uzytkownik", uzytkownik);
-                    intx.putExtra("nazwaLeku", nazwaLeku);
-                    intx.putExtra("jakaDawka", jakaDawka);
-                    intx.putExtra("iloscDni", iloscDni - 1);
-                    intx.putExtra("wybranyDzwiek", dzwiek);
-                    intx.putExtra("czyWibracja", czyWibracja);
-                    intx.putExtra("rand_val", rand_val);
-
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
-                    AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-                    assert alarmManager != null;
-
-                    Toast.makeText(context, "Dodany alarm: " + id_n + " godzina: " + godzina + " " + data, Toast.LENGTH_LONG).show();
-
-                    if (Build.VERSION.SDK_INT < 23) {
-                        if (Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
-                        else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
-                    } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+                    setCalendarDate();
+                    this.intent = new Intent(context, NotificationReceiver.class);
+                    intentPutExtra(2);
+                    setAlarm(context);
 
                 }
 
@@ -304,8 +157,187 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
         }
 
+    }
+
+    private void setNotificationForVisit() {
+
+        if (cursor.getCount() != 0) {
+            while(cursor.moveToNext()) {
+
+                intializeVariablesFromCursor(0);
+                countDiff();
+
+                if (diff < 0) {
+
+                    myDb.remove_WIZYTY(id);
+
+                } else {
+
+                    this.intent = new Intent(context, NotificationReceiver.class);
+                    intentPutExtra(0);
+
+                    setCalendarDate();
+                    cal.add(Calendar.DATE, -1);
+
+                    if(diff > 24*60*60*100) setAlarm(context);
+                    rand_val--;
+
+                    intentPutExtra(1);
+
+                    if(diff > 3*60*60*100) {
+                        cal.add(Calendar.DATE, +1);
+                        cal.add(Calendar.HOUR_OF_DAY, -3);
+                    } else cal.add(Calendar.MILLISECOND, (int)diff);
+
+                    setAlarm(context);
+
+                }
+
+            }
+
+        }
+
+    }
+
+    private void closeCursors() {
+
         if(cursor!=null) cursor.close();
         if(cursorTemp!=null) cursorTemp.close();
+
+    }
+
+    private void countDiff() {
+
+        try {
+            firstDate = sdf.parse(dzisiejszaData);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            secondDate = sdf.parse(godzina + " " + data);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        diff = 0;
+
+        if (secondDate != null && firstDate != null) {
+            diff = secondDate.getTime() - firstDate.getTime();
+        }
+
+    }
+
+    private void intializeVariablesFromCursor(int type) {
+
+        if (type == 0) {
+
+            id = cursor.getInt(0);
+            godzina = cursor.getString(1);
+            data = cursor.getString(2);
+            imie_nazwisko = cursor.getString(3);
+            specjalizacja = cursor.getString(4);
+            profil = cursor.getString(5);
+            rand_val = cursor.getInt(6);
+            dzwiek = cursor.getInt(7);
+            czyWibracja = cursor.getInt(8);
+
+        } else if (type == 1) {
+
+            id_n = cursor.getInt(0);
+            nazwaLeku = cursor.getString(1);
+            jakaDawka = cursor.getDouble(2);
+            godzina = cursor.getString(3);
+            data = cursor.getString(4);
+            uzytkownik = cursor.getString(5);
+            id_p = cursor.getInt(6);
+            iloscDni = cursor.getInt(7);
+            rand_val = cursor.getInt(9);
+            dzwiek = cursor.getInt(10);
+            czyWibracja = cursor.getInt(11);
+
+        }
+
+
+    }
+
+    private void intentPutExtra(int type) {
+
+        if (type == 0) {
+
+            intent.putExtra("coPokazac", 1);
+            intent.putExtra("tresc", profil + "  |  wizyta u " + imie_nazwisko + " jutro o " + godzina);
+            intent.putExtra("id", id);
+            intent.putExtra("godzina", godzina);
+            intent.putExtra("data", data);
+            intent.putExtra("imie_nazwisko", imie_nazwisko);
+            intent.putExtra("specjalizacja", specjalizacja);
+            intent.putExtra("uzytkownik", profil);
+            intent.putExtra("wybranyDzwiek", dzwiek);
+            intent.putExtra("czyWibracja", czyWibracja);
+            intent.putExtra("rand_val", rand_val);
+
+        } else if (type == 1) {
+
+            intent.putExtra("tresc", profil + "  |  wizyta u " + imie_nazwisko + " o " + godzina);
+            intent.putExtra("rand_val", rand_val);
+
+        } else if (type == 2) {
+
+            intent.putExtra("tresc", uzytkownik + " |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
+            intent.putExtra("coPokazac", 0);
+            intent.putExtra("czyPowtarzanyAlarm", true);
+            intent.putExtra("id", id_n);
+            intent.putExtra("idd", id_p);
+            intent.putExtra("godzina", godzina);
+            intent.putExtra("data", data);
+            intent.putExtra("uzytkownik", uzytkownik);
+            intent.putExtra("nazwaLeku", nazwaLeku);
+            intent.putExtra("jakaDawka", jakaDawka);
+            intent.putExtra("iloscDni", iloscDni - 1);
+            intent.putExtra("wybranyDzwiek", dzwiek);
+            intent.putExtra("czyWibracja", czyWibracja);
+            intent.putExtra("rand_val", rand_val);
+
+        }
+
+    }
+
+    private void setAlarm(Context context) {
+
+        PendingIntent pendingIntentt = PendingIntent.getBroadcast(context, rand_val, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManagerr = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        assert alarmManagerr != null;
+        if (Build.VERSION.SDK_INT < 23) {
+            if (Build.VERSION.SDK_INT >= 19) alarmManagerr.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
+            else alarmManagerr.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
+        } else alarmManagerr.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
+
+    }
+
+    private void setCalendarDate() {
+
+        String przetwarzanaData = godzina + " " + data;
+
+        Date date = null;
+
+        try {
+            date = sdf.parse(przetwarzanaData);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        cal = Calendar.getInstance();
+        cal.setTime(date);
+
+    }
+
+    private void intializeVariables(Context context) {
+
+        myDb = new DatabaseHelper(context);
+        dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
+        cursor = myDb.getAllData_WIZYTY();
+        this.context = context;
 
     }
 

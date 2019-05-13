@@ -32,6 +32,74 @@ public class NotificationReceiver extends BroadcastReceiver {
     private Uri alarmSound;
     private Cursor cursor;
     private Cursor cursorTemp;
+    private String dzisiejszaData;
+    private SimpleDateFormat sdf;
+    private Date firstDate;
+    private Date secondDate;
+    private long diff;
+    private String godzina;
+    private String data;
+
+    private String powiadomienie;
+    private Intent intent;
+    private Integer id_n;
+    private Integer id_p;
+    private String uzytkownik;
+    private String nazwaLeku;
+    private Double jakaDawka;
+    private int wybranyDzwiek;
+    private int czyWibracja;
+    private Integer rand_val;
+    private Intent intx;
+    private Calendar cal;
+
+    private void countDiff() {
+
+        firstDate = null;
+        secondDate = null;
+
+        try {
+            firstDate = sdf.parse(dzisiejszaData);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            secondDate = sdf.parse(godzina + " " + data);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (secondDate != null && firstDate != null) {
+            diff = secondDate.getTime() - firstDate.getTime();
+        }
+
+    }
+
+    private void intentGetExtra() {
+
+        powiadomienie = intent.getStringExtra("tresc");
+        id_n = intent.getIntExtra("id", 0);
+        id_p = intent.getIntExtra("idd", 0);
+        godzina = intent.getStringExtra("godzina");
+        uzytkownik = intent.getStringExtra("uzytkownik");
+        nazwaLeku = intent.getStringExtra("nazwaLeku");
+        jakaDawka = intent.getDoubleExtra("jakaDawka", 0);
+        wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
+        czyWibracja = intent.getIntExtra("czyWibracja", 0);
+        rand_val = intent.getIntExtra("rand_val", 0);
+
+    }
+
+    private void setAlarm(Context context) {
+        PendingIntent newIntent = PendingIntent.getBroadcast(context, rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        assert alarmManager != null;
+
+        if(Build.VERSION.SDK_INT < 23){
+            if(Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
+            else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
+        } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -45,19 +113,12 @@ public class NotificationReceiver extends BroadcastReceiver {
         NotificationManager notificationManager;
         if (coPokazac == 0) {
 
-            String dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
-
-            Date firstDate = null;
-            Date secondDate = null;
-
-            String data = "";
+            dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
+            sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
+            data = "";
             Integer iloscDni = 0;
 
-            String powiadomienie = intent.getStringExtra("tresc");
-            Integer id_n = intent.getIntExtra("id", 0);
-            Integer id_p = intent.getIntExtra("idd", 0);
-            String godzina = intent.getStringExtra("godzina");
+            intentGetExtra();
 
             int delay = 60*60*100;
 
@@ -69,30 +130,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 iloscDni = cursor.getInt(9);
             }
 
-            String uzytkownik = intent.getStringExtra("uzytkownik");
-            String nazwaLeku = intent.getStringExtra("nazwaLeku");
-            Double jakaDawka = intent.getDoubleExtra("jakaDawka", 0);
-
-            int wybranyDzwiek = intent.getIntExtra("wybranyDzwiek", 0);
-            int czyWibracja = intent.getIntExtra("czyWibracja", 0);
-            Integer rand_val = intent.getIntExtra("rand_val", 0);
-
-            try {
-                firstDate = sdf.parse(dzisiejszaData);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            try {
-                secondDate = sdf.parse(godzina + " " + data);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            long diff = 0;
-
-            if (secondDate != null && firstDate != null) {
-                diff = secondDate.getTime() - firstDate.getTime();
-            }
+            countDiff();
 
             if (iloscDni <= 0) {
 
@@ -172,7 +210,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                                     e.printStackTrace();
                                 }
 
-                                Calendar cal = Calendar.getInstance();
+                                cal = Calendar.getInstance();
                                 cal.setTime(date);
                                 cal.add(Calendar.DATE, typPrz);
 
@@ -180,7 +218,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                                 myDb.updateDate_NOTYFIKACJA(id_n, sdfzx.format(dateTemp));
 
-                                Intent intx = new Intent(context, NotificationReceiver.class);
+                                intx = new Intent(context, NotificationReceiver.class);
                                 intx.putExtra("coPokazac", 0);
                                 intx.putExtra("tresc", uzytkownik + " |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
                                 intx.putExtra("id", id_n);
@@ -195,14 +233,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                                 intx.putExtra("czyWibracja", czyWibracja);
                                 intx.putExtra("rand_val", rand_val);
 
-                                PendingIntent newIntent = PendingIntent.getBroadcast(context, rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
-                                AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-                                assert alarmManager != null;
-
-                                if(Build.VERSION.SDK_INT < 23){
-                                    if(Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
-                                    else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
-                                } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
+                                setAlarm(context);
 
                                 Log.d("========ALARM==========", "Dodanie: " + " | " + rand_val + "\n" + sdfz.format(cal.getTime()));
 
@@ -369,7 +400,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                                 e.printStackTrace();
                             }
 
-                            Calendar cal = Calendar.getInstance();
+                            cal = Calendar.getInstance();
                             cal.setTime(date);
                             cal.add(Calendar.DATE, typPrz);
 
@@ -377,7 +408,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
                             myDb.updateDate_NOTYFIKACJA(id_n, sdfzx.format(dateTemp));
 
-                            Intent intx = new Intent(context, NotificationReceiver.class);
+                            intx = new Intent(context, NotificationReceiver.class);
                             intx.putExtra("coPokazac", 0);
                             intx.putExtra("tresc", uzytkownik + " |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
                             intx.putExtra("id", id_n);
@@ -392,14 +423,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                             intx.putExtra("czyWibracja", czyWibracja);
                             intx.putExtra("rand_val", rand_val);
 
-                            PendingIntent newIntent = PendingIntent.getBroadcast(context, rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
-                            AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-                            assert alarmManager != null;
-
-                            if(Build.VERSION.SDK_INT < 23){
-                                if(Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
-                                else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
-                            } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
+                            setAlarm(context);
 
                             Log.d("========ALARM==========", "Dodanie: " + " | " + rand_val + "\n" + sdfz.format(cal.getTime()));
 
@@ -509,12 +533,6 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         } else {
 
-            String dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
-
-            Date firstDate = null;
-            Date secondDate = null;
-
             String powiadomienie = intent.getStringExtra("tresc");
 
             Integer id_v = intent.getIntExtra("id", 0);
@@ -528,22 +546,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             int czyWibracja = intent.getIntExtra("czyWibracja", 0);
             int rand_val = intent.getIntExtra("rand_val", 0);
 
-            try {
-                firstDate = sdf.parse(dzisiejszaData);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            try {
-                secondDate = sdf.parse(godzina + " " + data);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            long diff = 0;
-
-            if (secondDate != null && firstDate != null) {
-                diff = secondDate.getTime() - firstDate.getTime();
-            }
+            countDiff();
 
             int delay = 10*60*100;
 

@@ -1,4 +1,4 @@
-package com.wezpigulke;
+package com.wezpigulke.widget;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.wezpigulke.DatabaseHelper;
+import com.wezpigulke.R;
 import com.wezpigulke.classes.Today;
 
 import java.text.ParseException;
@@ -44,8 +46,8 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
                 countDiff(cursor.getString(3), cursor.getString(4));
                 if (diffDays == 0 && diffInMillis >= 0) {
                     todayArrayList.add(new Today(cursor.getInt(0),
-                                        cursor.getString(1) + " (Dawka: " + cursor.getString(2) + ")",
-                                           "Godzina: " + cursor.getString(3),
+                                         cursor.getString(1) + " (Dawka: " + cursor.getString(2) + ")",
+                                            "Godzina: " + cursor.getString(3),
                                                  cursor.getString(5)));
                 }
             }
@@ -54,7 +56,7 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
             todayArrayList.add(new Today(-1, "Brak na dziś", "", ""));
         }
         Collections.sort(todayArrayList, new CustomComparator());
-        if(cursor!=null) cursor.close();
+        cursor.close();
     }
 
     private void countDiff(String time, String date) {
