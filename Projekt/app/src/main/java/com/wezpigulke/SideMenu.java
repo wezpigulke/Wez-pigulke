@@ -33,14 +33,16 @@ import com.wezpigulke.go_to.GoToToday;
 public class SideMenu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private Cursor cursor;
+    private DatabaseHelper myDb;
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        DatabaseHelper myDb = new DatabaseHelper(this);
+        myDb = new DatabaseHelper(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -62,6 +64,7 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
             displaySelectedScreen(R.id.reminder);
         } else displaySelectedScreen(R.id.today);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override

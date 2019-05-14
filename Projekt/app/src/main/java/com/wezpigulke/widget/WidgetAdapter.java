@@ -69,17 +69,12 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
 
         Date firstDate = null;
         Date secondDate = null;
-
         Date firstTime = null;
         Date secondTime = null;
 
         try {
             firstDate = sdf.parse(dzisiejszaData);
             firstTime = tdf.parse(dzisiejszyCzas);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        try {
             secondDate = sdf.parse(date);
             secondTime = tdf.parse(time);
         } catch (ParseException e) {

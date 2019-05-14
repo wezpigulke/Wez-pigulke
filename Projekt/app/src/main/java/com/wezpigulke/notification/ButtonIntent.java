@@ -29,7 +29,7 @@ public class ButtonIntent extends BroadcastReceiver {
         this.intent = intent;
         myDb = new DatabaseHelper(context);
 
-        intializeVariables();
+        initializeVariables();
 
         int coZrobic = intent.getIntExtra("coZrobic", -1);
 
@@ -49,7 +49,7 @@ public class ButtonIntent extends BroadcastReceiver {
 
     }
 
-    private void intializeVariables() {
+    private void initializeVariables() {
 
         id_h = intent.getIntExtra("id_h", 0);
         rand_val = intent.getIntExtra("rand_val", 0);

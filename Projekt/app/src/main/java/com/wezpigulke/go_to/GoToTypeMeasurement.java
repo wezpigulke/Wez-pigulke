@@ -31,6 +31,7 @@ public class GoToTypeMeasurement extends Fragment {
     private ListView listView;
     private Integer id;
     private Cursor cursor;
+    private FloatingActionButton fabz;
 
     @Override
     public void onViewCreated(@NonNull View view,
@@ -48,22 +49,36 @@ public class GoToTypeMeasurement extends Fragment {
         myDb = new DatabaseHelper(getActivity());
 
         View v = inflater.inflate(R.layout.type_measurement, container, false);
-        FloatingActionButton fabz = v.findViewById(R.id.fabMesaurementType);
-
-        fabz.setOnClickListener(v1 -> {
-            Intent cel = new Intent(v1.getContext(), AddTypeMeasurement.class);
-            startActivity(cel);
-        });
+        fabz = v.findViewById(R.id.fabMesaurementType);
+        fabzClickListener();
 
         results = new ArrayList<>();
         listView = v.findViewById(R.id.measurementTypeList);
         return v;
     }
 
+    private void fabzClickListener() {
+        fabz.setOnClickListener(v1 -> {
+            Intent cel = new Intent(v1.getContext(), AddTypeMeasurement.class);
+            startActivity(cel);
+        });
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     public void onResume() {
         super.onResume();
         aktualizujBaze();
+        listViewTouchListener();
+    }
+
+    @Override
+    public void onDestroy() {
+        if(cursor!=null) cursor.close();
+        super.onDestroy();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void listViewTouchListener() {
 
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
                 listView,
@@ -81,12 +96,7 @@ public class GoToTypeMeasurement extends Fragment {
                     }
                 });
         listView.setOnTouchListener(touchListener);
-    }
 
-    @Override
-    public void onDestroy() {
-        if(cursor!=null) cursor.close();
-        super.onDestroy();
     }
 
     public void aktualizujBaze() {

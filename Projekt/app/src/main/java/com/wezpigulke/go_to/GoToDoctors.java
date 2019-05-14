@@ -35,6 +35,7 @@ public class GoToDoctors extends Fragment {
     private String nrtel;
     private String adres;
     private Cursor cursor;
+    private FloatingActionButton fab;
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -46,19 +47,23 @@ public class GoToDoctors extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.doctors, container, false);
+        initializeVariables(v);
+        fabClickListener();
+        return v;
 
-        FloatingActionButton fab = v.findViewById(R.id.fabb);
+    }
 
+    private void initializeVariables(View v) {
+        fab = v.findViewById(R.id.fabb);
+        results = new ArrayList<>();
+        lv = v.findViewById(R.id.doctorList);
+    }
+
+    private void fabClickListener() {
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), AddDoctor.class);
             startActivity(intent);
         });
-
-        results = new ArrayList<>();
-        lv = v.findViewById(R.id.doctorList);
-
-        return v;
-
     }
 
     @Override

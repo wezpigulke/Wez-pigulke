@@ -104,9 +104,7 @@ public class GoToVisit extends Fragment {
     public void onResume() {
 
         super.onResume();
-
         aktualizujBaze();
-
         loadSpinnerData();
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -175,10 +173,6 @@ public class GoToVisit extends Fragment {
 
                 try {
                     firstDate = sdf.parse(dzisiejszaData);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                try {
                     secondDate = sdf.parse(godzina + " " + data);
                 } catch (ParseException e) {
                     e.printStackTrace();

@@ -38,23 +38,10 @@ public class GoToWelcome extends AppCompatActivity {
 
     private Cursor cursor;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.welcome);
+    private void initializeVariables() {
 
         ktoryObrazek = 0;
-
         myDb = new DatabaseHelper(this);
-
-        cursor = myDb.getAllData_STATYSTYKI();
-
-        if (cursor.getCount() == 0) myDb.insert_STATYSTYKI(0, 0, 0);
-
         facetObr = findViewById(R.id.imageView10);
         kobietaObr = findViewById(R.id.imageView11);
         idzDalej = findViewById(R.id.przejdzDalej);
@@ -71,36 +58,25 @@ public class GoToWelcome extends AppCompatActivity {
         kobietaObr.setVisibility(View.INVISIBLE);
         facetObr.setVisibility(View.INVISIBLE);
 
-        cursor = myDb.getAllData_UZYTKOWNICY();
-        if (cursor.getCount() > 0) {
-            Intent cel = new Intent(this, SideMenu.class);
-            startActivity(cel);
-        }
+    }
 
-        if(cursor!=null) cursor.close();
-
+    private void obrClickListeners() {
         facetObr.setOnClickListener(v -> {
             Drawable highlight = ContextCompat.getDrawable(getApplicationContext(), R.drawable.highlight);
-
-
             facetObr.setBackground(highlight);
             kobietaObr.setBackground(null);
-
-
             ktoryObrazek = 1;
         });
 
         kobietaObr.setOnClickListener(v -> {
             Drawable highlight = ContextCompat.getDrawable(getApplicationContext(), R.drawable.highlight);
-
-
             kobietaObr.setBackground(highlight);
             facetObr.setBackground(null);
-
-
             ktoryObrazek = 2;
-
         });
+    }
+
+    private void idzDalejClickListener() {
 
         idzDalej.setOnClickListener(v -> {
 
@@ -119,6 +95,10 @@ public class GoToWelcome extends AppCompatActivity {
 
         });
 
+    }
+
+    private void zacznijKorzystacClickListener() {
+
         zacznijKorzystac.setOnClickListener(v -> {
 
             if (yourName.getText().toString().trim().length() > 0) {
@@ -134,6 +114,30 @@ public class GoToWelcome extends AppCompatActivity {
             }
 
         });
+
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.welcome);
+        initializeVariables();
+
+        cursor = myDb.getAllData_STATYSTYKI();
+        if (cursor.getCount() == 0) myDb.insert_STATYSTYKI(0, 0, 0);
+
+        cursor = myDb.getAllData_UZYTKOWNICY();
+        if (cursor.getCount() > 0) {
+            Intent cel = new Intent(this, SideMenu.class);
+            startActivity(cel);
+        }
+        if(cursor!=null) cursor.close();
+
+        obrClickListeners();
+        idzDalejClickListener();
+        zacznijKorzystacClickListener();
 
     }
 

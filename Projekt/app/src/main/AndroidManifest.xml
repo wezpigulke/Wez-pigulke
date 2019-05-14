@@ -44,60 +44,72 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".SideMenu"
             android:configChanges="orientation"
             android:label="Dzisiaj"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".add.AddReminder"
             android:configChanges="orientation"
             android:label="Dodawanie przypomnienia"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".add.AddDoctor"
             android:configChanges="orientation"
             android:label="Dodaj lekarza"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".add.AddProfile"
             android:configChanges="orientation"
             android:label="Dodaj profil"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".add.AddVisit"
             android:configChanges="orientation"
             android:label="Dodaj wizytę"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".add.AddMedicine"
             android:configChanges="orientation"
             android:label="Dodaj lek"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".add.AddNotes"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".add.AddMeasurement"
             android:configChanges="orientation"
             android:label="Dodaj pomiar"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".add.AddTypeMeasurement"
             android:configChanges="orientation"
             android:label="Dodaj typ badania"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".go_to.GoToMedicineInformation"
             android:configChanges="orientation"
             android:label="Informacje o leku"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".notification.RepeatingActivityReminder"
             android:label="Weź tabletkę" />
+
         <activity
             android:name=".notification.RepeatingActivityVisit"
             android:label="Wizyta u lekarza" />
@@ -107,6 +119,7 @@
             android:enabled="true"
             android:exported="true"
             tools:ignore="ExportedReceiver" />
+
         <receiver
             android:name=".notification.BootCompletedNotificationReceiver"
             android:enabled="true">
@@ -114,7 +127,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".notification.ButtonIntent" />
-    </application>
 
+        <receiver android:name=".notification.ButtonIntent" />
+
+    </application>
 </manifest>

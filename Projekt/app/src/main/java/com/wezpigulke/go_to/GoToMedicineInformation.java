@@ -34,12 +34,21 @@ public class GoToMedicineInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.medicine_information);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        initializeVariables();
+        getInformationAboutMedicine();
+        aktualizujListe();
+        lvClickListener();
 
+    }
+
+    private void initializeVariables() {
         results = new ArrayList<>();
         lv = findViewById(R.id.medicineInformationList);
         contentHeaders = new ArrayList<>();
         contentInformation = new ArrayList<>();
+    }
 
+    private void getInformationAboutMedicine() {
         String medicineName = getIntent().getStringExtra("medicineName");
         GetInformationAboutMedicine getInformationAboutMedicine = new GetInformationAboutMedicine(medicineName);
         getInformationAboutMedicine.execute();
@@ -51,24 +60,32 @@ public class GoToMedicineInformation extends AppCompatActivity {
             e.printStackTrace();
         }
         results = getInformationAboutMedicine.getResults();
-        aktualizujListe();
+    }
+
+    private void getMedicineInformation() {
+
+        GetMedicineInformation getMedicineInformation= new GetMedicineInformation(url);
+        getMedicineInformation.execute();
+
+        try {
+            getMedicineInformation.get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        contentHeaders = getMedicineInformation.getContentHeaders();
+        contentInformation = getMedicineInformation.getContentInformation();
+
+    }
+
+    private void lvClickListener() {
 
         lv.setOnItemClickListener((parent, view, position, id) -> {
 
             url = results.get(position).getLink();
-            GetMedicineInformation getMedicineInformation= new GetMedicineInformation(url);
-            getMedicineInformation.execute();
-
-            try {
-                getMedicineInformation.get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            contentHeaders = getMedicineInformation.getContentHeaders();
-            contentInformation = getMedicineInformation.getContentInformation();
+            getMedicineInformation();
             dialogShowInformation();
 
         });

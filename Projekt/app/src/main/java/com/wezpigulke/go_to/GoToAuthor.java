@@ -27,10 +27,10 @@ public class GoToAuthor extends Fragment {
         Objects.requireNonNull(getActivity()).setTitle("Autor");
         this.view = view;
         createViewForAuthor();
-
     }
 
     private void createViewForAuthor() {
+
         ImageView imageView = view.findViewById(R.id.imageView2);
         imageView.setImageAlpha(0);
 
@@ -52,8 +52,6 @@ public class GoToAuthor extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         return inflater.inflate(about_author, container, false);
-
     }
 }

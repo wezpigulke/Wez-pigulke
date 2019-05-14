@@ -59,12 +59,17 @@ public class GoToSettings extends Fragment {
     private Integer i;
     private Integer progress;
     private ProgressBar myprogressbar;
+    private int wziete;
+    private int niewziete;
 
     private TextView tProgres;
     private TextView tWziete;
     private TextView tZapomniane;
+    private Button bt;
+    private Button pdf;
     private PdfPCell cell;
     private PdfPTable table;
+    private DialogInterface.OnClickListener dialogClickListener;
 
     private Cursor cursor;
     private Cursor cursorTemp;
@@ -85,16 +90,27 @@ public class GoToSettings extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        myDb = new DatabaseHelper(getActivity());
-
         View v = inflater.inflate(R.layout.settings, container, false);
+        initializeVariables(v);
+        dialogClickListener();
+        btClickListener();
+        pdfClickListener();
+        countProgress();
+        setProgress();
+        addProgressBar();
+        return v;
+
+    }
+
+    private void initializeVariables(View v) {
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         builder.detectFileUriExposure();
 
-        final Button bt = v.findViewById(R.id.button2);
-        final Button pdf = v.findViewById(R.id.button5);
+        myDb = new DatabaseHelper(getActivity());
+        bt = v.findViewById(R.id.button2);
+        pdf = v.findViewById(R.id.button5);
 
         myprogressbar = v.findViewById(R.id.myprogressbar);
         tProgres = v.findViewById(R.id.textView8);
@@ -102,8 +118,14 @@ public class GoToSettings extends Fragment {
         tZapomniane = v.findViewById(R.id.textView14);
 
         i = 0;
+        wziete = 0;
+        niewziete = 0;
 
-        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+    }
+
+    private void dialogClickListener() {
+
+        dialogClickListener = (dialog, which) -> {
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
 
@@ -142,6 +164,10 @@ public class GoToSettings extends Fragment {
             }
         };
 
+    }
+
+    private void btClickListener() {
+
         bt.setOnClickListener(view -> new AlertDialog.Builder(getActivity())
                 .setMessage("Czy chcesz usunąć wszystkie dane?")
                 .setPositiveButton("Tak", dialogClickListener)
@@ -149,6 +175,9 @@ public class GoToSettings extends Fragment {
                 .create()
                 .show());
 
+    }
+
+    private void pdfClickListener() {
         pdf.setOnClickListener(v1 -> {
             try {
                 createPdfWrapper();
@@ -156,10 +185,9 @@ public class GoToSettings extends Fragment {
                 e.printStackTrace();
             }
         });
+    }
 
-        int wziete = 0;
-        int niewziete = 0;
-
+    private void countProgress() {
         cursor = myDb.getWziete_STATYSTYKI(0);
         if(cursor.getCount() != 0) {
             cursor.moveToFirst();
@@ -175,7 +203,9 @@ public class GoToSettings extends Fragment {
         if (niewziete >= 0 && wziete == 0) progress = 0;
         else if (wziete >= 0 && niewziete == 0) progress = 100;
         else progress = ((wziete * 100) / (wziete + niewziete));
+    }
 
+    private void setProgress() {
         if (Build.VERSION.SDK_INT >= 24) {
             tWziete.setText(Html.fromHtml("Wzięte: " + "<b>" + wziete + "</b> ", 0));
             tZapomniane.setText(Html.fromHtml("Zapomniane: " + "<b>" + niewziete + "</b> ", 0));
@@ -189,11 +219,6 @@ public class GoToSettings extends Fragment {
         tWziete.setVisibility(View.INVISIBLE);
         tZapomniane.setVisibility(View.INVISIBLE);
         tProgres.setVisibility(View.INVISIBLE);
-
-        addProgressBar();
-
-        return v;
-
     }
 
     private void addProgressBar() {

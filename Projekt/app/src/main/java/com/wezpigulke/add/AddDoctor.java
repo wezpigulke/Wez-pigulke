@@ -34,12 +34,14 @@ public class AddDoctor extends AppCompatActivity {
     }
 
     private void initializeVariables() {
+
         myDb = new DatabaseHelper(this);
         add = findViewById(R.id.button);
         name = findViewById(R.id.editText5);
         address = findViewById(R.id.editText6);
         specialization = findViewById(R.id.editText7);
         phone_number = findViewById(R.id.editText8);
+
     }
 
     private void addButtonListener() {

@@ -719,50 +719,57 @@ public class AddReminder extends AppCompatActivity {
                     array.get(i).setVisibility(View.GONE);
                 }
 
-                int position = spinnerReminder.getSelectedItemPosition();
+                setVisibilityForElements(spinnerReminder.getSelectedItemPosition());
 
-                switch(position) {
-                    case 0:
-                        coWybrane = 0;
-                        dataTabletka.setVisibility(View.VISIBLE);
-                        godzinaTabletka.setVisibility(View.VISIBLE);
-                        break;
-                    case 1:
-                        coWybrane = 1;
-                        dataTabletka.setVisibility(View.VISIBLE);
-                        godzinaTabletka.setVisibility(View.VISIBLE);
-                        ileDni.setVisibility(View.VISIBLE);
-                        break;
-                    case 2:
-                        coWybrane = 2;
-                        coIleDniEditText.setVisibility(View.GONE);
-                        spinnerIleRazyDziennie.setVisibility(View.VISIBLE);
-                        setTime1.setVisibility(View.VISIBLE);
-                        setTime2.setVisibility(View.VISIBLE);
-                        ileDni.setVisibility(View.VISIBLE);
-                        dataTabletka.setVisibility(View.VISIBLE);
-
-                        int positionHowManyTimes = spinnerIleRazyDziennie.getSelectedItemPosition();
-
-                        for (int i = 0; i < positionHowManyTimes + 2; i++) {
-                            ileRazyDziennie = positionHowManyTimes + 2;
-                            array.get(i).setVisibility(View.VISIBLE);
-                        }
-
-                        break;
-                    case 3:
-                        coWybrane = 3;
-                        coIleDniEditText.setVisibility(View.VISIBLE);
-                        dataTabletka.setVisibility(View.VISIBLE);
-                        godzinaTabletka.setVisibility(View.VISIBLE);
-                        ileDni.setVisibility(View.VISIBLE);
-                        spinnerIleRazyDziennie.setVisibility(View.GONE);
-                        break;
-                }
+                ileDni.clearFocus();
+                coIleDniEditText.clearFocus();
 
             }
 
         });
+    }
+
+    private void setVisibilityForElements(int position) {
+
+        switch(position) {
+            case 0:
+                coWybrane = 0;
+                dataTabletka.setVisibility(View.VISIBLE);
+                godzinaTabletka.setVisibility(View.VISIBLE);
+                break;
+            case 1:
+                coWybrane = 1;
+                dataTabletka.setVisibility(View.VISIBLE);
+                godzinaTabletka.setVisibility(View.VISIBLE);
+                ileDni.setVisibility(View.VISIBLE);
+                break;
+            case 2:
+                coWybrane = 2;
+                coIleDniEditText.setVisibility(View.GONE);
+                spinnerIleRazyDziennie.setVisibility(View.VISIBLE);
+                setTime1.setVisibility(View.VISIBLE);
+                setTime2.setVisibility(View.VISIBLE);
+                ileDni.setVisibility(View.VISIBLE);
+                dataTabletka.setVisibility(View.VISIBLE);
+
+                int positionHowManyTimes = spinnerIleRazyDziennie.getSelectedItemPosition();
+
+                for (int i = 0; i < positionHowManyTimes + 2; i++) {
+                    ileRazyDziennie = positionHowManyTimes + 2;
+                    array.get(i).setVisibility(View.VISIBLE);
+                }
+
+                break;
+            case 3:
+                coWybrane = 3;
+                coIleDniEditText.setVisibility(View.VISIBLE);
+                dataTabletka.setVisibility(View.VISIBLE);
+                godzinaTabletka.setVisibility(View.VISIBLE);
+                ileDni.setVisibility(View.VISIBLE);
+                spinnerIleRazyDziennie.setVisibility(View.GONE);
+                break;
+        }
+
     }
 
     private void setSpinnerReminderOnClickListener() {
@@ -780,37 +787,7 @@ public class AddReminder extends AppCompatActivity {
                     array.get(i).setVisibility(View.GONE);
                 }
 
-                switch(position) {
-                    case 0:
-                        coWybrane = 0;
-                        dataTabletka.setVisibility(View.VISIBLE);
-                        godzinaTabletka.setVisibility(View.VISIBLE);
-                        break;
-                    case 1:
-                        coWybrane = 1;
-                        dataTabletka.setVisibility(View.VISIBLE);
-                        godzinaTabletka.setVisibility(View.VISIBLE);
-                        ileDni.setVisibility(View.VISIBLE);
-                        break;
-                    case 2:
-                        coWybrane = 2;
-                        spinnerIleRazyDziennie.setSelection(0);
-                        coIleDniEditText.setVisibility(View.GONE);
-                        spinnerIleRazyDziennie.setVisibility(View.VISIBLE);
-                        setTime1.setVisibility(View.VISIBLE);
-                        setTime2.setVisibility(View.VISIBLE);
-                        ileDni.setVisibility(View.VISIBLE);
-                        dataTabletka.setVisibility(View.VISIBLE);
-                        break;
-                    case 3:
-                        coWybrane = 3;
-                        coIleDniEditText.setVisibility(View.VISIBLE);
-                        dataTabletka.setVisibility(View.VISIBLE);
-                        godzinaTabletka.setVisibility(View.VISIBLE);
-                        ileDni.setVisibility(View.VISIBLE);
-                        spinnerIleRazyDziennie.setVisibility(View.GONE);
-                        break;
-                }
+                setVisibilityForElements(position);
 
                 ileDni.clearFocus();
                 coIleDniEditText.clearFocus();
@@ -845,15 +822,12 @@ public class AddReminder extends AppCompatActivity {
         try {
             firstDate = sdf.parse(dzisiejszaData);
             firstTime = tdf.parse(dzisiejszyCzas);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        try {
             secondDate = sdf.parse(data);
             secondTime = tdf.parse(godzina);
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         long diff = Objects.requireNonNull(secondDate).getTime() - Objects.requireNonNull(firstDate).getTime();
         diffDays = diff / (24 * 60 * 60 * 1000);
         diffInMillis = Objects.requireNonNull(secondTime).getTime() - Objects.requireNonNull(firstTime).getTime();

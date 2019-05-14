@@ -190,6 +190,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @Override
+    protected void finalize() throws Throwable {
+        this.close();
+        super.finalize();
+    }
+
+    @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + UZYTKOWNICY);
         db.execSQL("DROP TABLE IF EXISTS " + PRZYPOMNIENIE);
@@ -229,7 +235,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getUserData_HISTORIA(String user) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + HISTORIA + " WHERE Profil= ?",  new String[]{user});
+        return db.rawQuery("SELECT * FROM " + HISTORIA + " WHERE Profil= ?", new String[]{user});
 
     }
 
@@ -359,7 +365,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getWziete_STATYSTYKI(Integer id) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT Wziete " +
-                        "FROM " + STATYSTYKI + " WHERE ID = ?", new String[]{id.toString()});
+                "FROM " + STATYSTYKI + " WHERE ID = ?", new String[]{id.toString()});
     }
 
     public void update_STATYSTYKI_WZIETE(Integer id, Integer wziete) {
@@ -463,7 +469,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getRandId_NOTYFIKACJA(Integer rand) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT COUNT(ID) FROM " + NOTYFIKACJA + " WHERE Rand_ID=?",new String[]{rand.toString()});
+        return db.rawQuery("SELECT COUNT(ID) FROM " + NOTYFIKACJA + " WHERE Rand_ID=?", new String[]{rand.toString()});
     }
 
     public Cursor getMAXid_NOTYFIKACJA() {

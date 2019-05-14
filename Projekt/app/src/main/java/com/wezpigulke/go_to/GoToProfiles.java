@@ -39,6 +39,7 @@ public class GoToProfiles extends Fragment {
     private Integer idd;
     private Cursor cursor;
     private Cursor cursorTemp;
+    private String nazwaUzytkownika;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -129,61 +130,10 @@ public class GoToProfiles extends Fragment {
 
                         cursor = myDb.getNameFromID_UZYTKOWNICY(idd);
                         cursor.moveToFirst();
-                        String nazwaUzytkownika = cursor.getString(0);
+                        nazwaUzytkownika = cursor.getString(0);
 
-                        cursor = myDb.getIDforUser_PRZYPOMNIENIE(nazwaUzytkownika);
-
-                        if (cursor.getCount() != 0) {
-                            while (cursor.moveToNext()) {
-
-                                Integer id_p = cursor.getInt(0);
-                                cursorTemp = myDb.getID_NOTYFIKACJA(id_p);
-
-                                cursor = myDb.getRand_NOTYFIKACJA(cursorTemp.getInt(0));
-                                cursor.moveToFirst();
-
-                                if (cursorTemp.getCount() != 0) {
-                                    while (cursorTemp.moveToNext()) {
-
-                                        AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
-                                        Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
-                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                                getActivity(), cursor.getInt(0), myIntent,
-                                                PendingIntent.FLAG_UPDATE_CURRENT);
-                                        assert alarmManager != null;
-                                        alarmManager.cancel(pendingIntent);
-
-                                    }
-                                }
-
-                            }
-                        }
-
-                        cursorTemp = myDb.getIdForUser_WIZYTY(nazwaUzytkownika);
-
-                        if (cursorTemp.getCount() != 0) {
-                            while (cursorTemp.moveToNext()) {
-
-                                cursor = myDb.getRand_WIZYTY(cursorTemp.getInt(0));
-                                cursor.moveToFirst();
-
-                                AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-
-                                Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
-                                PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                        getActivity(), cursor.getInt(0), myIntent,
-                                        PendingIntent.FLAG_UPDATE_CURRENT);
-                                assert alarmManager != null;
-                                alarmManager.cancel(pendingIntent);
-
-                                pendingIntent = PendingIntent.getBroadcast(
-                                        getActivity(), cursor.getInt(0)-1, myIntent,
-                                        PendingIntent.FLAG_UPDATE_CURRENT);
-                                alarmManager.cancel(pendingIntent);
-
-                            }
-                        }
-
+                        removeNotifications();
+                        removeVisits();
                         myDb.removeUser_PRZYPOMNIENIE(nazwaUzytkownika);
                         myDb.removeUser_WIZYTY(nazwaUzytkownika);
                         myDb.removeUser_POMIARY(nazwaUzytkownika);
@@ -198,6 +148,67 @@ public class GoToProfiles extends Fragment {
                 .setNegativeButton("Nie", (dialog, which) -> dialog.cancel());
 
         builder.show();
+
+    }
+
+    private void removeNotifications() {
+
+        cursor = myDb.getIDforUser_PRZYPOMNIENIE(nazwaUzytkownika);
+
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
+
+                Integer id_p = cursor.getInt(0);
+                cursorTemp = myDb.getID_NOTYFIKACJA(id_p);
+
+                cursor = myDb.getRand_NOTYFIKACJA(cursorTemp.getInt(0));
+                cursor.moveToFirst();
+
+                if (cursorTemp.getCount() != 0) {
+                    while (cursorTemp.moveToNext()) {
+
+                        AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
+                        Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                                getActivity(), cursor.getInt(0), myIntent,
+                                PendingIntent.FLAG_UPDATE_CURRENT);
+                        assert alarmManager != null;
+                        alarmManager.cancel(pendingIntent);
+
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    private void removeVisits() {
+
+        cursorTemp = myDb.getIdForUser_WIZYTY(nazwaUzytkownika);
+
+        if (cursorTemp.getCount() != 0) {
+            while (cursorTemp.moveToNext()) {
+
+                cursor = myDb.getRand_WIZYTY(cursorTemp.getInt(0));
+                cursor.moveToFirst();
+
+                AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
+
+                Intent myIntent = new Intent(getActivity(), NotificationReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                        getActivity(), cursor.getInt(0), myIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+                assert alarmManager != null;
+                alarmManager.cancel(pendingIntent);
+
+                pendingIntent = PendingIntent.getBroadcast(
+                        getActivity(), cursor.getInt(0)-1, myIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+                alarmManager.cancel(pendingIntent);
+
+            }
+        }
 
     }
 

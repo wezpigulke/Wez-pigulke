@@ -53,11 +53,11 @@ public class GoToMedicine extends Fragment {
     private View v;
     private Integer id_l;
     private Cursor cursor;
+    private FloatingActionButton fab;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         Objects.requireNonNull(getActivity()).setTitle("Lista leków");
     }
 
@@ -66,18 +66,23 @@ public class GoToMedicine extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         v = inflater.inflate(R.layout.medicine, container, false);
+        initializeVariables();
+        fabClickListener();
+        return v;
 
-        results = new ArrayList<>();
-        lv = v.findViewById(R.id.medicineList);
-        FloatingActionButton fab = v.findViewById(R.id.fabMedicine);
+    }
 
+    private void fabClickListener() {
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), AddMedicine.class);
             startActivity(intent);
         });
+    }
 
-        return v;
-
+    private void initializeVariables() {
+        results = new ArrayList<>();
+        lv = v.findViewById(R.id.medicineList);
+        fab = v.findViewById(R.id.fabMedicine);
     }
 
     @SuppressLint("ClickableViewAccessibility")

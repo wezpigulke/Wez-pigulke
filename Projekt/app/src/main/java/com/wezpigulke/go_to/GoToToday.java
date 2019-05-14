@@ -58,7 +58,6 @@ public class GoToToday extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         Objects.requireNonNull(getActivity()).setTitle("Dzisiaj");
     }
 
@@ -67,13 +66,19 @@ public class GoToToday extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.today, container, false);
+        initializeVariables(v);
+        spinnerItemSelectedListener();
+        setLvTouchListener();
 
+        return v;
+    }
+
+    private void initializeVariables(View v) {
         label = new ArrayList<>();
         results = new ArrayList<>();
         lv = v.findViewById(R.id.todayList);
         spinner = v.findViewById(R.id.todaySpinner);
         uzytkownik = "Wszyscy";
-        return v;
     }
 
     private void loadSpinnerData() {
@@ -95,12 +100,7 @@ public class GoToToday extends Fragment {
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    public void onResume() {
-
-        super.onResume();
-        aktualizujBaze();
-        loadSpinnerData();
+    private void spinnerItemSelectedListener() {
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -115,6 +115,11 @@ public class GoToToday extends Fragment {
             }
 
         });
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void setLvTouchListener() {
 
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
                 lv,
@@ -135,6 +140,15 @@ public class GoToToday extends Fragment {
                 });
 
         lv.setOnTouchListener(touchListener);
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void onResume() {
+
+        super.onResume();
+        aktualizujBaze();
+        loadSpinnerData();
 
     }
 
@@ -161,17 +175,12 @@ public class GoToToday extends Fragment {
 
             Date firstDate = null;
             Date secondDate = null;
-
             Date firstTime = null;
             Date secondTime = null;
 
             try {
                 firstDate = sdf.parse(dzisiejszaData);
                 firstTime = tdf.parse(dzisiejszyCzas);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            try {
                 secondDate = sdf.parse(cursor.getString(4));
                 secondTime = tdf.parse(cursor.getString(3));
             } catch (ParseException e) {

@@ -40,6 +40,7 @@ public class GoToNotes extends Fragment {
     private Integer idd;
     private String notatka;
     private Cursor cursor;
+    private FloatingActionButton fabz;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -53,23 +54,30 @@ public class GoToNotes extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.notes, container, false);
+        initializeVariables(v);
+        fabzClickListener();
+
+        return v;
+
+    }
+
+    private void initializeVariables(View v) {
 
         label = new ArrayList<>();
-
-        FloatingActionButton fabz = v.findViewById(R.id.fabNotes);
-
-        fabz.setOnClickListener(v1 -> {
-            Intent cel = new Intent(v1.getContext(), AddNotes.class);
-            startActivity(cel);
-        });
-
+        fabz = v.findViewById(R.id.fabNotes);
         results = new ArrayList<>();
         lv = v.findViewById(R.id.notesList);
         spinner = v.findViewById(R.id.notesSpinner);
         uzytkownik = "Wszyscy";
+        myDb = new DatabaseHelper(getActivity());
 
-        return v;
+    }
 
+    private void fabzClickListener() {
+        fabz.setOnClickListener(v1 -> {
+            Intent cel = new Intent(v1.getContext(), AddNotes.class);
+            startActivity(cel);
+        });
     }
 
     private void loadSpinnerData() {
@@ -92,15 +100,7 @@ public class GoToNotes extends Fragment {
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    public void onResume() {
-
-        super.onResume();
-        aktualizujBaze();
-
-        myDb = new DatabaseHelper(getActivity());
-
-        loadSpinnerData();
+    private void spinnerSelectedListener() {
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -118,6 +118,11 @@ public class GoToNotes extends Fragment {
             }
 
         });
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void lvListeners() {
 
         lv.setOnItemClickListener((parent, view, position, id) -> {
 
@@ -151,6 +156,17 @@ public class GoToNotes extends Fragment {
                 });
 
         lv.setOnTouchListener(touchListener);
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void onResume() {
+
+        super.onResume();
+        aktualizujBaze();
+        loadSpinnerData();
+        spinnerSelectedListener();
+        lvListeners();
 
     }
 

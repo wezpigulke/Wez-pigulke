@@ -8,9 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,13 +51,15 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
     private Integer iloscDni;
     private Intent intent;
     private Context context;
+    private int typ;
+    private int ileDniDodac;
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
 
         Toast.makeText(context, "Dodaje alarmy po restarcie", Toast.LENGTH_LONG).show();
-        intializeVariables(context);
+        initializeVariables(context);
         setNotificationForVisit();
         setNotificationForReminder();
         closeCursors();
@@ -69,7 +73,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
         if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
 
-                intializeVariablesFromCursor(1);
+                initializeVariables(1);
                 countDiff();
 
                 if (iloscDni <= 0) {
@@ -85,7 +89,14 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
                     while (diff < 0) {
 
-                        diff += 24 * 60 * 60 * 100;
+                        cursor = myDb.getdataID_NOTYFIKACJA(id_n);
+                        if (cursor != null) {
+                            cursor.moveToNext();
+                            typ = cursor.getInt(8);
+                        }
+
+                        diff += typ * 24 * 60 * 60 * 100;
+                        ileDniDodac += typ;
                         iloscDni--;
 
                         if (iloscDni <= 0) {
@@ -110,7 +121,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                                 e.printStackTrace();
                             }
 
-                            cz.add(Calendar.DATE, cursor.getInt(8));
+                            cz.add(Calendar.DATE, ileDniDodac);
                             dataPrzyszla = dt.format(cz.getTime());
 
                             myDb.updateDate_NOTYFIKACJA(id_n, dataPrzyszla);
@@ -132,11 +143,9 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
                     if (cursor.getInt(0) == 0) {
                         myDb.remove_PRZYPOMNIENIE(id_p);
-                    }
-                    else if (cursor.getInt(0) == 1) {
+                    } else if (cursor.getInt(0) == 1) {
                         myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
-                    }
-                    else {
+                    } else {
                         cursor = myDb.getCount_NOTYFIKACJA(id_p, dataPrzyszla);
                         cursor.moveToNext();
                         cursorTemp = myDb.getCountType_NOTYFIKACJA(id_p);
@@ -162,9 +171,9 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
     private void setNotificationForVisit() {
 
         if (cursor.getCount() != 0) {
-            while(cursor.moveToNext()) {
+            while (cursor.moveToNext()) {
 
-                intializeVariablesFromCursor(0);
+                initializeVariables(0);
                 countDiff();
 
                 if (diff < 0) {
@@ -179,15 +188,15 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                     setCalendarDate();
                     cal.add(Calendar.DATE, -1);
 
-                    if(diff > 24*60*60*100) setAlarm(context);
+                    if (diff > 24 * 60 * 60 * 100) setAlarm(context);
                     rand_val--;
 
                     intentPutExtra(1);
 
-                    if(diff > 3*60*60*100) {
+                    if (diff > 3 * 60 * 60 * 100) {
                         cal.add(Calendar.DATE, +1);
                         cal.add(Calendar.HOUR_OF_DAY, -3);
-                    } else cal.add(Calendar.MILLISECOND, (int)diff);
+                    } else cal.add(Calendar.MILLISECOND, (int) diff);
 
                     setAlarm(context);
 
@@ -201,8 +210,8 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
     private void closeCursors() {
 
-        if(cursor!=null) cursor.close();
-        if(cursorTemp!=null) cursorTemp.close();
+        if (cursor != null) cursor.close();
+        if (cursorTemp != null) cursorTemp.close();
 
     }
 
@@ -210,10 +219,6 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
         try {
             firstDate = sdf.parse(dzisiejszaData);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        try {
             secondDate = sdf.parse(godzina + " " + data);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -227,7 +232,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
     }
 
-    private void intializeVariablesFromCursor(int type) {
+    private void initializeVariables(int type) {
 
         if (type == 0) {
 
@@ -304,13 +309,18 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
     private void setAlarm(Context context) {
 
-        PendingIntent pendingIntentt = PendingIntent.getBroadcast(context, rand_val, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManagerr = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-        assert alarmManagerr != null;
+        Log.d("BootCompletedNotifi", "Dodanie alarmu dla: " + sdf.format(cal));
+        Toast.makeText(context, "Dodanie alarmu dla: " + sdf.format(cal), Toast.LENGTH_LONG).show();
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, rand_val, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        assert alarmManager != null;
         if (Build.VERSION.SDK_INT < 23) {
-            if (Build.VERSION.SDK_INT >= 19) alarmManagerr.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
-            else alarmManagerr.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
-        } else alarmManagerr.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntentt);
+            if (Build.VERSION.SDK_INT >= 19)
+                alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+            else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+        } else
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
 
     }
 
@@ -331,7 +341,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
     }
 
-    private void intializeVariables(Context context) {
+    private void initializeVariables(Context context) {
 
         myDb = new DatabaseHelper(context);
         dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());

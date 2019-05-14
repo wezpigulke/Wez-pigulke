@@ -13,24 +13,29 @@ import com.wezpigulke.R;
 
 public class RepeatingActivityVisit extends AppCompatActivity {
 
-    DatabaseHelper myDb;
+    private DatabaseHelper myDb;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.visit_activity_layout);
-
         myDb = new DatabaseHelper(this);
+
+        ImageView im = findViewById(R.id.imageView3v);
+        im.setImageResource(R.drawable.logo);
+
+        setTextForTextView();
+
+    }
+
+    private void setTextForTextView() {
 
         TextView tProfil = findViewById(R.id.textView12v);
         TextView tGodzina = findViewById(R.id.textView6v);
         TextView tData = findViewById(R.id.textView14v);
         TextView tLekarz = findViewById(R.id.textView9v);
         TextView tSpecjalizacja = findViewById(R.id.textView10v);
-
-        ImageView im = findViewById(R.id.imageView3v);
-        im.setImageResource(R.drawable.logo);
 
         String godzina = getIntent().getStringExtra("godzina");
         String data = getIntent().getStringExtra("data");
@@ -51,8 +56,6 @@ public class RepeatingActivityVisit extends AppCompatActivity {
             tLekarz.setText(Html.fromHtml("Lekarz: " + "<b>" + imie_nazwisko + "</b> "));
             tSpecjalizacja.setText(Html.fromHtml("Specjalizacja: " + "<b>" + specjalizacja + "</b> "));
         }
-
-
     }
 
 }

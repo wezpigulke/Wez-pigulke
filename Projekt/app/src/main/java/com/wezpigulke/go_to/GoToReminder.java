@@ -96,12 +96,7 @@ public class GoToReminder extends Fragment {
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    public void onResume() {
-
-        super.onResume();
-        aktualizujBaze();
-        loadSpinnerData();
+    private void spinnerSelectedListener() {
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -116,6 +111,22 @@ public class GoToReminder extends Fragment {
             }
 
         });
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void onResume() {
+
+        super.onResume();
+        aktualizujBaze();
+        loadSpinnerData();
+        spinnerSelectedListener();
+        listViewTouchListener();
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void listViewTouchListener() {
 
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
                 lv,
@@ -141,7 +152,6 @@ public class GoToReminder extends Fragment {
         lv.setOnTouchListener(touchListener);
 
     }
-
 
     public void aktualizujBaze() {
 

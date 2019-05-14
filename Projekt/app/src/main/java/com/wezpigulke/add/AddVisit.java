@@ -201,10 +201,6 @@ public class AddVisit extends AppCompatActivity {
 
         try {
             firstDate = sdf.parse(dzisiejszaData);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        try {
             secondDate = sdf.parse(godzina.getText().toString() + " " + data.getText().toString());
         } catch (ParseException e) {
             e.printStackTrace();

@@ -41,6 +41,7 @@ public class GoToMeasurement extends Fragment {
     private String typ;
     private Integer idd;
     private Cursor cursor;
+    private FloatingActionButton fabz;
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -51,29 +52,31 @@ public class GoToMeasurement extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        myDb = new DatabaseHelper(getActivity());
-
         View v = inflater.inflate(R.layout.measurement, container, false);
+        initializeVariables(v);
+        fabzClickListener();
+        return v;
 
+    }
+
+    private void initializeVariables(View v) {
+        myDb = new DatabaseHelper(getActivity());
         label = new ArrayList<>();
         labelx = new ArrayList<>();
-
-        FloatingActionButton fabz = v.findViewById(R.id.fabMeasurement);
-
-        fabz.setOnClickListener(v1 -> {
-            Intent cel = new Intent(v1.getContext(), AddMeasurement.class);
-            startActivity(cel);
-        });
-
+        fabz = v.findViewById(R.id.fabMeasurement);
         results = new ArrayList<>();
         lv = v.findViewById(R.id.measurementList);
         measurementSpinner = v.findViewById(R.id.measurementSpinner);
         measurementTypeSpinner = v.findViewById(R.id.measurementTypeSpinner);
         uzytkownik = "Wszyscy";
         typ = "Wszystko";
+    }
 
-        return v;
-
+    private void fabzClickListener() {
+        fabz.setOnClickListener(v1 -> {
+            Intent cel = new Intent(v1.getContext(), AddMeasurement.class);
+            startActivity(cel);
+        });
     }
 
     @Override
@@ -127,40 +130,15 @@ public class GoToMeasurement extends Fragment {
 
         super.onResume();
         aktualizujBaze();
-
-        myDb = new DatabaseHelper(getActivity());
-
         loadSpinnerData();
+        measurementSpinnerListener();
+        measurementTypeSpinnerListener();
+        lvTouchListener();
 
+    }
 
-        measurementSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                uzytkownik = measurementSpinner.getItemAtPosition(position).toString();
-                aktualizujBaze();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-
-            }
-
-        });
-
-        measurementTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                typ = measurementTypeSpinner.getItemAtPosition(position).toString();
-                aktualizujBaze();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-
-            }
-
-        });
-
+    @SuppressLint("ClickableViewAccessibility")
+    private void lvTouchListener() {
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
                 lv,
                 new SwipeDismissListViewTouchListener.DismissCallbacks() {
@@ -181,9 +159,39 @@ public class GoToMeasurement extends Fragment {
                     }
 
                 });
-
         lv.setOnTouchListener(touchListener);
+    }
 
+    private void measurementTypeSpinnerListener() {
+        measurementTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                typ = measurementTypeSpinner.getItemAtPosition(position).toString();
+                aktualizujBaze();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+
+            }
+
+        });
+    }
+
+    private void measurementSpinnerListener() {
+        measurementSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                uzytkownik = measurementSpinner.getItemAtPosition(position).toString();
+                aktualizujBaze();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+
+            }
+
+        });
     }
 
     public void aktualizujBaze() {
