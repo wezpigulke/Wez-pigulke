@@ -1,4 +1,5 @@
 package com.wezpigulke.go_to;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,11 +15,11 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.classes.MeasurementType;
-import com.wezpigulke.adapters.MeasurementTypeListAdapter;
 import com.wezpigulke.R;
-import com.wezpigulke.other.SwipeDismissListViewTouchListener;
+import com.wezpigulke.adapters.MeasurementTypeListAdapter;
 import com.wezpigulke.add.AddTypeMeasurement;
+import com.wezpigulke.classes.MeasurementType;
+import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ public class GoToTypeMeasurement extends Fragment {
 
     @Override
     public void onDestroy() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         super.onDestroy();
     }
 
@@ -87,6 +88,7 @@ public class GoToTypeMeasurement extends Fragment {
                     public boolean canDismiss(int position) {
                         return true;
                     }
+
                     @Override
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
@@ -123,7 +125,7 @@ public class GoToTypeMeasurement extends Fragment {
                 .setPositiveButton("Tak", (dialog, which) -> {
 
                     cursor = myDb.getDataType_TYP_POMIAR(id);
-                    if(cursor.getCount()!=0) {
+                    if (cursor.getCount() != 0) {
                         cursor.moveToFirst();
                         myDb.removeType_POMIARY(cursor.getString(0));
                         myDb.remove_TYP_POMIAR(id);

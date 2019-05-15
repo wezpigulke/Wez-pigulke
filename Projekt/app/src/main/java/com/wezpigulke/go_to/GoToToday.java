@@ -23,8 +23,8 @@ import android.widget.Spinner;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
-import com.wezpigulke.classes.Today;
 import com.wezpigulke.adapters.TodayListAdapter;
+import com.wezpigulke.classes.Today;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 
@@ -302,10 +302,12 @@ public class GoToToday extends Fragment {
             alarmManager = (AlarmManager) Objects.requireNonNull(getContext()).getSystemService(Context.ALARM_SERVICE);
             assert alarmManager != null;
 
-            if(Build.VERSION.SDK_INT < 23){
-                if(Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cz.getTimeInMillis(), pendingIntent);
+            if (Build.VERSION.SDK_INT < 23) {
+                if (Build.VERSION.SDK_INT >= 19)
+                    alarmManager.setExact(AlarmManager.RTC, cz.getTimeInMillis(), pendingIntent);
                 else alarmManager.set(AlarmManager.RTC, cz.getTimeInMillis(), pendingIntent);
-            } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cz.getTimeInMillis(), pendingIntent);
+            } else
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cz.getTimeInMillis(), pendingIntent);
 
             if (ile == 0) myDb.updateDays_PRZYPOMNIENIE(id_p, dni - 1);
 
@@ -335,7 +337,7 @@ public class GoToToday extends Fragment {
 
     @Override
     public void onDestroy() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         super.onDestroy();
     }
 

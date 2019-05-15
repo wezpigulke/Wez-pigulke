@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
@@ -67,6 +66,8 @@ public class NotificationReceiver extends BroadcastReceiver {
     private String specjalizacja;
     private String dataPrzyszla;
     private Date date;
+
+    private final int oneDay = 24 * 60 * 60 * 1000;
 
     private void countDiff() {
 
@@ -257,14 +258,14 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
 
         cz.add(Calendar.DATE, ileDniDodac);
-        String dataPrzyszla = onlyDateSDF.format(cz.getTime());
+        dataPrzyszla = onlyDateSDF.format(cz.getTime());
 
         myDb.updateDate_NOTYFIKACJA(id_n, dataPrzyszla);
 
         cursor = myDb.getDataName_LEK(nazwaLeku);
         cursor.moveToFirst();
 
-        double iloscLeku = cursor.getDouble(2) - jakaDawka*ileDniDodac;
+        double iloscLeku = cursor.getDouble(2) - jakaDawka * ileDniDodac;
 
         if (iloscLeku < 0) iloscLeku = 0;
         myDb.update_LEK(cursor.getInt(0), iloscLeku);
@@ -336,7 +337,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                             typ = cursor.getInt(8);
                         }
 
-                        diff += typ * 24 * 60 * 60 * 1000;
+                        diff += typ * oneDay;
                         ileDniDodac += typ;
                         iloscDni--;
 

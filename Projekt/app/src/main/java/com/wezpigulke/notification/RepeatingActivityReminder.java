@@ -17,8 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.other.DecimalDigitsInputFilter;
 import com.wezpigulke.R;
+import com.wezpigulke.other.DecimalDigitsInputFilter;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -101,8 +101,8 @@ public class RepeatingActivityReminder extends Activity {
 
         if (Build.VERSION.SDK_INT >= 24) {
             tNazwa.setText(Html.fromHtml("Nazwa leku: " + "<b>" + nazwa + "</b> ", 0));
-            tIlosc.setText(Html.fromHtml("Ilość tabletek: " + "<b>" + ilosc + "</b> ",0));
-            tSuma.setText(Html.fromHtml("Tygodniowo zażywasz: " + "<b>" + sumujTypy + "</b> ",0));
+            tIlosc.setText(Html.fromHtml("Ilość tabletek: " + "<b>" + ilosc + "</b> ", 0));
+            tSuma.setText(Html.fromHtml("Tygodniowo zażywasz: " + "<b>" + sumujTypy + "</b> ", 0));
         } else {
             tNazwa.setText(Html.fromHtml("Nazwa leku: " + "<b>" + nazwa + "</b> "));
             tIlosc.setText(Html.fromHtml("Ilość tabletek: " + "<b>" + ilosc + "</b> "));

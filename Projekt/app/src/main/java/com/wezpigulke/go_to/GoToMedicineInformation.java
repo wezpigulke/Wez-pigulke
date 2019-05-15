@@ -9,8 +9,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.wezpigulke.R;
-import com.wezpigulke.classes.MedicineInformation;
 import com.wezpigulke.adapters.MedicineInformationListAdapter;
+import com.wezpigulke.classes.MedicineInformation;
 import com.wezpigulke.get.GetInformationAboutMedicine;
 import com.wezpigulke.get.GetMedicineInformation;
 
@@ -64,7 +64,7 @@ public class GoToMedicineInformation extends AppCompatActivity {
 
     private void getMedicineInformation() {
 
-        GetMedicineInformation getMedicineInformation= new GetMedicineInformation(url);
+        GetMedicineInformation getMedicineInformation = new GetMedicineInformation(url);
         getMedicineInformation.execute();
 
         try {
@@ -101,7 +101,7 @@ public class GoToMedicineInformation extends AppCompatActivity {
 
     public void dialogShowInformation() {
 
-        if(contentHeaders.size()>0) {
+        if (contentHeaders.size() > 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Jaką informacje chcesz zobaczyć?");
 
@@ -112,11 +112,12 @@ public class GoToMedicineInformation extends AppCompatActivity {
             }
 
             builder.setItems(buttonText, (dialog, which) -> showDialogWithInformation(which));
-            builder.setNegativeButton("Zamknij",(dialog, id) -> dialog.cancel());
+            builder.setNegativeButton("Zamknij", (dialog, id) -> dialog.cancel());
 
             AlertDialog dialog = builder.create();
             dialog.show();
-        } else Toast.makeText(getApplicationContext(), "Brak informacji na temat leku", Toast.LENGTH_LONG).show();
+        } else
+            Toast.makeText(getApplicationContext(), "Brak informacji na temat leku", Toast.LENGTH_LONG).show();
 
     }
 
@@ -152,7 +153,7 @@ public class GoToMedicineInformation extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void closeKeyboard(){
+    public void closeKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         assert inputMethodManager != null;
         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);

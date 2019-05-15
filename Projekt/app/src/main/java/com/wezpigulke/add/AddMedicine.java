@@ -11,9 +11,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.wezpigulke.DatabaseHelper;
+import com.wezpigulke.R;
 import com.wezpigulke.other.DecimalDigitsInputFilter;
 import com.wezpigulke.other.OpenDialog;
-import com.wezpigulke.R;
 
 import java.util.Objects;
 
@@ -80,7 +80,7 @@ public class AddMedicine extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         super.onBackPressed();
         finish();
     }

@@ -8,8 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.wezpigulke.classes.Profiles;
 import com.wezpigulke.R;
+import com.wezpigulke.classes.Profiles;
 
 import java.util.List;
 
@@ -47,7 +47,8 @@ public class ProfilesListAdapter extends BaseAdapter {
 
         profileName.setText(results.get(position).getProfile());
 
-        if(results.get(position).getPicture()==1) profileImage.setImageResource(R.drawable.profilee);
+        if (results.get(position).getPicture() == 1)
+            profileImage.setImageResource(R.drawable.profilee);
         else profileImage.setImageResource(R.drawable.profileee);
 
         v.setTag(results.get(position).getId());

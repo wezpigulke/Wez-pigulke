@@ -1,6 +1,7 @@
 package com.wezpigulke;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,9 +27,12 @@ import com.wezpigulke.go_to.GoToNotes;
 import com.wezpigulke.go_to.GoToProfiles;
 import com.wezpigulke.go_to.GoToReminder;
 import com.wezpigulke.go_to.GoToSettings;
+import com.wezpigulke.go_to.GoToToday;
 import com.wezpigulke.go_to.GoToTypeMeasurement;
 import com.wezpigulke.go_to.GoToVisit;
-import com.wezpigulke.go_to.GoToToday;
+import com.wezpigulke.go_to.GoToWelcome;
+import com.wezpigulke.notification.BootCompletedNotificationReceiver;
+import com.wezpigulke.other.OnClearFromRecentService;
 
 public class SideMenu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -41,8 +45,28 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        startService(new Intent(getBaseContext(), OnClearFromRecentService.class));
 
         myDb = new DatabaseHelper(this);
+
+        cursor = myDb.getAllData_UZYTKOWNICY();
+        if (cursor.getCount() == 0) {
+            Intent cel = new Intent(this, GoToWelcome.class);
+            startActivity(cel);
+        }
+        if (cursor != null) cursor.close();
+
+        cursor = myDb.getStatus_CZYZAMKNIETA();
+
+        if(cursor!=null) {
+            cursor.moveToNext();
+            if(cursor.getInt(0)==1) {
+                Intent intent = new Intent(getApplicationContext(), BootCompletedNotificationReceiver.class);
+                getApplicationContext().sendBroadcast(intent);
+            }
+        }
+
+        myDb.updateStatus_CZYZAMKNIETA(0);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,9 +96,10 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
 
     }
 
+    @SuppressLint("ShowToast")
     @Override
     protected void onDestroy() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         super.onDestroy();
     }
 

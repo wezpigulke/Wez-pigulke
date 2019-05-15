@@ -40,7 +40,8 @@ public class AddTypeMeasurement extends AppCompatActivity {
                 if (cursor.getCount() == 0) {
                     myDb.insert_TYP_POMIAR(typBadania.getText().toString());
                     onBackPressed();
-                } else openDialog("Już istnieje typ badania o takiej samej nazwie w naszej bazie danych");
+                } else
+                    openDialog("Już istnieje typ badania o takiej samej nazwie w naszej bazie danych");
             } else openDialog("Wpisz typ badania");
         });
     }
@@ -59,7 +60,7 @@ public class AddTypeMeasurement extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         super.onBackPressed();
         finish();
     }

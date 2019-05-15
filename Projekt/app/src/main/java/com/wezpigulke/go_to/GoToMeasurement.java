@@ -18,9 +18,9 @@ import android.widget.Spinner;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
+import com.wezpigulke.adapters.MeasurementListAdapter;
 import com.wezpigulke.add.AddMeasurement;
 import com.wezpigulke.classes.Measurement;
-import com.wezpigulke.adapters.MeasurementListAdapter;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 
 import java.util.ArrayList;
@@ -81,7 +81,7 @@ public class GoToMeasurement extends Fragment {
 
     @Override
     public void onDestroy() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         super.onDestroy();
     }
 
@@ -201,9 +201,12 @@ public class GoToMeasurement extends Fragment {
 
         myDb = new DatabaseHelper(getActivity());
 
-        if (uzytkownik.equals("Wszyscy") && typ.equals("Wszystko")) cursor = myDb.getAllData_POMIARY();
-        else if (!uzytkownik.equals("Wszyscy") && typ.equals("Wszystko")) cursor = myDb.getUserData_POMIARY(uzytkownik);
-        else if (uzytkownik.equals("Wszyscy") && !typ.equals("Wszystko")) cursor = myDb.getUserType_POMIARY(typ);
+        if (uzytkownik.equals("Wszyscy") && typ.equals("Wszystko"))
+            cursor = myDb.getAllData_POMIARY();
+        else if (!uzytkownik.equals("Wszyscy") && typ.equals("Wszystko"))
+            cursor = myDb.getUserData_POMIARY(uzytkownik);
+        else if (uzytkownik.equals("Wszyscy") && !typ.equals("Wszystko"))
+            cursor = myDb.getUserType_POMIARY(typ);
         else cursor = myDb.getUserTypeData_POMIARY(uzytkownik, typ);
 
         if (cursor.getCount() != 0) {

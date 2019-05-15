@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
 import com.wezpigulke.R;
 import com.wezpigulke.classes.Doctor;
+
 import java.util.List;
 
 public class DoctorSpinnerAdapter extends ArrayAdapter<Doctor> {
@@ -23,7 +25,7 @@ public class DoctorSpinnerAdapter extends ArrayAdapter<Doctor> {
 
     @Override
     public int getCount() {
-        return(doctorList.size()-1);
+        return (doctorList.size() - 1);
     }
 
     @NonNull

@@ -24,13 +24,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.classes.Medicine;
+import com.wezpigulke.R;
 import com.wezpigulke.adapters.MedicineListAdapter;
+import com.wezpigulke.add.AddMedicine;
+import com.wezpigulke.classes.Medicine;
 import com.wezpigulke.other.DecimalDigitsInputFilter;
 import com.wezpigulke.other.OpenDialog;
-import com.wezpigulke.R;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
-import com.wezpigulke.add.AddMedicine;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -124,7 +124,8 @@ public class GoToMedicine extends Fragment {
                         if (isOnline()) {
                             medicineName = results.get(position).getName();
                             new getInformationAboutMedicine().execute();
-                        } else Toast.makeText(getContext(), "Brak połączenia z internetem", Toast.LENGTH_LONG).show();
+                        } else
+                            Toast.makeText(getContext(), "Brak połączenia z internetem", Toast.LENGTH_LONG).show();
                     });
 
             builder.show();
@@ -167,7 +168,7 @@ public class GoToMedicine extends Fragment {
     public boolean isOnline() {
         boolean var = false;
         ConnectivityManager cm = (ConnectivityManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CONNECTIVITY_SERVICE);
-        if ( cm.getActiveNetworkInfo() != null ) {
+        if (cm.getActiveNetworkInfo() != null) {
             var = true;
         }
         return var;
@@ -195,7 +196,7 @@ public class GoToMedicine extends Fragment {
 
     @Override
     public void onDestroy() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         super.onDestroy();
     }
 
@@ -241,7 +242,7 @@ public class GoToMedicine extends Fragment {
         protected Void doInBackground(Void... params) {
 
             try {
-                Document doc = Jsoup.connect("http://bazalekow.leksykon.com.pl/szukaj-leku.html?a=search&o=0&p=50&cmn=" +  medicineName).get();
+                Document doc = Jsoup.connect("http://bazalekow.leksykon.com.pl/szukaj-leku.html?a=search&o=0&p=50&cmn=" + medicineName).get();
                 Elements elements = doc.select("div.results-drug-list-block.block-shadow > div.header-block > span.quantity-block > span.quantity");
                 medicineCount = Integer.parseInt(elements.text());
             } catch (IOException e) {
@@ -257,13 +258,13 @@ public class GoToMedicine extends Fragment {
 
             super.onPostExecute(aVoid);
 
-            if(medicineCount>0) {
+            if (medicineCount > 0) {
                 Intent intent = new Intent(v.getContext(), GoToMedicineInformation.class);
                 intent.putExtra("medicineName", medicineName);
                 startActivity(intent);
             } else {
-                Handler handler =  new Handler(Objects.requireNonNull(getActivity()).getMainLooper());
-                handler.post(() -> Toast.makeText(getActivity(), "Nie znaleziono takiego leku w bazie",Toast.LENGTH_LONG).show());
+                Handler handler = new Handler(Objects.requireNonNull(getActivity()).getMainLooper());
+                handler.post(() -> Toast.makeText(getActivity(), "Nie znaleziono takiego leku w bazie", Toast.LENGTH_LONG).show());
             }
 
         }

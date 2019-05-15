@@ -94,6 +94,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String LEK_NAZWA = "Nazwa";
     private static final String LEK_ILOSC_TABLETEK = "Ilosc_tabletek";
 
+    private static final String CZYZAMKNIETA = "CzyZamknieta";
+    private static final String CZYZAMKNIETA_STATUS = "Status";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
@@ -187,6 +190,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "ID INTEGER PRIMARY KEY, " +
                 "Nazwa TEXT, " +
                 "Ilosc_tabletek REAL)");
+
+        db.execSQL("CREATE TABLE " + CZYZAMKNIETA + " (" +
+                "Status INTEGER)");
     }
 
     @Override
@@ -208,6 +214,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + NOTATKI);
         db.execSQL("DROP TABLE IF EXISTS " + STATYSTYKI);
         db.execSQL("DROP TABLE IF EXISTS " + LEK);
+        db.execSQL("DROP TABLE IF EXISTS " + CZYZAMKNIETA);
         onCreate(db);
     }
 
@@ -1042,6 +1049,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } finally {
             db.endTransaction();
         }
+    }
+
+    /**
+     * ============ CZYZAMKNIETA =============
+     **/
+
+    public void insert_CZYZAMKNIETA(Integer status) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String sql = "INSERT INTO " + CZYZAMKNIETA + "(Status) VALUES (?)";
+        SQLiteStatement statement = db.compileStatement(sql);
+
+        statement.bindLong(1, status);
+        statement.executeInsert();
+
+    }
+
+    public Cursor getStatus_CZYZAMKNIETA() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT Status FROM " + CZYZAMKNIETA, null);
+
+    }
+
+    public void updateStatus_CZYZAMKNIETA(Integer status) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String sql = "UPDATE " + CZYZAMKNIETA + " SET Status=?";
+        SQLiteStatement statement = db.compileStatement(sql);
+
+        statement.bindLong(1, status);
+
+        statement.executeUpdateDelete();
+
     }
 
 }

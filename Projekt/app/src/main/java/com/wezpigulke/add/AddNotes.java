@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,11 +12,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.support.v7.widget.Toolbar;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.R;
+import com.wezpigulke.other.OpenDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -131,7 +131,7 @@ public class AddNotes extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         super.onBackPressed();
         finish();
     }

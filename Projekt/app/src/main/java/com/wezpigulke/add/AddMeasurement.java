@@ -20,9 +20,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.wezpigulke.DatabaseHelper;
+import com.wezpigulke.R;
 import com.wezpigulke.other.DecimalDigitsInputFilter;
 import com.wezpigulke.other.OpenDialog;
-import com.wezpigulke.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -183,13 +183,13 @@ public class AddMeasurement extends AppCompatActivity {
         });
     }
 
-    public void showKeyboard(){
+    public void showKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         assert inputMethodManager != null;
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
-    public void closeKeyboard(){
+    public void closeKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         assert inputMethodManager != null;
         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -252,7 +252,7 @@ public class AddMeasurement extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         closeKeyboard();
         super.onBackPressed();
         finish();
@@ -298,7 +298,7 @@ public class AddMeasurement extends AppCompatActivity {
         dataBadania.setText(date);
         godzinaBadania.setText(time);
 
-        wynikPomiaru.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(6,2)});
+        wynikPomiaru.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(6, 2)});
         wynikPomiaru.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
 
         cursor = myDb.getAllName_UZYTKOWNICY();

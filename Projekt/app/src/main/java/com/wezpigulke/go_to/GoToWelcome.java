@@ -14,9 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.R;
 import com.wezpigulke.SideMenu;
+import com.wezpigulke.other.OpenDialog;
 
 public class GoToWelcome extends AppCompatActivity {
 
@@ -103,7 +103,7 @@ public class GoToWelcome extends AppCompatActivity {
 
             if (yourName.getText().toString().trim().length() > 0) {
 
-                if(ktoryObrazek == 0) {
+                if (ktoryObrazek == 0) {
                     openDialog("Musisz wybrać jeden z avatarów");
                 } else {
                     myDb.insert_UZYTKOWNICY(yourName.getText().toString(), ktoryObrazek);
@@ -125,15 +125,10 @@ public class GoToWelcome extends AppCompatActivity {
         setContentView(R.layout.welcome);
         initializeVariables();
 
+        myDb.insert_CZYZAMKNIETA(0);
+
         cursor = myDb.getAllData_STATYSTYKI();
         if (cursor.getCount() == 0) myDb.insert_STATYSTYKI(0, 0, 0);
-
-        cursor = myDb.getAllData_UZYTKOWNICY();
-        if (cursor.getCount() > 0) {
-            Intent cel = new Intent(this, SideMenu.class);
-            startActivity(cel);
-        }
-        if(cursor!=null) cursor.close();
 
         obrClickListeners();
         idzDalejClickListener();
@@ -147,7 +142,7 @@ public class GoToWelcome extends AppCompatActivity {
         openDialog.show(getSupportFragmentManager(), "GoToWelcome");
     }
 
-    public void showKeyboard(){
+    public void showKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         assert inputMethodManager != null;
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);

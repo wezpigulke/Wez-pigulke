@@ -94,14 +94,15 @@ public class AddVisit extends AppCompatActivity {
 
             stopPlaying();
 
-            Doctor selectedItem = (Doctor)spinnerDoctor.getSelectedItem();
+            Doctor selectedItem = (Doctor) spinnerDoctor.getSelectedItem();
             if (selectedItem.getSpecialization().equals("Wybierz lekarza")) {
                 openDialog("Wybierz lekarza lub dodaj nowego");
             } else {
 
                 calculateDiff();
 
-                if (diff < 0) openDialog("Godzina dzisiejszej wizyty minęła, wybierz inną godzinę lub ustaw przyszłą datę");
+                if (diff < 0)
+                    openDialog("Godzina dzisiejszej wizyty minęła, wybierz inną godzinę lub ustaw przyszłą datę");
                 else {
 
                     Integer rand_val = random();
@@ -120,7 +121,7 @@ public class AddVisit extends AppCompatActivity {
 
                     int id = 0;
                     cursor = myDb.getMaxId_WIZYTY();
-                    if(cursor.getCount() != 0) {
+                    if (cursor.getCount() != 0) {
                         cursor.moveToFirst();
                         id = cursor.getInt(0);
                     }
@@ -128,7 +129,7 @@ public class AddVisit extends AppCompatActivity {
                     Intent intxz = putExtraToIntent(id, rand_val, uzytkownik + "  |  wizyta u " + specialization + ": " + name + " jutro o " + godzina.getText().toString());
                     cal.add(Calendar.DATE, -1);
 
-                    if(diff > 24*60*60*100) addAlarm(rand_val, intxz);
+                    if (diff > 24 * 60 * 60 * 100) addAlarm(rand_val, intxz);
 
                     rand_val--;
                     intxz = putExtraToIntent(id, rand_val, uzytkownik + "  |  wizyta u " + specialization + ": " + name + " o " + godzina.getText().toString());
@@ -168,9 +169,9 @@ public class AddVisit extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 
-                Doctor doctor = (Doctor)parentView.getItemAtPosition(position);
+                Doctor doctor = (Doctor) parentView.getItemAtPosition(position);
 
-                if(doctor.getSpecialization().equals("Dodaj nowego lekarza")) {
+                if (doctor.getSpecialization().equals("Dodaj nowego lekarza")) {
                     Intent cel = new Intent(parentView.getContext(), AddDoctor.class);
                     startActivity(cel);
                 }
@@ -249,7 +250,7 @@ public class AddVisit extends AppCompatActivity {
                 dzwiek = position;
                 stopPlaying();
 
-                switch(position) {
+                switch (position) {
                     case 1:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
                         mp.start();
@@ -302,7 +303,7 @@ public class AddVisit extends AppCompatActivity {
     private void allTimeListener() {
 
         godzina.setOnClickListener(view -> {
-            TimePickerDialog dialog = new TimePickerDialog(AddVisit.this,godzinaListener, hour, minutes, true);
+            TimePickerDialog dialog = new TimePickerDialog(AddVisit.this, godzinaListener, hour, minutes, true);
             dialog.show();
         });
 
@@ -356,9 +357,10 @@ public class AddVisit extends AppCompatActivity {
 
         if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
-                if(cursor.getString(3).equals("0")) {
+                if (cursor.getString(3).equals("0")) {
                     doctorArrayList.add(new Doctor(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(4)));
-                } else doctorArrayList.add(new Doctor(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(4)));
+                } else
+                    doctorArrayList.add(new Doctor(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(4)));
             }
         }
 
@@ -405,7 +407,7 @@ public class AddVisit extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         stopPlaying();
         super.onBackPressed();
         finish();
@@ -443,12 +445,12 @@ public class AddVisit extends AppCompatActivity {
         cursor.moveToNext();
         int rand_val_w = cursor.getInt(0);
 
-        while(rand_val == rand_val_n &&
-                rand_val == rand_val_n-1 &&
-                rand_val == rand_val_n-2 &&
-                rand_val == rand_val_n-3 &&
+        while (rand_val == rand_val_n &&
+                rand_val == rand_val_n - 1 &&
+                rand_val == rand_val_n - 2 &&
+                rand_val == rand_val_n - 3 &&
                 rand_val == rand_val_w &&
-                rand_val == rand_val_w-1) {
+                rand_val == rand_val_w - 1) {
 
             rand_val = random();
 
@@ -456,8 +458,7 @@ public class AddVisit extends AppCompatActivity {
 
     }
 
-    public static int random()
-    {
+    public static int random() {
         return (int) (Math.random() * (MAX_VALUE));
     }
 
@@ -504,7 +505,7 @@ public class AddVisit extends AppCompatActivity {
         uzytkownik = cursor.getString(0);
 
         checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if(isChecked) czyWibracja = 1;
+            if (isChecked) czyWibracja = 1;
             else czyWibracja = 0;
         });
 

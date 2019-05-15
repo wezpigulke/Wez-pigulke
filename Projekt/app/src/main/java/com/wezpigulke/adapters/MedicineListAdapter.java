@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.wezpigulke.classes.Medicine;
 import com.wezpigulke.R;
+import com.wezpigulke.classes.Medicine;
 
 import java.util.List;
 

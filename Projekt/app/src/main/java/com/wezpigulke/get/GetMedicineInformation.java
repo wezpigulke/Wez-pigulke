@@ -2,8 +2,10 @@ package com.wezpigulke.get;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +38,9 @@ public class GetMedicineInformation extends AsyncTask<Void, Void, Void> {
             Document doc = Jsoup.connect("http://bazalekow.leksykon.com.pl/" + url).get();
             int contentSize = doc.select("span.descr_common > span.descr_section").size();
 
-            for(int i = 0; i < contentSize; i++) {
+            for (int i = 0; i < contentSize; i++) {
                 String content = doc.select("span.descr_common > span.descr_section").get(i).select("span.descr_head").text();
-                if(content.length()>0) {
+                if (content.length() > 0) {
                     contentHeaders.add(content);
                     content = doc.select("span.descr_common > span.descr_section").get(i).select("span.descr_body").text();
                     contentInformation.add(content);

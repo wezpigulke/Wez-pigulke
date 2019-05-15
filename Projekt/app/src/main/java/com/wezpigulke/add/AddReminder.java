@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -263,7 +262,7 @@ public class AddReminder extends AppCompatActivity {
             labelDawka.add("Dawka: " + i);
         }
 
-        if(!wlasnaDawka.equals("")) {
+        if (!wlasnaDawka.equals("")) {
             labelDawka.add(wlasnaDawka);
         }
 
@@ -290,8 +289,8 @@ public class AddReminder extends AppCompatActivity {
 
         stopPlaying();
 
-        if(dodaj.getVisibility()==View.GONE) {
-            if(cursor!=null) cursor.close();
+        if (dodaj.getVisibility() == View.GONE) {
+            if (cursor != null) cursor.close();
             super.onBackPressed();
             finish();
         } else {
@@ -346,8 +345,7 @@ public class AddReminder extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static int random()
-    {
+    public static int random() {
         return (int) (Math.random() * (MAX_VALUE));
     }
 
@@ -361,12 +359,12 @@ public class AddReminder extends AppCompatActivity {
         cursor.moveToNext();
         int rand_val_w = cursor.getInt(0);
 
-        while(rand_val == rand_val_n &&
-                rand_val == rand_val_n-1 &&
-                rand_val == rand_val_n-2 &&
-                rand_val == rand_val_n-3 &&
+        while (rand_val == rand_val_n &&
+                rand_val == rand_val_n - 1 &&
+                rand_val == rand_val_n - 2 &&
+                rand_val == rand_val_n - 3 &&
                 rand_val == rand_val_w &&
-                rand_val == rand_val_w-1) {
+                rand_val == rand_val_w - 1) {
 
             rand_val = random();
 
@@ -374,13 +372,13 @@ public class AddReminder extends AppCompatActivity {
 
     }
 
-    public void showKeyboard(){
+    public void showKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         assert inputMethodManager != null;
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
-    public void closeKeyboard(){
+    public void closeKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         assert inputMethodManager != null;
         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
@@ -507,13 +505,13 @@ public class AddReminder extends AppCompatActivity {
         sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
         checkBox.setOnCheckedChangeListener((compoundButton, isChecked) -> {
-            if(isChecked) czyWibracja = 1;
+            if (isChecked) czyWibracja = 1;
             else czyWibracja = 0;
         });
 
         idd = 0;
         cursor = myDb.getMAXid_PRZYPOMNIENIE();
-        if(cursor.getCount() != 0) {
+        if (cursor.getCount() != 0) {
             cursor.moveToFirst();
             idd = Integer.parseInt(cursor.getString(0));
             idd++;
@@ -589,7 +587,7 @@ public class AddReminder extends AppCompatActivity {
                 dzwiek = position;
                 stopPlaying();
 
-                switch(position) {
+                switch (position) {
                     case 1:
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.alarm1);
                         mp.start();
@@ -642,7 +640,7 @@ public class AddReminder extends AppCompatActivity {
         dawka.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if(dawka.getItemAtPosition(position).toString().equals("Własna dawka")) {
+                if (dawka.getItemAtPosition(position).toString().equals("Własna dawka")) {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(AddReminder.this, R.style.AlertDialog);
                     builder.setTitle("Własna dawka");
@@ -657,11 +655,11 @@ public class AddReminder extends AppCompatActivity {
                     builder.setView(input);
 
                     builder.setPositiveButton("OK", (dialog, which) -> {
-                        if(input.getText().length()!=0) {
+                        if (input.getText().length() != 0) {
 
                             wlasnaDawka = "Dawka: " + input.getText();
                             loadSpinnerDawka();
-                            dawka.setSelection(labelDawka.size()-2);
+                            dawka.setSelection(labelDawka.size() - 2);
 
                             String temp = dawka.getItemAtPosition(position).toString();
                             jakaDawka = Double.valueOf(temp.substring(7));
@@ -674,7 +672,7 @@ public class AddReminder extends AppCompatActivity {
                     builder.setNegativeButton("Anuluj", (dialog, which) -> dialog.cancel());
                     builder.show();
 
-                    wlasnaDawka="";
+                    wlasnaDawka = "";
 
                 } else {
                     String temp = dawka.getItemAtPosition(position).toString();
@@ -731,7 +729,7 @@ public class AddReminder extends AppCompatActivity {
 
     private void setVisibilityForElements(int position) {
 
-        switch(position) {
+        switch (position) {
             case 0:
                 coWybrane = 0;
                 dataTabletka.setVisibility(View.VISIBLE);
@@ -844,8 +842,7 @@ public class AddReminder extends AppCompatActivity {
             openDialog("Godzina dzisiejszego powiadomienia minęła, wybierz inną godzinę lub ustaw przyszłą datę");
             String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
             godzinaTabletka.setText(time);
-        }
-        else {
+        } else {
 
             iloscDni = 1;
 
@@ -882,7 +879,8 @@ public class AddReminder extends AppCompatActivity {
         String godzinaPrzypomnienia = godzinaTabletka.getText().toString();
         calculateDiff(godzinaPrzypomnienia, dataPrzypomnienia);
 
-        if (diffDays == 0 && diffInMillis < 0) openDialog("Godzina dzisiejszego powiadomienia minęła, wybierz inną godzinę lub ustaw przyszłą datę");
+        if (diffDays == 0 && diffInMillis < 0)
+            openDialog("Godzina dzisiejszego powiadomienia minęła, wybierz inną godzinę lub ustaw przyszłą datę");
         else {
 
             if (coWybrane == 1 && iloscDni >= 1) {
@@ -897,7 +895,7 @@ public class AddReminder extends AppCompatActivity {
                         godzinaPrzypomnienia,
                         dataPrzypomnienia,
                         uzytkownik + " | " + godzinaPrzypomnienia + "  | Weź: " + nazwaLeku + " (Dawka: " + jakaDawka + ")",
-                        iloscDni-1,
+                        iloscDni - 1,
                         cal);
 
             } else if (coWybrane == 3 && iloscDni >= 1) {
@@ -912,7 +910,7 @@ public class AddReminder extends AppCompatActivity {
                         godzinaPrzypomnienia,
                         dataPrzypomnienia,
                         uzytkownik + " | " + godzinaPrzypomnienia + "  | Weź: " + nazwaLeku + " (Dawka: " + jakaDawka + ")",
-                        iloscDni-1,
+                        iloscDni - 1,
                         cal);
 
             }
@@ -967,11 +965,11 @@ public class AddReminder extends AppCompatActivity {
             String dataPrzypomnienia = dataTabletka.getText().toString();
             calculateDiff(godzinaPrzypomnienia, dataPrzypomnienia);
 
-            if(diffDays == 0 && diffInMillis < 0) {
+            if (diffDays == 0 && diffInMillis < 0) {
 
-                if (iloscDni==1) {
+                if (iloscDni == 1) {
                     czyUsunacDzien = 1;
-                } else if (iloscDni>1) {
+                } else if (iloscDni > 1) {
                     Calendar cx = Calendar.getInstance();
                     try {
                         cx.setTime(sdf.parse(dataPrzypomnienia));
@@ -1008,13 +1006,13 @@ public class AddReminder extends AppCompatActivity {
 
             }
 
-            if (czyUsunacDzien != 1 && iloscDni>=1) {
+            if (czyUsunacDzien != 1 && iloscDni >= 1) {
 
                 insertNotyfikacjaAndAddAlarm(
                         godzinaPrzypomnienia,
                         dataPrzypomnienia,
                         uzytkownik + " | " + godzinaPrzypomnienia + " | Weź: " + nazwaLeku + " (Dawka: " + jakaDawka + ")",
-                        iloscDni-1,
+                        iloscDni - 1,
                         cal);
 
                 Log.d("AddReminder", "Dodanie alarmu dla: " + godzinaPrzypomnienia);
@@ -1042,7 +1040,7 @@ public class AddReminder extends AppCompatActivity {
 
                 } else if (coWybrane == 1 || coWybrane == 3) {
 
-                    if((coWybrane == 1 && ileDni.getText().length() > 0) || (coWybrane == 3 && ileDni.getText().length() > 0 && coIleDniEditText.getText().length() > 0)) {
+                    if ((coWybrane == 1 && ileDni.getText().length() > 0) || (coWybrane == 3 && ileDni.getText().length() > 0 && coIleDniEditText.getText().length() > 0)) {
 
                         setNotificationEveryFewDays();
 
@@ -1050,7 +1048,7 @@ public class AddReminder extends AppCompatActivity {
 
                 } else if (coWybrane == 2) {
 
-                    if(ileDni.getText().length() > 0) {
+                    if (ileDni.getText().length() > 0) {
 
                         setNotificationSeveralTimes();
 
@@ -1065,7 +1063,7 @@ public class AddReminder extends AppCompatActivity {
 
         int idd = 0;
         cursor = myDb.getMAXid_PRZYPOMNIENIE();
-        if(cursor.getCount() != 0) {
+        if (cursor.getCount() != 0) {
             cursor.moveToFirst();
             idd = Integer.parseInt(cursor.getString(0));
             idd++;
@@ -1127,12 +1125,14 @@ public class AddReminder extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         assert alarmManager != null;
 
-        if(Build.VERSION.SDK_INT < 23){
-            if(Build.VERSION.SDK_INT >= 19) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+        if (Build.VERSION.SDK_INT < 23) {
+            if (Build.VERSION.SDK_INT >= 19)
+                alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
             else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
-        } else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+        } else
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
 
-        Log.d("========ALARM==========", "Dodanie: " + rand_val + "\n" + cal.getTime().toString().substring(0,16));
+        Log.d("========ALARM==========", "Dodanie: " + rand_val + "\n" + cal.getTime().toString().substring(0, 16));
 
     }
 
@@ -1156,7 +1156,7 @@ public class AddReminder extends AppCompatActivity {
 
             final EditText input = new EditText(getApplicationContext());
 
-            input.setFilters(new InputFilter[] {new DecimalDigitsInputFilter(5,2)});
+            input.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(5, 2)});
             input.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
 
             input.setText(ilosc);

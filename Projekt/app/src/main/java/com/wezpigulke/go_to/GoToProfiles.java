@@ -18,13 +18,13 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.wezpigulke.DatabaseHelper;
+import com.wezpigulke.R;
+import com.wezpigulke.adapters.ProfilesListAdapter;
+import com.wezpigulke.add.AddProfile;
+import com.wezpigulke.classes.Profiles;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.other.OpenDialog;
-import com.wezpigulke.classes.Profiles;
-import com.wezpigulke.adapters.ProfilesListAdapter;
-import com.wezpigulke.R;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
-import com.wezpigulke.add.AddProfile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -203,7 +203,7 @@ public class GoToProfiles extends Fragment {
                 alarmManager.cancel(pendingIntent);
 
                 pendingIntent = PendingIntent.getBroadcast(
-                        getActivity(), cursor.getInt(0)-1, myIntent,
+                        getActivity(), cursor.getInt(0) - 1, myIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 alarmManager.cancel(pendingIntent);
 
@@ -214,8 +214,8 @@ public class GoToProfiles extends Fragment {
 
     @Override
     public void onDestroy() {
-        if(cursor!=null) cursor.close();
-        if(cursorTemp!=null) cursorTemp.close();
+        if (cursor != null) cursor.close();
+        if (cursorTemp != null) cursorTemp.close();
         super.onDestroy();
     }
 

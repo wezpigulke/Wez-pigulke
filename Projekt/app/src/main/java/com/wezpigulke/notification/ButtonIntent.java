@@ -33,7 +33,7 @@ public class ButtonIntent extends BroadcastReceiver {
 
         int coZrobic = intent.getIntExtra("coZrobic", -1);
 
-        switch(coZrobic) {
+        switch (coZrobic) {
 
             case 0:
                 setYesButton();
@@ -45,7 +45,7 @@ public class ButtonIntent extends BroadcastReceiver {
 
         }
 
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
 
     }
 
@@ -73,7 +73,7 @@ public class ButtonIntent extends BroadcastReceiver {
 
     private void updateStatistics(boolean type) {
 
-        if(type) {
+        if (type) {
 
             cursor = myDb.getWziete_STATYSTYKI(0);
             cursor.moveToFirst();

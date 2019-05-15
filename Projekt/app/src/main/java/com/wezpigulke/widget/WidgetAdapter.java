@@ -3,7 +3,6 @@ package com.wezpigulke.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -41,18 +40,18 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
         Cursor cursor = myDb.getAllData_NOTYFIKACJA();
         todayArrayList = new ArrayList<>();
 
-        if(cursor.getCount()!=0) {
-            while(cursor.moveToNext()) {
+        if (cursor.getCount() != 0) {
+            while (cursor.moveToNext()) {
                 countDiff(cursor.getString(3), cursor.getString(4));
                 if (diffDays == 0 && diffInMillis >= 0) {
                     todayArrayList.add(new Today(cursor.getInt(0),
-                                         cursor.getString(1) + " (Dawka: " + cursor.getString(2) + ")",
-                                            "Godzina: " + cursor.getString(3),
-                                                 cursor.getString(5)));
+                            cursor.getString(1) + " (Dawka: " + cursor.getString(2) + ")",
+                            "Godzina: " + cursor.getString(3),
+                            cursor.getString(5)));
                 }
             }
         }
-        if(todayArrayList.size()==0){
+        if (todayArrayList.size() == 0) {
             todayArrayList.add(new Today(-1, "Brak na dziś", "", ""));
         }
         Collections.sort(todayArrayList, new CustomComparator());

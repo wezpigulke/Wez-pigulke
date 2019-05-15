@@ -6,20 +6,20 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.design.widget.FloatingActionButton;
 import android.widget.ListView;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.classes.Doctor;
-import com.wezpigulke.adapters.DoctorListAdapter;
 import com.wezpigulke.R;
-import com.wezpigulke.other.SwipeDismissListViewTouchListener;
+import com.wezpigulke.adapters.DoctorListAdapter;
 import com.wezpigulke.add.AddDoctor;
+import com.wezpigulke.classes.Doctor;
+import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +68,7 @@ public class GoToDoctors extends Fragment {
 
     @Override
     public void onDestroy() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         super.onDestroy();
     }
 
@@ -83,13 +83,13 @@ public class GoToDoctors extends Fragment {
             int idd = (int) view.getTag();
             cursor = myDb.getIdData_DOKTORZY(idd);
 
-            if(cursor.getCount()!=0) {
+            if (cursor.getCount() != 0) {
                 cursor.moveToFirst();
                 nrtel = cursor.getString(3);
                 adres = cursor.getString(4);
             }
 
-            if(nrtel.equals("0")) {
+            if (nrtel.equals("0")) {
                 dialogCallOrNavigate(false);
             } else dialogCallOrNavigate(true);
 
@@ -130,9 +130,10 @@ public class GoToDoctors extends Fragment {
 
         if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
-                if(cursor.getString(3).equals("0")) {
+                if (cursor.getString(3).equals("0")) {
                     results.add(new Doctor(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(4)));
-                } else results.add(new Doctor(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(4)));
+                } else
+                    results.add(new Doctor(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(4)));
             }
         }
 
@@ -161,7 +162,8 @@ public class GoToDoctors extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AlertDialog);
 
         builder.setMessage("Co chcesz zrobić?").setCancelable(true);
-        if(showIt) builder.setNegativeButton("Zadzwoń", (dialog, which) -> dialContactPhone(nrtel));
+        if (showIt)
+            builder.setNegativeButton("Zadzwoń", (dialog, which) -> dialContactPhone(nrtel));
         builder.setPositiveButton("Nawiguj", (dialog, which) -> openMap());
 
         builder.show();

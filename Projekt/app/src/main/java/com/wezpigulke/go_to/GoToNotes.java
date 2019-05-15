@@ -18,11 +18,11 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.classes.Notes;
-import com.wezpigulke.adapters.NotesListAdapter;
 import com.wezpigulke.R;
-import com.wezpigulke.other.SwipeDismissListViewTouchListener;
+import com.wezpigulke.adapters.NotesListAdapter;
 import com.wezpigulke.add.AddNotes;
+import com.wezpigulke.classes.Notes;
+import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -187,14 +187,14 @@ public class GoToNotes extends Fragment {
             cursor.moveToLast();
 
             parts = cursor.getString(4).split(" ");
-            part1 = parts[0].substring(0,parts[0].length()-5);
+            part1 = parts[0].substring(0, parts[0].length() - 5);
             part2 = parts[1];
 
             results.add(new Notes(cursor.getInt(0), cursor.getString(1), cursor.getString(3), part1 + " | " + part2));
             while (cursor.moveToPrevious()) {
 
                 parts = cursor.getString(4).split(" ");
-                part1 = parts[0].substring(0,parts[0].length()-5);
+                part1 = parts[0].substring(0, parts[0].length() - 5);
                 part2 = parts[1];
 
                 results.add(new Notes(cursor.getInt(0), cursor.getString(1), cursor.getString(3), part1 + " | " + part2));
@@ -223,7 +223,7 @@ public class GoToNotes extends Fragment {
 
     @Override
     public void onDestroy() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         super.onDestroy();
     }
 

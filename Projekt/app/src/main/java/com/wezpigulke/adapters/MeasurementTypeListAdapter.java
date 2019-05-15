@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.wezpigulke.classes.MeasurementType;
 import com.wezpigulke.R;
+import com.wezpigulke.classes.MeasurementType;
 
 import java.util.List;
 

@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.wezpigulke.classes.Reminder;
 import com.wezpigulke.R;
+import com.wezpigulke.classes.Reminder;
 
 import java.util.List;
 

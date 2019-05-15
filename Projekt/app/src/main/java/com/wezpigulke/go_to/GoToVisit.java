@@ -21,12 +21,12 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.R;
-import com.wezpigulke.other.SwipeDismissListViewTouchListener;
-import com.wezpigulke.classes.Visit;
 import com.wezpigulke.adapters.VisitListAdapter;
 import com.wezpigulke.add.AddVisit;
+import com.wezpigulke.classes.Visit;
+import com.wezpigulke.notification.NotificationReceiver;
+import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -184,7 +184,7 @@ public class GoToVisit extends Fragment {
                     diff = secondDate.getTime() - firstDate.getTime();
                 }
 
-                if(diff<0) {
+                if (diff < 0) {
                     myDb.remove_WIZYTY(cursor.getInt(0));
                 } else {
                     results.add(new Visit(cursor.getInt(0), cursor.getString(5), cursor.getString(3), cursor.getString(4), cursor.getString(1) + " | " + cursor.getString(2)));
@@ -213,7 +213,7 @@ public class GoToVisit extends Fragment {
 
         myIntent = new Intent(getActivity(), NotificationReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(
-                getActivity(), cursor.getInt(0)+1, myIntent,
+                getActivity(), cursor.getInt(0) + 1, myIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
         myDb.remove_WIZYTY(idd);
@@ -236,7 +236,7 @@ public class GoToVisit extends Fragment {
 
     @Override
     public void onDestroy() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         super.onDestroy();
     }
 }

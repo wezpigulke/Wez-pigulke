@@ -20,15 +20,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.R;
-import com.wezpigulke.classes.Reminder;
 import com.wezpigulke.adapters.ReminderListAdapter;
-import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 import com.wezpigulke.add.AddReminder;
+import com.wezpigulke.classes.Reminder;
+import com.wezpigulke.notification.NotificationReceiver;
+import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -171,7 +170,8 @@ public class GoToReminder extends Fragment {
                     cursorTemp = myDb.getCountType_NOTYFIKACJA(cursor.getInt(0));
                     cursorTemp.moveToFirst();
 
-                    if(cursorTemp.getInt(0)!=0) results.add(new Reminder(cursor.getInt(0), cursor.getString(3) + " (Dawka: " + cursor.getString(4) + ")", cursor.getString(8), "Pozostało dni: " + cursor.getString(5), cursor.getString(6)));
+                    if (cursorTemp.getInt(0) != 0)
+                        results.add(new Reminder(cursor.getInt(0), cursor.getString(3) + " (Dawka: " + cursor.getString(4) + ")", cursor.getString(8), "Pozostało dni: " + cursor.getString(5), cursor.getString(6)));
                     else myDb.remove_PRZYPOMNIENIE(cursor.getInt(0));
 
                 } else myDb.remove_PRZYPOMNIENIE(cursor.getInt(0));
@@ -197,8 +197,8 @@ public class GoToReminder extends Fragment {
 
     @Override
     public void onDestroy() {
-        if(cursor!=null) cursor.close();
-        if(cursorTemp!=null) cursorTemp.close();
+        if (cursor != null) cursor.close();
+        if (cursorTemp != null) cursorTemp.close();
         super.onDestroy();
     }
 

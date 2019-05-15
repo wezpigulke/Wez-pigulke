@@ -12,8 +12,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.R;
+import com.wezpigulke.other.OpenDialog;
 
 import java.util.Objects;
 
@@ -58,17 +58,16 @@ public class AddProfile extends AppCompatActivity {
         });
     }
 
-    private void addListener(){
+    private void addListener() {
         add.setOnClickListener(v -> {
             if (txt.getText().length() > 0) {
-                if(ktoryObrazek!=0) {
+                if (ktoryObrazek != 0) {
                     cursor = myDb.getId_UZYTKOWNICY(txt.getText().toString());
                     if (cursor.getCount() == 0) {
                         myDb.insert_UZYTKOWNICY(txt.getText().toString(), ktoryObrazek);
                         closeKeyboard();
                         onBackPressed();
-                    }
-                    else openDialog("Już istnieje osoba o takim imieniu w naszej bazie danych");
+                    } else openDialog("Już istnieje osoba o takim imieniu w naszej bazie danych");
                 } else openDialog("Musisz wybrać obrazek");
             } else openDialog("Wpisz imie");
         });
@@ -94,7 +93,7 @@ public class AddProfile extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(cursor!=null) cursor.close();
+        if (cursor != null) cursor.close();
         super.onBackPressed();
         finish();
     }
@@ -109,13 +108,13 @@ public class AddProfile extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void showKeyboard(){
+    public void showKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         assert inputMethodManager != null;
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
-    public void closeKeyboard(){
+    public void closeKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         assert inputMethodManager != null;
         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);

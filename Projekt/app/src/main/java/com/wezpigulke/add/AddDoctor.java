@@ -7,8 +7,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.other.OpenDialog;
 import com.wezpigulke.R;
+import com.wezpigulke.other.OpenDialog;
 
 import java.util.Objects;
 
@@ -47,11 +47,11 @@ public class AddDoctor extends AppCompatActivity {
     private void addButtonListener() {
         add.setOnClickListener(v -> {
 
-            if (name.getText().length() > 0 && specialization.getText().length() > 0 && (phone_number.getText().length()==0 || phone_number.getText().length()==9)) {
+            if (name.getText().length() > 0 && specialization.getText().length() > 0 && (phone_number.getText().length() == 0 || phone_number.getText().length() == 9)) {
 
                 String numerTelefonu = phone_number.getText().toString();
 
-                if(numerTelefonu.length()==0) numerTelefonu="0";
+                if (numerTelefonu.length() == 0) numerTelefonu = "0";
 
                 myDb.insert_DOKTORZY(
                         name.getText().toString(),
@@ -62,8 +62,10 @@ public class AddDoctor extends AppCompatActivity {
                 onBackPressed();
 
             } else if (name.getText().length() == 0) openDialog("Wpisz imie i nazwisko lekarza");
-            else if (specialization.getText().length() == 0) openDialog("Wpisz specjalizacje lekarza");
-            else if (phone_number.getText().length() < 9 && phone_number.length() > 0) openDialog("Wpisz prawidłowy numer telefonu (9 cyfr)");
+            else if (specialization.getText().length() == 0)
+                openDialog("Wpisz specjalizacje lekarza");
+            else if (phone_number.getText().length() < 9 && phone_number.length() > 0)
+                openDialog("Wpisz prawidłowy numer telefonu (9 cyfr)");
 
         });
     }

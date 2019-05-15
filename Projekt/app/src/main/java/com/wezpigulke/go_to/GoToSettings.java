@@ -42,8 +42,8 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.wezpigulke.DatabaseHelper;
-import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.R;
+import com.wezpigulke.notification.NotificationReceiver;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -131,8 +131,8 @@ public class GoToSettings extends Fragment {
 
                     cursor = myDb.getAllData_NOTYFIKACJA();
 
-                    if(cursor.getCount() != 0) {
-                        while(cursor.moveToNext()) {
+                    if (cursor.getCount() != 0) {
+                        while (cursor.moveToNext()) {
 
                             cursor = myDb.getRand_NOTYFIKACJA(cursor.getInt(0));
                             cursor.moveToFirst();
@@ -143,13 +143,13 @@ public class GoToSettings extends Fragment {
 
                     cursor = myDb.getAllData_WIZYTY();
 
-                    if(cursor.getCount() != 0) {
-                        while(cursor.moveToNext()) {
+                    if (cursor.getCount() != 0) {
+                        while (cursor.moveToNext()) {
 
                             cursorTemp = myDb.getRand_WIZYTY(cursor.getInt(0));
                             cursorTemp.moveToFirst();
                             cancelAlarm(cursorTemp.getInt(0));
-                            cancelAlarm(cursorTemp.getInt(0)-1);
+                            cancelAlarm(cursorTemp.getInt(0) - 1);
 
                         }
                     }
@@ -189,13 +189,13 @@ public class GoToSettings extends Fragment {
 
     private void countProgress() {
         cursor = myDb.getWziete_STATYSTYKI(0);
-        if(cursor.getCount() != 0) {
+        if (cursor.getCount() != 0) {
             cursor.moveToFirst();
             wziete = Integer.parseInt(cursor.getString(0));
         }
 
         cursor = myDb.getNiewziete_STATYSTYKI(0);
-        if(cursor.getCount() != 0) {
+        if (cursor.getCount() != 0) {
             cursor.moveToFirst();
             niewziete = Integer.parseInt(cursor.getString(0));
         }
@@ -252,7 +252,7 @@ public class GoToSettings extends Fragment {
         int hasWriteStoragePermission = ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (hasWriteStoragePermission != PackageManager.PERMISSION_GRANTED) {
             if (!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_CONTACTS)) {
-                showMessageOKCancel((dialog, which) -> requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_CODE_ASK_PERMISSIONS));
+                showMessageOKCancel((dialog, which) -> requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_ASK_PERMISSIONS));
                 return;
             }
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_ASK_PERMISSIONS);
@@ -311,7 +311,7 @@ public class GoToSettings extends Fragment {
 
         cursor = myDb.getAllName_UZYTKOWNICY();
 
-        if (cursor.getCount()!=0) {
+        if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
                 String user = cursor.getString(0);
 
@@ -373,13 +373,13 @@ public class GoToSettings extends Fragment {
     }
 
     private void generateNewCell(String text) {
-        cell = new PdfPCell(new Paragraph(text,FontFactory.getFont(
+        cell = new PdfPCell(new Paragraph(text, FontFactory.getFont(
                 FontFactory.TIMES_BOLD, 12, Font.BOLD, BaseColor.BLACK)));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(cell);
     }
 
-    private void addNewCell (String value) {
+    private void addNewCell(String value) {
         cell = new PdfPCell(new Paragraph(value));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
         table_result.addCell(cell);
@@ -412,8 +412,8 @@ public class GoToSettings extends Fragment {
 
     @Override
     public void onDestroy() {
-        if(cursor!=null) cursor.close();
-        if(cursorTemp!=null) cursorTemp.close();
+        if (cursor != null) cursor.close();
+        if (cursorTemp != null) cursorTemp.close();
         super.onDestroy();
     }
 
