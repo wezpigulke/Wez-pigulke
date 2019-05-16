@@ -25,6 +25,7 @@ import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
 import com.wezpigulke.adapters.TodayListAdapter;
 import com.wezpigulke.classes.Today;
+import com.wezpigulke.notification.BootCompletedNotificationReceiver;
 import com.wezpigulke.notification.NotificationReceiver;
 import com.wezpigulke.other.SwipeDismissListViewTouchListener;
 
@@ -54,6 +55,12 @@ public class GoToToday extends Fragment {
     private String data;
     private Integer idd;
     private Cursor cursor;
+    private boolean czyDodacPrzypomnienia;
+    private long diff;
+    private String dzisiejszaData;
+    private SimpleDateFormat hourAndDateSDF;
+    private String dzisiaj;
+    private SimpleDateFormat sdf;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -74,11 +81,16 @@ public class GoToToday extends Fragment {
     }
 
     private void initializeVariables(View v) {
+        czyDodacPrzypomnienia = false;
         label = new ArrayList<>();
         results = new ArrayList<>();
         lv = v.findViewById(R.id.todayList);
         spinner = v.findViewById(R.id.todaySpinner);
         uzytkownik = "Wszyscy";
+        dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        hourAndDateSDF = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
+        dzisiaj = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+        sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     }
 
     private void loadSpinnerData() {
@@ -164,36 +176,38 @@ public class GoToToday extends Fragment {
         if (uzytkownik.equals("Wszyscy")) cursor = myDb.getAllData_NOTYFIKACJA();
         else cursor = myDb.getUserData_NOTYFIKACJA(uzytkownik);
 
-        String dzisiejszaData = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-        String dzisiejszyCzas = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        SimpleDateFormat tdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-
-
         while (cursor.moveToNext()) {
 
+            Date firstTimeAndDate = null;
+            Date secondTimeAndDate = null;
             Date firstDate = null;
             Date secondDate = null;
-            Date firstTime = null;
-            Date secondTime = null;
 
             try {
-                firstDate = sdf.parse(dzisiejszaData);
-                firstTime = tdf.parse(dzisiejszyCzas);
+                firstDate = sdf.parse(dzisiaj);
                 secondDate = sdf.parse(cursor.getString(4));
-                secondTime = tdf.parse(cursor.getString(3));
+                firstTimeAndDate = hourAndDateSDF.parse(dzisiejszaData);
+                secondTimeAndDate = hourAndDateSDF.parse(cursor.getString(3) + " " + cursor.getString(4));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
-            long diff = Objects.requireNonNull(secondDate).getTime() - Objects.requireNonNull(firstDate).getTime();
-            long diffDays = diff / (24 * 60 * 60 * 1000);
-            long diffInMillis = Objects.requireNonNull(secondTime).getTime() - Objects.requireNonNull(firstTime).getTime();
+            long diffTemp = Objects.requireNonNull(secondDate).getTime() - Objects.requireNonNull(firstDate).getTime();
+            long diffDays = diffTemp / (24 * 60 * 60 * 1000);
 
-            if (diffDays == 0 && diffInMillis >= 0) {
+            if (secondTimeAndDate != null && firstTimeAndDate != null) {
+                diff = secondTimeAndDate.getTime() - firstTimeAndDate.getTime();
+            }
+
+            if (diff >= 0 && diffDays == 0) {
                 results.add(new Today(cursor.getInt(0), cursor.getString(1) + " (Dawka: " + cursor.getString(2) + ")", "Godzina: " + cursor.getString(3), cursor.getString(5)));
             }
+            if(diff < (-30 * 60 * 1000)) czyDodacPrzypomnienia = true;
+        }
+
+        if(czyDodacPrzypomnienia) {
+            Intent intent = new Intent(getContext(), BootCompletedNotificationReceiver.class);
+            Objects.requireNonNull(getContext()).sendBroadcast(intent);
         }
 
         Collections.sort(results, new CustomComparator());
@@ -289,7 +303,7 @@ public class GoToToday extends Fragment {
         if (dni > 1) {
 
             Intent intx = new Intent(getContext(), NotificationReceiver.class);
-            intx.putExtra("Value", uzytkownik + " " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + dawka + ")");
+            intx.putExtra("Value", uzytkownik + "  |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + dawka + ")");
 
             cursor = myDb.getRand_NOTYFIKACJA(id);
             cursor.moveToFirst();

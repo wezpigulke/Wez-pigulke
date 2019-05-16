@@ -45,6 +45,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import static java.lang.Integer.MAX_VALUE;
+import static java.lang.Integer.min;
 import static java.util.Calendar.getInstance;
 
 public class AddReminder extends AppCompatActivity {
@@ -106,6 +107,8 @@ public class AddReminder extends AppCompatActivity {
     private String dzien;
     private String godzina;
     private String minuta;
+
+    private final int oneDay = 24 * 60 * 60 * 1000;
 
     private TextView setTime1;
     private TextView setTime2;
@@ -827,7 +830,7 @@ public class AddReminder extends AppCompatActivity {
         }
 
         long diff = Objects.requireNonNull(secondDate).getTime() - Objects.requireNonNull(firstDate).getTime();
-        diffDays = diff / (24 * 60 * 60 * 1000);
+        diffDays = diff / oneDay;
         diffInMillis = Objects.requireNonNull(secondTime).getTime() - Objects.requireNonNull(firstTime).getTime();
 
     }
@@ -946,21 +949,11 @@ public class AddReminder extends AppCompatActivity {
 
             iloscDni = Integer.parseInt(ileDni.getText().toString());
 
-            String czyDwucyfrowa = String.valueOf(godzinaPrzypomnienia.charAt(1));
             int minutes;
             int hour;
 
-            if (czyDwucyfrowa.equals(":")) {
-                hour = Integer.parseInt(String.valueOf(godzinaPrzypomnienia.charAt(0)));
-                minutes = Integer.parseInt(godzinaPrzypomnienia.charAt(2)
-                        + String.valueOf(godzinaPrzypomnienia.charAt(3)));
-            } else {
-                hour = Integer.parseInt(godzinaPrzypomnienia.charAt(0)
-                        + String.valueOf(godzinaPrzypomnienia.charAt(1)));
-                minutes = Integer.parseInt(godzinaPrzypomnienia.charAt(3)
-                        + String.valueOf(godzinaPrzypomnienia.charAt(4)));
-            }
-
+            hour = Integer.parseInt(godzinaPrzypomnienia.substring(0,2));
+            minutes = Integer.parseInt(godzinaPrzypomnienia.substring(3,5));
 
             String dataPrzypomnienia = dataTabletka.getText().toString();
             calculateDiff(godzinaPrzypomnienia, dataPrzypomnienia);
@@ -1198,9 +1191,7 @@ public class AddReminder extends AppCompatActivity {
         });
 
         setTime1Listener = (view, hourOfDay, minute) -> {
-            String Time;
-            if (minute < 10) Time = hourOfDay + ":0" + minute;
-            else Time = hourOfDay + ":" + minute;
+            String Time = changeTimeFormat(hourOfDay, minute);
             setTime1.setText(Time);
         };
 
@@ -1210,9 +1201,7 @@ public class AddReminder extends AppCompatActivity {
         });
 
         setTime2Listener = (view, hourOfDay, minute) -> {
-            String Time;
-            if (minute < 10) Time = hourOfDay + ":0" + minute;
-            else Time = hourOfDay + ":" + minute;
+            String Time = changeTimeFormat(hourOfDay, minute);
             setTime2.setText(Time);
         };
 
@@ -1222,9 +1211,7 @@ public class AddReminder extends AppCompatActivity {
         });
 
         setTime3Listener = (view, hourOfDay, minute) -> {
-            String Time;
-            if (minute < 10) Time = hourOfDay + ":0" + minute;
-            else Time = hourOfDay + ":" + minute;
+            String Time = changeTimeFormat(hourOfDay, minute);
             setTime3.setText(Time);
         };
 
@@ -1234,9 +1221,7 @@ public class AddReminder extends AppCompatActivity {
         });
 
         setTime4Listener = (view, hourOfDay, minute) -> {
-            String Time;
-            if (minute < 10) Time = hourOfDay + ":0" + minute;
-            else Time = hourOfDay + ":" + minute;
+            String Time = changeTimeFormat(hourOfDay, minute);
             setTime4.setText(Time);
         };
 
@@ -1246,9 +1231,7 @@ public class AddReminder extends AppCompatActivity {
         });
 
         setTime5Listener = (view, hourOfDay, minute) -> {
-            String Time;
-            if (minute < 10) Time = hourOfDay + ":0" + minute;
-            else Time = hourOfDay + ":" + minute;
+            String Time = changeTimeFormat(hourOfDay, minute);
             setTime5.setText(Time);
         };
 
@@ -1258,9 +1241,7 @@ public class AddReminder extends AppCompatActivity {
         });
 
         setTime6Listener = (view, hourOfDay, minute) -> {
-            String Time;
-            if (minute < 10) Time = hourOfDay + ":0" + minute;
-            else Time = hourOfDay + ":" + minute;
+            String Time = changeTimeFormat(hourOfDay, minute);
             setTime6.setText(Time);
         };
 
@@ -1270,9 +1251,7 @@ public class AddReminder extends AppCompatActivity {
         });
 
         setTime7Listener = (view, hourOfDay, minute) -> {
-            String Time;
-            if (minute < 10) Time = hourOfDay + ":0" + minute;
-            else Time = hourOfDay + ":" + minute;
+            String Time = changeTimeFormat(hourOfDay, minute);
             setTime7.setText(Time);
         };
 
@@ -1282,9 +1261,7 @@ public class AddReminder extends AppCompatActivity {
         });
 
         setTime8Listener = (view, hourOfDay, minute) -> {
-            String Time;
-            if (minute < 10) Time = hourOfDay + ":0" + minute;
-            else Time = hourOfDay + ":" + minute;
+            String Time = changeTimeFormat(hourOfDay, minute);
             setTime8.setText(Time);
         };
 
@@ -1294,9 +1271,7 @@ public class AddReminder extends AppCompatActivity {
         });
 
         setTime9Listener = (view, hourOfDay, minute) -> {
-            String Time;
-            if (minute < 10) Time = hourOfDay + ":0" + minute;
-            else Time = hourOfDay + ":" + minute;
+            String Time = changeTimeFormat(hourOfDay, minute);
             setTime9.setText(Time);
         };
 
@@ -1306,9 +1281,7 @@ public class AddReminder extends AppCompatActivity {
         });
 
         setTime10Listener = (view, hourOfDay, minute) -> {
-            String Time;
-            if (minute < 10) Time = hourOfDay + ":0" + minute;
-            else Time = hourOfDay + ":" + minute;
+            String Time = changeTimeFormat(hourOfDay, minute);
             setTime10.setText(Time);
         };
 
@@ -1318,9 +1291,7 @@ public class AddReminder extends AppCompatActivity {
         });
 
         setTime11Listener = (view, hourOfDay, minute) -> {
-            String Time;
-            if (minute < 10) Time = hourOfDay + ":0" + minute;
-            else Time = hourOfDay + ":" + minute;
+            String Time = changeTimeFormat(hourOfDay, minute);
             setTime11.setText(Time);
         };
 
@@ -1330,9 +1301,7 @@ public class AddReminder extends AppCompatActivity {
         });
 
         setTime12Listener = (view, hourOfDay, minute) -> {
-            String Time;
-            if (minute < 10) Time = hourOfDay + ":0" + minute;
-            else Time = hourOfDay + ":" + minute;
+            String Time = changeTimeFormat(hourOfDay, minute);
             setTime12.setText(Time);
         };
 
@@ -1342,9 +1311,7 @@ public class AddReminder extends AppCompatActivity {
         });
 
         godzinaTabletkaListener = (view, hourOfDay, minute) -> {
-            String Time;
-            if (minute < 10) Time = hourOfDay + ":0" + minute;
-            else Time = hourOfDay + ":" + minute;
+            String Time = changeTimeFormat(hourOfDay, minute);
 
             hour = hourOfDay;
             minutes = minute;
@@ -1375,6 +1342,17 @@ public class AddReminder extends AppCompatActivity {
             dataTabletka.setText(dataTemp);
 
         };
+    }
+
+    private String changeTimeFormat(int hourOfDay, int minute) {
+
+        String Time = hourOfDay + ":" + minute;
+
+        if (minute < 10) Time = hourOfDay + ":0" + minute;
+        if (hourOfDay < 10) Time = "0" + Time;
+
+        return Time;
+
     }
 
 }

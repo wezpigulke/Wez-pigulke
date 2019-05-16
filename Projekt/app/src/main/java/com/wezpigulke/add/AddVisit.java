@@ -67,6 +67,7 @@ public class AddVisit extends AppCompatActivity {
     private Calendar cal;
     private ArrayList<Doctor> doctorArrayList;
     private Cursor cursor;
+    private int labelSizeCopy;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -371,7 +372,11 @@ public class AddVisit extends AppCompatActivity {
 
         DoctorSpinnerAdapter doctorSpinnerAdapter = new DoctorSpinnerAdapter(getApplicationContext(), doctorArrayList);
         spinnerDoctor.setAdapter(doctorSpinnerAdapter);
-        spinnerDoctor.setSelection(labelSize);
+
+        if (labelSize != labelSizeCopy) spinnerDoctor.setSelection(labelSize - 2);
+        else spinnerDoctor.setSelection(labelSize);
+
+        labelSizeCopy = labelSize;
 
     }
 

@@ -21,9 +21,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
-        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/logo" />
-
         <receiver android:name=".widget.WidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -40,14 +37,14 @@
         <activity
             android:name=".go_to.GoToWelcome"
             android:configChanges="orientation"
-            android:label="Weź pigułkę"
+            android:label="Powitanie"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
             android:name=".SideMenu"
             android:configChanges="orientation"
-            android:label="Dzisiaj"
+            android:label="Weź pigułkę"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

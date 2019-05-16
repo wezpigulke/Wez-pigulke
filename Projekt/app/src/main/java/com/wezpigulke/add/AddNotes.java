@@ -42,9 +42,8 @@ public class AddNotes extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_notes);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-
         initializeVariables();
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         loadSpinnerData();
         addListener();
         spinnerListener();

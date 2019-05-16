@@ -183,7 +183,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         switch (typ) {
             case 0:
                 intx.putExtra("coPokazac", 0);
-                intx.putExtra("tresc", uzytkownik + " |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
+                intx.putExtra("tresc", uzytkownik + "  |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
                 intx.putExtra("id", id_n);
                 intx.putExtra("idd", id_p);
                 intx.putExtra("godzina", godzina);
@@ -198,7 +198,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 break;
             case 1:
                 intx.putExtra("coPokazac", 0);
-                intx.putExtra("tresc", uzytkownik + " |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
+                intx.putExtra("tresc", uzytkownik + "  |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
                 intx.putExtra("id", id_n);
                 intx.putExtra("idd", id_p);
                 intx.putExtra("godzina", godzina);
@@ -535,7 +535,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         repeating_intent.putExtra("coPokazac", 1);
         repeating_intent.putExtra("id", id);
-        repeating_intent.putExtra("nazwa", cursor.getString(1));
+        repeating_intent.putExtra("nazwa", nazwaLeku);
         repeating_intent.putExtra("sumujTypy", String.valueOf(sumujTypy));
         repeating_intent.putExtra("rand_val", rand_val - 3);
 
@@ -549,9 +549,9 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         builder = new NotificationCompat.Builder(context, "default")
                 .setContentIntent(pendingIntent)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setSmallIcon(R.drawable.pill_black)
                 .setContentTitle("Weź pigułke")
-                .setContentText("UWAGA | Pozostało tylko " + iloscLeku + " tabletek leku " + cursor.getString(1))
+                .setContentText("UWAGA | Pozostało tylko " + iloscLeku + " tabletek leku " + nazwaLeku)
                 .setAutoCancel(true)
                 .setOnlyAlertOnce(true);
 
@@ -597,7 +597,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default");
         builder.setContentIntent(pendingIntent);
-        builder.setSmallIcon(R.mipmap.ic_launcher_round);
+        builder.setSmallIcon(R.drawable.medicine_black);
         builder.setContentTitle("Weź pigułke");
         builder.setContentText(powiadomienie);
         builder.setAutoCancel(true);
@@ -626,7 +626,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         builder = new NotificationCompat.Builder(context, "default")
                 .setContentIntent(pendingIntent)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setSmallIcon(R.drawable.visit)
                 .setContentTitle("Weź pigułke")
                 .setContentText(powiadomienie)
                 .setAutoCancel(true)

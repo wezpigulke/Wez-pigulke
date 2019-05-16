@@ -63,7 +63,6 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Toast.makeText(context, "Dodaje alarmy po restarcie", Toast.LENGTH_LONG).show();
         initializeVariables(context);
         setNotificationForVisit();
         setNotificationForReminder();
@@ -74,7 +73,6 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
     private void removeNotificationAndReminder() {
 
         myDb.remove_PRZYPOMNIENIE(id_p);
-        Log.d("NotificationReceiver", "Usunięcie przypomnienia o id: " + id_p);
         myDb.removeIdPrz_NOTYFIKACJA(id_p);
 
     }
@@ -308,7 +306,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
         } else if (type == 2) {
 
-            intent.putExtra("tresc", uzytkownik + " |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
+            intent.putExtra("tresc", uzytkownik + "  |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
             intent.putExtra("coPokazac", 0);
             intent.putExtra("czyPowtarzanyAlarm", true);
             intent.putExtra("id", id_n);
@@ -329,7 +327,6 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
     private void setAlarm(Context context) {
 
-        Log.d("BootCompletedNotifi", "Dodanie alarmu dla: " + hourAndDateSDF.format(cal.getTime()));
         Toast.makeText(context, "Dodanie alarmu dla: " + hourAndDateSDF.format(cal.getTime()), Toast.LENGTH_LONG).show();
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, rand_val, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -339,8 +336,9 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
             if (Build.VERSION.SDK_INT >= 19)
                 alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
             else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
-        } else
+        } else {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+        }
 
     }
 

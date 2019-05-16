@@ -26,6 +26,8 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
     private long diffDays;
     private long diffInMillis;
 
+    private final int oneDay = 24 * 60 * 60 * 1000;
+
     WidgetAdapter(Context context) {
         this.context = context;
     }
@@ -81,7 +83,7 @@ public class WidgetAdapter implements RemoteViewsService.RemoteViewsFactory {
         }
 
         long diff = Objects.requireNonNull(secondDate).getTime() - Objects.requireNonNull(firstDate).getTime();
-        diffDays = diff / (24 * 60 * 60 * 1000);
+        diffDays = diff / oneDay;
         diffInMillis = Objects.requireNonNull(secondTime).getTime() - Objects.requireNonNull(firstTime).getTime();
 
     }
