@@ -51,6 +51,7 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
 
         cursor = myDb.getAllData_UZYTKOWNICY();
         if (cursor.getCount() == 0) {
+            myDb.insert_CZYZAMKNIETA(0);
             Intent cel = new Intent(this, GoToWelcome.class);
             startActivity(cel);
         }

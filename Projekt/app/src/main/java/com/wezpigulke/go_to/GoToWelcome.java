@@ -125,8 +125,6 @@ public class GoToWelcome extends AppCompatActivity {
         setContentView(R.layout.welcome);
         initializeVariables();
 
-        myDb.insert_CZYZAMKNIETA(0);
-
         cursor = myDb.getAllData_STATYSTYKI();
         if (cursor.getCount() == 0) myDb.insert_STATYSTYKI(0, 0, 0);
 

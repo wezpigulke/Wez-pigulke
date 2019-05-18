@@ -665,6 +665,8 @@ public class AddReminder extends AppCompatActivity {
                             dawka.setSelection(labelDawka.size() - 2);
 
                             String temp = dawka.getItemAtPosition(position).toString();
+                            if(temp.equals("Własna dawka")) temp = dawka.getItemAtPosition(position-1).toString();
+
                             jakaDawka = Double.valueOf(temp.substring(7));
 
                         } else {
