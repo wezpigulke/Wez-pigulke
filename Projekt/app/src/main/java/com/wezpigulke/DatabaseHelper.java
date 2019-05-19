@@ -94,7 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String LEK_NAZWA = "Nazwa";
     private static final String LEK_ILOSC_TABLETEK = "Ilosc_tabletek";
 
-    private static final String CZYZAMKNIETA = "CzyZamknieta";
+    private static final String CZYZAMKNIETA = "Czy_zamknieta";
     private static final String CZYZAMKNIETA_STATUS = "Status";
 
     public DatabaseHelper(Context context) {

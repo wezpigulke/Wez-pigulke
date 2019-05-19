@@ -58,6 +58,7 @@ public class AddVisit extends AppCompatActivity {
     private int day;
     private int hour;
     private int minutes;
+    private int id_l;
     private ArrayList<String> labelDzwiek;
     private ArrayList<String> label;
     private Integer dzwiek;
@@ -179,6 +180,7 @@ public class AddVisit extends AppCompatActivity {
 
                 name = doctor.getName();
                 specialization = doctor.getSpecialization();
+                id_l = doctor.getId();
 
             }
 
@@ -236,6 +238,7 @@ public class AddVisit extends AppCompatActivity {
         intxz.putExtra("uzytkownik", uzytkownik);
         intxz.putExtra("wybranyDzwiek", dzwiek);
         intxz.putExtra("czyWibracja", czyWibracja);
+        intxz.putExtra("id_l", id_l);
         intxz.putExtra("rand_val", rand_val);
 
         return intxz;

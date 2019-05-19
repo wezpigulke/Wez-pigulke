@@ -40,8 +40,9 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     private String powiadomienie;
     private Intent intent;
-    private Integer id_n;
-    private Integer id_p;
+    private int id_n;
+    private int id_p;
+    private int id_l;
     private String uzytkownik;
     private String nazwaLeku;
     private Double jakaDawka;
@@ -105,6 +106,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             case 1:
                 powiadomienie = intent.getStringExtra("tresc");
                 id_v = intent.getIntExtra("id", 0);
+                id_l = intent.getIntExtra("id_l", 0);
                 war = intent.getIntExtra("war", 0);
                 godzina = intent.getStringExtra("godzina");
                 data = intent.getStringExtra("data");
@@ -197,22 +199,8 @@ public class NotificationReceiver extends BroadcastReceiver {
                 intx.putExtra("rand_val", rand_val);
                 break;
             case 1:
-                intx.putExtra("coPokazac", 0);
-                intx.putExtra("tresc", uzytkownik + "  |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
-                intx.putExtra("id", id_n);
-                intx.putExtra("idd", id_p);
-                intx.putExtra("godzina", godzina);
-                intx.putExtra("data", data);
-                intx.putExtra("uzytkownik", uzytkownik);
-                intx.putExtra("nazwaLeku", nazwaLeku);
-                intx.putExtra("jakaDawka", jakaDawka);
-                intx.putExtra("iloscDni", iloscDni - 1);
-                intx.putExtra("wybranyDzwiek", wybranyDzwiek);
-                intx.putExtra("czyWibracja", czyWibracja);
-                intx.putExtra("rand_val", rand_val);
-                break;
-            case 2:
                 repeating_intent.putExtra("id", id_v);
+                repeating_intent.putExtra("id_l", id_l);
                 repeating_intent.putExtra("war", war);
                 repeating_intent.putExtra("godzina", godzina);
                 repeating_intent.putExtra("data", data);
@@ -221,7 +209,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 repeating_intent.putExtra("uzytkownik", uzytkownik);
                 repeating_intent.putExtra("rand_val", rand_val);
                 break;
-            case 3:
+            case 2:
                 repeating_intent.putExtra("coPokazac", 0);
                 repeating_intent.putExtra("id_h", id_h);
                 repeating_intent.putExtra("id", id_n);
@@ -477,7 +465,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         myDb.updateDate_NOTYFIKACJA(id_n, onlyDateSDF.format(dateTemp));
 
         intx = new Intent(context, NotificationReceiver.class);
-        intentPutExtra(1);
+        intentPutExtra(0);
 
         setAlarm(context);
 
@@ -569,7 +557,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         repeating_intent = new Intent(context, RepeatingActivityReminder.class);
-        intentPutExtra(3);
+        intentPutExtra(2);
 
         repeating_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         pendingIntent = PendingIntent.getActivity(context, rand_val, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -618,7 +606,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         repeating_intent = new Intent(context, RepeatingActivityVisit.class);
-        intentPutExtra(2);
+        intentPutExtra(1);
         repeating_intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         pendingIntent = PendingIntent.getActivity(context, rand_val, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
         setAlarmSound(wybranyDzwiek, context);
