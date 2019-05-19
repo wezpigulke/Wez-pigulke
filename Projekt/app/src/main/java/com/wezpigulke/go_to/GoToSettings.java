@@ -216,34 +216,37 @@ public class GoToSettings extends Fragment {
             tProgres.setText(Html.fromHtml("Progres: " + "<b>" + progress + "%" + "</b>"));
         }
 
-        tWziete.setVisibility(View.INVISIBLE);
-        tZapomniane.setVisibility(View.INVISIBLE);
-        tProgres.setVisibility(View.INVISIBLE);
+        if (Build.VERSION.SDK_INT >= 21) {
+            tWziete.setVisibility(View.INVISIBLE);
+            tZapomniane.setVisibility(View.INVISIBLE);
+            tProgres.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void addProgressBar() {
 
-        myprogressbar.setScaleY(10);
-
         if (Build.VERSION.SDK_INT >= 21) {
+
+            myprogressbar.setScaleY(10);
+
             if (progress < 50) myprogressbar.setProgressTintList(ColorStateList.valueOf(Color.RED));
             else myprogressbar.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-        } else {
-            myprogressbar.setVisibility(View.INVISIBLE);
-        }
 
-        new Thread(() -> {
-            while (i <= progress) {
-                i++;
-                android.os.SystemClock.sleep(5);
-                mHandler.post(() -> myprogressbar.setProgress(i));
-            }
-            mHandler.post(() -> {
-                tWziete.setVisibility(View.VISIBLE);
-                tZapomniane.setVisibility(View.VISIBLE);
-                tProgres.setVisibility(View.VISIBLE);
-            });
-        }).start();
+            new Thread(() -> {
+                while (i <= progress) {
+                    i++;
+                    android.os.SystemClock.sleep(5);
+                    mHandler.post(() -> myprogressbar.setProgress(i));
+                }
+                mHandler.post(() -> {
+                    tWziete.setVisibility(View.VISIBLE);
+                    tZapomniane.setVisibility(View.VISIBLE);
+                    tProgres.setVisibility(View.VISIBLE);
+                });
+            }).start();
+
+        } else myprogressbar.setVisibility(View.INVISIBLE);
+
 
     }
 

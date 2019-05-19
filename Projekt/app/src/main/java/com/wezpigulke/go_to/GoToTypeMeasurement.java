@@ -55,6 +55,8 @@ public class GoToTypeMeasurement extends Fragment {
 
         results = new ArrayList<>();
         listView = v.findViewById(R.id.measurementTypeList);
+
+        listViewTouchListener();
         return v;
     }
 
@@ -69,7 +71,6 @@ public class GoToTypeMeasurement extends Fragment {
     public void onResume() {
         super.onResume();
         aktualizujBaze();
-        listViewTouchListener();
     }
 
     @Override
@@ -80,7 +81,6 @@ public class GoToTypeMeasurement extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     private void listViewTouchListener() {
-
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
                 listView,
                 new SwipeDismissListViewTouchListener.DismissCallbacks() {
@@ -98,7 +98,6 @@ public class GoToTypeMeasurement extends Fragment {
                     }
                 });
         listView.setOnTouchListener(touchListener);
-
     }
 
     public void aktualizujBaze() {

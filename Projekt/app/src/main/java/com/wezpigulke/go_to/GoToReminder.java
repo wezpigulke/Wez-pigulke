@@ -71,6 +71,9 @@ public class GoToReminder extends Fragment {
             startActivity(intent);
         });
 
+        spinnerSelectedListener();
+        listViewTouchListener();
+
         return v;
     }
 
@@ -119,8 +122,6 @@ public class GoToReminder extends Fragment {
         super.onResume();
         aktualizujBaze();
         loadSpinnerData();
-        spinnerSelectedListener();
-        listViewTouchListener();
 
     }
 

@@ -56,6 +56,8 @@ public class GoToNotes extends Fragment {
         View v = inflater.inflate(R.layout.notes, container, false);
         initializeVariables(v);
         fabzClickListener();
+        spinnerSelectedListener();
+        lvListeners();
 
         return v;
 
@@ -165,8 +167,6 @@ public class GoToNotes extends Fragment {
         super.onResume();
         aktualizujBaze();
         loadSpinnerData();
-        spinnerSelectedListener();
-        lvListeners();
 
     }
 

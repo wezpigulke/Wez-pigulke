@@ -64,6 +64,8 @@ public class GoToProfiles extends Fragment {
         results = new ArrayList<>();
         lv = v.findViewById(R.id.profileList);
 
+        listviewTouchListener();
+
         return v;
 
     }
@@ -73,6 +75,12 @@ public class GoToProfiles extends Fragment {
 
         super.onResume();
         aktualizujBaze();
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void listviewTouchListener() {
+
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
                 lv,
                 new SwipeDismissListViewTouchListener.DismissCallbacks() {

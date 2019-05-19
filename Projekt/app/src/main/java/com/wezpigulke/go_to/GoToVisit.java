@@ -75,6 +75,9 @@ public class GoToVisit extends Fragment {
         spinner = v.findViewById(R.id.spinner4);
         uzytkownik = "Wszyscy";
 
+        spinnerSelectedListener();
+        listviewTouchListener();
+
         return v;
 
     }
@@ -100,12 +103,7 @@ public class GoToVisit extends Fragment {
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    public void onResume() {
-
-        super.onResume();
-        aktualizujBaze();
-        loadSpinnerData();
+    private void spinnerSelectedListener() {
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -120,6 +118,10 @@ public class GoToVisit extends Fragment {
             }
 
         });
+
+    }
+
+    private void listviewTouchListener() {
 
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
                 lv,
@@ -143,6 +145,15 @@ public class GoToVisit extends Fragment {
                 });
 
         lv.setOnTouchListener(touchListener);
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void onResume() {
+
+        super.onResume();
+        aktualizujBaze();
+        loadSpinnerData();
 
     }
 

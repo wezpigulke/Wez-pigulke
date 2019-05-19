@@ -55,6 +55,9 @@ public class GoToMeasurement extends Fragment {
         View v = inflater.inflate(R.layout.measurement, container, false);
         initializeVariables(v);
         fabzClickListener();
+        measurementSpinnerListener();
+        measurementTypeSpinnerListener();
+        lvTouchListener();
         return v;
 
     }
@@ -131,9 +134,6 @@ public class GoToMeasurement extends Fragment {
         super.onResume();
         aktualizujBaze();
         loadSpinnerData();
-        measurementSpinnerListener();
-        measurementTypeSpinnerListener();
-        lvTouchListener();
 
     }
 

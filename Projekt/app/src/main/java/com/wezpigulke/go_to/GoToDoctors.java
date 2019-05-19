@@ -49,6 +49,8 @@ public class GoToDoctors extends Fragment {
         View v = inflater.inflate(R.layout.doctors, container, false);
         initializeVariables(v);
         fabClickListener();
+        listviewClickListener();
+        listviewTouchListener();
         return v;
 
     }
@@ -78,23 +80,10 @@ public class GoToDoctors extends Fragment {
         super.onResume();
         aktualizujBaze();
 
-        lv.setOnItemClickListener((parent, view, i, l) -> {
+    }
 
-            int idd = (int) view.getTag();
-            cursor = myDb.getIdData_DOKTORZY(idd);
-
-            if (cursor.getCount() != 0) {
-                cursor.moveToFirst();
-                nrtel = cursor.getString(3);
-                adres = cursor.getString(4);
-            }
-
-            if (nrtel.equals("0")) {
-                dialogCallOrNavigate(false);
-            } else dialogCallOrNavigate(true);
-
-        });
-
+    @SuppressLint("ClickableViewAccessibility")
+    private void listviewTouchListener() {
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
                 lv,
                 new SwipeDismissListViewTouchListener.DismissCallbacks() {
@@ -114,6 +103,26 @@ public class GoToDoctors extends Fragment {
                     }
                 });
         lv.setOnTouchListener(touchListener);
+    }
+
+    private void listviewClickListener() {
+
+        lv.setOnItemClickListener((parent, view, i, l) -> {
+
+            int idd = (int) view.getTag();
+            cursor = myDb.getIdData_DOKTORZY(idd);
+
+            if (cursor.getCount() != 0) {
+                cursor.moveToFirst();
+                nrtel = cursor.getString(3);
+                adres = cursor.getString(4);
+            }
+
+            if (nrtel.equals("0")) {
+                dialogCallOrNavigate(false);
+            } else dialogCallOrNavigate(true);
+
+        });
 
     }
 

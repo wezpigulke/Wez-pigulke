@@ -68,6 +68,9 @@ public class GoToMedicine extends Fragment {
         v = inflater.inflate(R.layout.medicine, container, false);
         initializeVariables();
         fabClickListener();
+        listviewClickListener();
+        listviewTouchListener();
+
         return v;
 
     }
@@ -90,6 +93,10 @@ public class GoToMedicine extends Fragment {
 
         super.onResume();
         aktualizujBaze();
+
+    }
+
+    private void listviewTouchListener() {
 
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(
                 lv,
@@ -114,6 +121,9 @@ public class GoToMedicine extends Fragment {
 
         lv.setOnTouchListener(touchListener);
 
+    }
+
+    private void listviewClickListener() {
         lv.setOnItemClickListener((parent, view, position, id) -> {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AlertDialog);
@@ -131,7 +141,6 @@ public class GoToMedicine extends Fragment {
             builder.show();
 
         });
-
     }
 
     public void updateQuantity(Integer position) {
