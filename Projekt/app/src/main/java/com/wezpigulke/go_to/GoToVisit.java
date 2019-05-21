@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -224,7 +225,7 @@ public class GoToVisit extends Fragment {
 
         myIntent = new Intent(getActivity(), NotificationReceiver.class);
         pendingIntent = PendingIntent.getBroadcast(
-                getActivity(), cursor.getInt(0) + 1, myIntent,
+                getActivity(), (cursor.getInt(0) - 1), myIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
         myDb.remove_WIZYTY(idd);

@@ -929,6 +929,7 @@ public class AddReminder extends AppCompatActivity {
     private void setNotificationSeveralTimes() {
 
         int czyUsunacDzien = 0;
+        int iloscDodanychDni = 0;
 
         for (Integer i = 1; i <= ileRazyDziennie; i++) {
 
@@ -975,6 +976,8 @@ public class AddReminder extends AppCompatActivity {
                     dataPrzypomnienia = sdf.format(cx.getTime());
                     cal.set(year, month - 1, day + 1, hour, minutes, 0);
                     czyUsunacDzien = 0;
+
+                    iloscDodanychDni++;
                 }
 
             } else cal.set(year, month - 1, day, hour, minutes, 0);
@@ -993,6 +996,8 @@ public class AddReminder extends AppCompatActivity {
                 wszystkieGodziny = new StringBuilder(wszystkieGodziny.substring(0, wszystkieGodziny.length() - 2));
                 String najwyzszaGodzina = Collections.max(tempList);
 
+                if(iloscDodanychDni == ileRazyDziennie) iloscDni--;
+
                 insertPrzypomnienie(
                         najwyzszaGodzina,
                         dataPrzypomnienia,
@@ -1009,8 +1014,6 @@ public class AddReminder extends AppCompatActivity {
                         uzytkownik + " | " + godzinaPrzypomnienia + " | Weź: " + nazwaLeku + " (Dawka: " + jakaDawka + ")",
                         iloscDni - 1,
                         cal);
-
-                Log.d("AddReminder", "Dodanie alarmu dla: " + godzinaPrzypomnienia);
 
             }
 
@@ -1098,10 +1101,19 @@ public class AddReminder extends AppCompatActivity {
         cursor.moveToFirst();
         id = Integer.parseInt(cursor.getString(0));
 
-        Log.d("AddReminder", "Dodanie notyfikacji o id: " + id);
-
         Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
+        putExtraIntent(intx, trescAlarmu, godzinaPrzypomnienia, dataPrzypomnienia, id, rand_val);
 
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        assert alarmManager != null;
+
+        if (Build.VERSION.SDK_INT < 23) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+        else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+
+    }
+
+    private void putExtraIntent(Intent intx, String trescAlarmu, String godzinaPrzypomnienia, String dataPrzypomnienia, Integer id, Integer rand_val) {
         intx.putExtra("tresc", trescAlarmu);
         intx.putExtra("coPokazac", 0);
         intx.putExtra("id", id);
@@ -1115,20 +1127,6 @@ public class AddReminder extends AppCompatActivity {
         intx.putExtra("wybranyDzwiek", dzwiek);
         intx.putExtra("czyWibracja", czyWibracja);
         intx.putExtra("rand_val", rand_val);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        assert alarmManager != null;
-
-        if (Build.VERSION.SDK_INT < 23) {
-            if (Build.VERSION.SDK_INT >= 19)
-                alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
-            else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
-        } else
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
-
-        Log.d("========ALARM==========", "Dodanie: " + rand_val + "\n" + cal.getTime().toString().substring(0, 16));
-
     }
 
     private void showNotification() {

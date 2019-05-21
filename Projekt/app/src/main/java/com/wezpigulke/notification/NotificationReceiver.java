@@ -31,6 +31,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     private Uri alarmSound;
     private Cursor cursor;
     private Cursor cursorTemp;
+    private Cursor cursorFinal;
     private String dzisiejszaData;
     private SimpleDateFormat hourAndDateSDF;
     private SimpleDateFormat onlyDateSDF;
@@ -50,6 +51,8 @@ public class NotificationReceiver extends BroadcastReceiver {
     private int czyWibracja;
     private Integer rand_val;
     private Intent intx;
+    private Intent yes;
+    private Intent no;
     private Calendar cal;
     private Integer typ;
     private int ileDniDodac;
@@ -128,9 +131,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         assert alarmManager != null;
 
         if (Build.VERSION.SDK_INT < 23) {
-            if (Build.VERSION.SDK_INT >= 19)
-                alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
-            else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
+            alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
         } else
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), newIntent);
     }
@@ -143,11 +144,9 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         if (cursor.getInt(0) == 1) {
             myDb.remove_PRZYPOMNIENIE(id_p);
-            Log.d("NotificationReceiver", "Usunięcie przypomnienia o id: " + id_p);
         }
 
         myDb.remove_NOTYFIKACJA(id_n);
-        Log.d("NotificationReceiver", "Usunięcie notyfikacji o id:" + id_n);
 
     }
 
@@ -158,7 +157,6 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         if (cursor.getInt(0) == 0) {
             myDb.remove_PRZYPOMNIENIE(id_p);
-            Log.d("NotificationReceiver", "Usunięcie przypomnienia o id: " + id_p);
         } else if (cursor.getInt(0) == 1) {
             myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
         } else {
@@ -176,7 +174,6 @@ public class NotificationReceiver extends BroadcastReceiver {
     private void removeNotificationAndReminder() {
 
         myDb.remove_PRZYPOMNIENIE(id_p);
-        Log.d("NotificationReceiver", "Usunięcie przypomnienia o id: " + id_p);
         myDb.removeIdPrz_NOTYFIKACJA(id_p);
 
     }
@@ -185,7 +182,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         switch (typ) {
             case 0:
                 intx.putExtra("coPokazac", 0);
-                intx.putExtra("tresc", uzytkownik + "  |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
+                intx.putExtra("tresc", uzytkownik + "  |  " + godzina + "  |  Weź: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
                 intx.putExtra("id", id_n);
                 intx.putExtra("idd", id_p);
                 intx.putExtra("godzina", godzina);
@@ -221,6 +218,20 @@ public class NotificationReceiver extends BroadcastReceiver {
                 repeating_intent.putExtra("jakaDawka", jakaDawka);
                 repeating_intent.putExtra("iloscDni", iloscDni);
                 repeating_intent.putExtra("rand_val", rand_val);
+                break;
+            case 3:
+                yes.putExtra("coZrobic", 0);
+                yes.putExtra("id_h", id_h);
+                yes.putExtra("id", id_n);
+                yes.putExtra("rand_val", rand_val);
+                break;
+            case 4:
+                no.putExtra("coZrobic", 1);
+                no.putExtra("id_h", id_h);
+                no.putExtra("id", id_n);
+                no.putExtra("nazwaLeku", nazwaLeku);
+                no.putExtra("jakaDawka", jakaDawka);
+                no.putExtra("rand_val", rand_val);
                 break;
         }
     }
@@ -282,10 +293,10 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.d("========ALARM==========", "Alarm odpalony dla: " + intent.getIntExtra("id", 0));
         this.context = context;
         this.intent = intent;
         date = null;
+        ileDniDodac = 0;
 
         myDb = new DatabaseHelper(context);
         int coPokazac = intent.getIntExtra("coPokazac", 0);
@@ -339,7 +350,6 @@ public class NotificationReceiver extends BroadcastReceiver {
                     } else {
 
                         updateDateAndSetNewAlarm();
-                        Log.d("========ALARM==========", "Dodanie: " + " | " + rand_val + " | " + hourAndDateSDF.format(cal.getTime()));
 
                     }
 
@@ -366,12 +376,10 @@ public class NotificationReceiver extends BroadcastReceiver {
                         if (Integer.parseInt(cursor.getString(0)) == 1) {
 
                             myDb.remove_PRZYPOMNIENIE(id_p);
-                            Log.d("NotificationReceiver", "Usunięcie przypomnienia o id: " + id_p);
                             myDb.removeIdPrz_NOTYFIKACJA(id_p);
 
                         } else {
                             myDb.remove_NOTYFIKACJA(id_n);
-                            Log.d("NotificationReceiver", "Usunięcie notyfikacji o id:" + id_n);
                         }
 
                     } else {
@@ -439,6 +447,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     private void closeCursors() {
         if (cursor != null) cursor.close();
         if (cursorTemp != null) cursorTemp.close();
+        if (cursorFinal != null) cursorFinal.close();
     }
 
     private void setFutureAlarm() {
@@ -469,21 +478,19 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         setAlarm(context);
 
-        Log.d("========ALARM==========", "Dodanie: " + " | " + rand_val + "\n" + hourAndDateSDF.format(cal.getTime()));
-
     }
 
     private double countAmountOfMedicine() {
 
-        cursor = myDb.getIDfromMedicine_PRZYPOMNIENIE(nazwaLeku);
-        double ileNotyfikacji, typPrzypomnienia, pozostalaIloscDni;
+        cursorFinal = myDb.getIDfromMedicine_PRZYPOMNIENIE(nazwaLeku);
+        double ileNotyfikacji, typPrzypomnienia, pozostalaIloscDni, dawkaLeku;
         double sumujTypy = 0.0;
 
-        while (cursor.moveToNext()) {
+        while (cursorFinal.moveToNext()) {
 
-            int idTemp = cursor.getInt(0);
+            int idTemp = cursorFinal.getInt(0);
 
-            cursor = myDb.getCountType_NOTYFIKACJA(cursor.getInt(0));
+            cursor = myDb.getCountType_NOTYFIKACJA(idTemp);
             cursor.moveToFirst();
             ileNotyfikacji = cursor.getDouble(0);
 
@@ -495,18 +502,22 @@ public class NotificationReceiver extends BroadcastReceiver {
             cursor.moveToFirst();
             pozostalaIloscDni = cursor.getDouble(0);
 
+            cursor = myDb.getDawka_PRZYPOMNIENIE(idTemp);
+            cursor.moveToFirst();
+            dawkaLeku = cursor.getDouble(0);
+
             if (typPrzypomnienia > 1) {
 
                 if (pozostalaIloscDni <= 7)
-                    sumujTypy += ((1 / typPrzypomnienia) * jakaDawka) * pozostalaIloscDni;
-                else sumujTypy += ((1 / typPrzypomnienia) * jakaDawka) * 7;
+                    sumujTypy += ((1 / typPrzypomnienia) * dawkaLeku) * pozostalaIloscDni;
+                else sumujTypy += ((1 / typPrzypomnienia) * dawkaLeku) * 7;
 
             } else {
 
                 if (pozostalaIloscDni <= 7)
-                    sumujTypy += (typPrzypomnienia * ileNotyfikacji * jakaDawka) * pozostalaIloscDni;
+                    sumujTypy += (typPrzypomnienia * ileNotyfikacji * dawkaLeku) * pozostalaIloscDni;
                 else
-                    sumujTypy += (typPrzypomnienia * ileNotyfikacji * jakaDawka) * 7;
+                    sumujTypy += (typPrzypomnienia * ileNotyfikacji * dawkaLeku) * 7;
             }
 
         }
@@ -563,34 +574,28 @@ public class NotificationReceiver extends BroadcastReceiver {
         pendingIntent = PendingIntent.getActivity(context, rand_val, repeating_intent, PendingIntent.FLAG_UPDATE_CURRENT);
         setAlarmSound(wybranyDzwiek, context);
 
-        Intent yes = new Intent(context, ButtonIntent.class);
+        yes = new Intent(context, ButtonIntent.class);
         yes.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        yes.putExtra("coZrobic", 0);
-        yes.putExtra("id_h", id_h);
-        yes.putExtra("id", id_n);
-        yes.putExtra("rand_val", rand_val);
-        PendingIntent yesIntent = PendingIntent.getBroadcast(context, rand_val - 1, yes, PendingIntent.FLAG_UPDATE_CURRENT);
+        intentPutExtra(3);
+        PendingIntent yesIntent = PendingIntent.getBroadcast(context, rand_val - 1,
+                yes, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Intent no = new Intent(context, ButtonIntent.class);
+        no = new Intent(context, ButtonIntent.class);
         no.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        no.putExtra("coZrobic", 1);
-        no.putExtra("id_h", id_h);
-        no.putExtra("id", id_n);
-        no.putExtra("nazwaLeku", nazwaLeku);
-        no.putExtra("jakaDawka", jakaDawka);
-        no.putExtra("rand_val", rand_val);
-        PendingIntent noIntent = PendingIntent.getBroadcast(context, rand_val - 2, no, PendingIntent.FLAG_UPDATE_CURRENT);
+        intentPutExtra(4);
+        PendingIntent noIntent = PendingIntent.getBroadcast(context, rand_val - 2,
+                no, PendingIntent.FLAG_UPDATE_CURRENT);
 
         initChannels(context, wybranyDzwiek);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default");
-        builder.setContentIntent(pendingIntent);
-        builder.setSmallIcon(R.drawable.medicine_black);
-        builder.setContentTitle("Weź pigułke");
-        builder.setContentText(powiadomienie);
-        builder.setAutoCancel(true);
-        builder.addAction(0, "Wziąłem", yesIntent);
-        builder.addAction(0, "Zapomniałem", noIntent);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default")
+            .setContentIntent(pendingIntent)
+            .setSmallIcon(R.drawable.medicine_black)
+            .setContentTitle("Weź pigułke")
+            .setContentText(powiadomienie)
+            .setAutoCancel(true)
+            .addAction(R.drawable.yes, "Wziąłem", yesIntent)
+            .addAction(R.drawable.no, "Zapomniałem", noIntent);
 
         if (wybranyDzwiek != 0) builder.setSound(alarmSound);
         if (czyWibracja == 1) builder.setVibrate(new long[]{1000, 1000});

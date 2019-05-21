@@ -96,6 +96,7 @@ public class GoToMedicine extends Fragment {
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void listviewTouchListener() {
 
         SwipeDismissListViewTouchListener touchListener = new SwipeDismissListViewTouchListener(

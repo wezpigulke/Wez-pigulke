@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.wezpigulke.DatabaseHelper;
 import com.wezpigulke.R;
@@ -202,12 +203,6 @@ public class GoToToday extends Fragment {
             if (diff >= 0 && diffDays == 0) {
                 results.add(new Today(cursor.getInt(0), cursor.getString(1) + " (Dawka: " + cursor.getString(2) + ")", "Godzina: " + cursor.getString(3), cursor.getString(5)));
             }
-            if(diff < (-30 * 60 * 1000)) czyDodacPrzypomnienia = true;
-        }
-
-        if(czyDodacPrzypomnienia) {
-            Intent intent = new Intent(getContext(), BootCompletedNotificationReceiver.class);
-            Objects.requireNonNull(getContext()).sendBroadcast(intent);
         }
 
         Collections.sort(results, new CustomComparator());
@@ -281,7 +276,6 @@ public class GoToToday extends Fragment {
         if (dni > 1) myDb.updateDate_NOTYFIKACJA(id, dataJutrzejsza);
         else {
             myDb.remove_NOTYFIKACJA(id);
-            Log.d("NotificationReceiver", "Usunięcie notyfikacji o id:" + id);
         }
 
         AlarmManager alarmManager = (AlarmManager) Objects.requireNonNull(getActivity()).getSystemService(Context.ALARM_SERVICE);
@@ -303,7 +297,7 @@ public class GoToToday extends Fragment {
         if (dni > 1) {
 
             Intent intx = new Intent(getContext(), NotificationReceiver.class);
-            intx.putExtra("Value", uzytkownik + "  |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (" + dawka + ")");
+            intx.putExtra("Value", uzytkownik + "  |  " + godzina + "  |  Weź: " + nazwaLeku + " (" + dawka + ")");
 
             cursor = myDb.getRand_NOTYFIKACJA(id);
             cursor.moveToFirst();
@@ -317,9 +311,7 @@ public class GoToToday extends Fragment {
             assert alarmManager != null;
 
             if (Build.VERSION.SDK_INT < 23) {
-                if (Build.VERSION.SDK_INT >= 19)
-                    alarmManager.setExact(AlarmManager.RTC, cz.getTimeInMillis(), pendingIntent);
-                else alarmManager.set(AlarmManager.RTC, cz.getTimeInMillis(), pendingIntent);
+                alarmManager.setExact(AlarmManager.RTC, cz.getTimeInMillis(), pendingIntent);
             } else
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cz.getTimeInMillis(), pendingIntent);
 

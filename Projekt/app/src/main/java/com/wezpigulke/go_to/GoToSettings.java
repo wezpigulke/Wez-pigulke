@@ -61,6 +61,7 @@ public class GoToSettings extends Fragment {
     private ProgressBar myprogressbar;
     private int wziete;
     private int niewziete;
+    private String statusHistorii;
 
     private TextView tProgres;
     private TextView tWziete;
@@ -335,18 +336,13 @@ public class GoToSettings extends Fragment {
                 document.add(table);
 
                 cursor = myDb.getUserData_HISTORIA(user);
+
                 if (cursor.getCount() != 0) {
                     while (cursor.moveToNext()) {
 
                         table_result = new PdfPTable(6);
-
-                        addNewCell(cursor.getString(2));
-                        addNewCell(cursor.getString(3).substring(0, 5));
-                        addNewCell(cursor.getString(4));
-                        addNewCell(cursor.getString(5));
-                        addNewCell(cursor.getString(6));
-
-                        String statusHistorii = cursor.getString(7);
+                        addNewCells();
+                        statusHistorii = cursor.getString(7);
 
                         switch (statusHistorii) {
                             case "WZIETE":
@@ -373,6 +369,14 @@ public class GoToSettings extends Fragment {
         }
         document.close();
         previewPdf();
+    }
+
+    private void addNewCells() {
+        addNewCell(cursor.getString(2));
+        addNewCell(cursor.getString(3).substring(0, 5));
+        addNewCell(cursor.getString(4));
+        addNewCell(cursor.getString(5));
+        addNewCell(cursor.getString(6));
     }
 
     private void generateNewCell(String text) {

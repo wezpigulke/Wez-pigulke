@@ -881,6 +881,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + PRZYPOMNIENIE, null);
     }
 
+    public Cursor getDawka_PRZYPOMNIENIE(Integer id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT Dawka FROM " + PRZYPOMNIENIE + " WHERE ID=?", new String[]{id.toString()});
+    }
+
     public Cursor getAllDataMedicine_PRZYPOMNIENIE(String nazwa) {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + PRZYPOMNIENIE + " WHERE Lek=?", new String[]{nazwa});

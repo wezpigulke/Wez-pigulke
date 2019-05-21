@@ -25,15 +25,15 @@ public class AddTypeMeasurement extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        myDb = new DatabaseHelper(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_type_measurement);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        initializeVariables();
-        dodajListener();
-    }
+        dodaj = findViewById(R.id.addTypeMeasurementButton);
+        typBadania = findViewById(R.id.typBadania);
 
-    private void dodajListener() {
         dodaj.setOnClickListener(v -> {
             if (typBadania.getText().length() > 0) {
                 cursor = myDb.getDataID_TYP_POMIAR(typBadania.getText().toString());
@@ -44,12 +44,6 @@ public class AddTypeMeasurement extends AppCompatActivity {
                     openDialog("Już istnieje typ badania o takiej samej nazwie w naszej bazie danych");
             } else openDialog("Wpisz typ badania");
         });
-    }
-
-    private void initializeVariables() {
-        myDb = new DatabaseHelper(this);
-        dodaj = findViewById(R.id.addTypeMeasurementButton);
-        typBadania = findViewById(R.id.typBadania);
     }
 
     public void openDialog(String warning) {

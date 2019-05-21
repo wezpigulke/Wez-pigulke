@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
     private DatabaseHelper myDb;
     private Cursor cursor;
     private Cursor cursorTemp;
+    private Cursor cursorFinal;
 
     private Integer id;
     private String godzina;
@@ -79,11 +81,12 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
     private void setNotificationForReminder() {
 
-        cursor = myDb.getAllData_NOTYFIKACJA();
+        cursorFinal = myDb.getAllData_NOTYFIKACJA();
 
-        if (cursor.getCount() != 0) {
-            while (cursor.moveToNext()) {
+        if (cursorFinal.getCount() != 0) {
+            while (cursorFinal.moveToNext()) {
 
+                ileDniDodac = 0;
                 initializeVariables(1);
                 countDiff();
 
@@ -117,7 +120,6 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
                     } else {
 
                         updateDateAndSetNewAlarm();
-                        Log.d("========ALARM==========", "Dodanie: " + " | " + rand_val + " | " + hourAndDateSDF.format(cal.getTime()));
 
                     }
 
@@ -188,8 +190,8 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
     private void setNotificationForVisit() {
 
-        if (cursor.getCount() != 0) {
-            while (cursor.moveToNext()) {
+        if (cursorFinal.getCount() != 0) {
+            while (cursorFinal.moveToNext()) {
 
                 initializeVariables(0);
                 countDiff();
@@ -230,6 +232,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
         if (cursor != null) cursor.close();
         if (cursorTemp != null) cursorTemp.close();
+        if (cursorFinal != null) cursorFinal.close();
 
     }
 
@@ -254,29 +257,29 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
         if (type == 0) {
 
-            id = cursor.getInt(0);
-            godzina = cursor.getString(1);
-            data = cursor.getString(2);
-            imie_nazwisko = cursor.getString(3);
-            specjalizacja = cursor.getString(4);
-            profil = cursor.getString(5);
-            rand_val = cursor.getInt(6);
-            dzwiek = cursor.getInt(7);
-            czyWibracja = cursor.getInt(8);
+            id = cursorFinal.getInt(0);
+            godzina = cursorFinal.getString(1);
+            data = cursorFinal.getString(2);
+            imie_nazwisko = cursorFinal.getString(3);
+            specjalizacja = cursorFinal.getString(4);
+            profil = cursorFinal.getString(5);
+            rand_val = cursorFinal.getInt(6);
+            dzwiek = cursorFinal.getInt(7);
+            czyWibracja = cursorFinal.getInt(8);
 
         } else if (type == 1) {
 
-            id_n = cursor.getInt(0);
-            nazwaLeku = cursor.getString(1);
-            jakaDawka = cursor.getDouble(2);
-            godzina = cursor.getString(3);
-            data = cursor.getString(4);
-            uzytkownik = cursor.getString(5);
-            id_p = cursor.getInt(6);
-            iloscDni = cursor.getInt(7);
-            rand_val = cursor.getInt(9);
-            dzwiek = cursor.getInt(10);
-            czyWibracja = cursor.getInt(11);
+            id_n = cursorFinal.getInt(0);
+            nazwaLeku = cursorFinal.getString(1);
+            jakaDawka = cursorFinal.getDouble(2);
+            godzina = cursorFinal.getString(3);
+            data = cursorFinal.getString(4);
+            uzytkownik = cursorFinal.getString(5);
+            id_p = cursorFinal.getInt(6);
+            iloscDni = cursorFinal.getInt(7);
+            rand_val = cursorFinal.getInt(9);
+            dzwiek = cursorFinal.getInt(10);
+            czyWibracja = cursorFinal.getInt(11);
 
         }
 
@@ -306,7 +309,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
         } else if (type == 2) {
 
-            intent.putExtra("tresc", uzytkownik + "  |  " + godzina + "  |  już czas, aby wziąć: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
+            intent.putExtra("tresc", uzytkownik + "  |  " + godzina + "  |  Weź: " + nazwaLeku + " (Dawka: " + jakaDawka + ")");
             intent.putExtra("coPokazac", 0);
             intent.putExtra("czyPowtarzanyAlarm", true);
             intent.putExtra("id", id_n);
@@ -327,15 +330,11 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
     private void setAlarm(Context context) {
 
-        Toast.makeText(context, "Dodanie alarmu dla: " + hourAndDateSDF.format(cal.getTime()), Toast.LENGTH_LONG).show();
-
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, rand_val, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         assert alarmManager != null;
         if (Build.VERSION.SDK_INT < 23) {
-            if (Build.VERSION.SDK_INT >= 19)
-                alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
-            else alarmManager.set(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+            alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
         } else {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
         }
@@ -365,7 +364,7 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
         dzisiejszaData = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault()).format(new Date());
         hourAndDateSDF = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
         onlyDateSDF = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        cursor = myDb.getAllData_WIZYTY();
+        cursorFinal = myDb.getAllData_WIZYTY();
         this.context = context;
 
     }
@@ -378,11 +377,9 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
         if (cursor.getInt(0) == 1) {
             myDb.remove_PRZYPOMNIENIE(id_p);
-            Log.d("NotificationReceiver", "Usunięcie przypomnienia o id: " + id_p);
         }
 
         myDb.remove_NOTYFIKACJA(id_n);
-        Log.d("NotificationReceiver", "Usunięcie notyfikacji o id:" + id_n);
 
     }
 
@@ -393,7 +390,6 @@ public class BootCompletedNotificationReceiver extends BroadcastReceiver {
 
         if (cursor.getInt(0) == 0) {
             myDb.remove_PRZYPOMNIENIE(id_p);
-            Log.d("NotificationReceiver", "Usunięcie przypomnienia o id: " + id_p);
         } else if (cursor.getInt(0) == 1) {
             myDb.updateDays_PRZYPOMNIENIE(id_p, iloscDni);
         } else {

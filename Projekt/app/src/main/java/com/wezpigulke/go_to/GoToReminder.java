@@ -222,18 +222,12 @@ public class GoToReminder extends Fragment {
                 assert alarmManager != null;
                 alarmManager.cancel(pendingIntent);
 
-                Log.d("========ALARM==========", "Anulacja:" + cursor.getInt(0));
-
                 myDb.remove_NOTYFIKACJA(cursorTemp.getInt(0));
-
-                Log.d("GoToReminder", "Usunięcie notyfikacji o id:" + cursor.getInt(0));
 
             }
         }
 
         myDb.remove_PRZYPOMNIENIE(idd);
-        Log.d("GoToReminder", "Usunięcie przypomnienia o id: " + idd);
-
         aktualizujBaze();
 
     }
