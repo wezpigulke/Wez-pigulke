@@ -9,6 +9,7 @@
             android:id="@+id/today"
             android:icon="@drawable/today"
             android:title="Dzisiaj" />
+
         <item
             android:id="@+id/reminder"
             android:icon="@drawable/reminder"

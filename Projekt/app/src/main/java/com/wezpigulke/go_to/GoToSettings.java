@@ -339,7 +339,6 @@ public class GoToSettings extends Fragment {
 
                 if (cursor.getCount() != 0) {
                     while (cursor.moveToNext()) {
-
                         table_result = new PdfPTable(6);
                         addNewCells();
                         statusHistorii = cursor.getString(7);
@@ -358,7 +357,6 @@ public class GoToSettings extends Fragment {
                                 cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                                 break;
                         }
-
                         table_result.addCell(cell);
                         document.add(table_result);
                     }

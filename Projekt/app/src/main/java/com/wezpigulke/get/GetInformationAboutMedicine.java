@@ -35,7 +35,6 @@ public class GetInformationAboutMedicine extends AsyncTask<Void, Void, Void> {
             int medicineCount = Integer.parseInt(elements.text());
             if (medicineCount > 50) medicineCount = 50;
             String medicineLink, medicineType, medicineDose, medicinePack, medicinePrice;
-
             elements = doc.select("div.results-drug-list-block.block-shadow > table > tbody > tr");
 
             for (int i = 0; i < medicineCount; i++) {

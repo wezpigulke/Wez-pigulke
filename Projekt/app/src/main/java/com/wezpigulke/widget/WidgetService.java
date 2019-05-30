@@ -13,3 +13,5 @@ public class WidgetService extends RemoteViewsService {
         return new WidgetAdapter(this);
     }
 }
+
+

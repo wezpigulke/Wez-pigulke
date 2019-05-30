@@ -110,10 +110,8 @@ public class GoToTypeMeasurement extends Fragment {
                 results.add(new MeasurementType(cursor.getInt(0), cursor.getString(1)));
             }
         }
-
         MeasurementTypeListAdapter adapter = new MeasurementTypeListAdapter(getActivity(), results);
         listView.setAdapter(adapter);
-
     }
 
     public void dialogRemove() {

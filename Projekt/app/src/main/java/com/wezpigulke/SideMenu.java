@@ -123,36 +123,36 @@ public class SideMenu extends AppCompatActivity implements NavigationView.OnNavi
             case R.id.today:
                 fragment = new GoToToday();
                 break;
-            case R.id.reminder:
-                fragment = new GoToReminder();
-                break;
-            case R.id.listOfMedicine:
-                fragment = new GoToMedicine();
-                break;
-            case R.id.listOfDoctors:
-                fragment = new GoToDoctors();
-                break;
-            case R.id.listOfVisit:
-                fragment = new GoToVisit();
-                break;
-            case R.id.listOfTests:
-                fragment = new GoToMeasurement();
-                break;
-            case R.id.listOfTestsType:
-                fragment = new GoToTypeMeasurement();
-                break;
-            case R.id.listOfNotes:
-                fragment = new GoToNotes();
-                break;
-            case R.id.listOfProfiles:
-                fragment = new GoToProfiles();
-                break;
-            case R.id.settings:
-                fragment = new GoToSettings();
-                break;
-            case R.id.aboutAuthor:
-                fragment = new GoToAuthor();
-                break;
+                case R.id.reminder:
+                    fragment = new GoToReminder();
+                    break;
+                case R.id.listOfMedicine:
+                    fragment = new GoToMedicine();
+                    break;
+                case R.id.listOfDoctors:
+                    fragment = new GoToDoctors();
+                    break;
+                case R.id.listOfVisit:
+                    fragment = new GoToVisit();
+                    break;
+                case R.id.listOfTests:
+                    fragment = new GoToMeasurement();
+                    break;
+                case R.id.listOfTestsType:
+                    fragment = new GoToTypeMeasurement();
+                    break;
+                case R.id.listOfNotes:
+                    fragment = new GoToNotes();
+                    break;
+                case R.id.listOfProfiles:
+                    fragment = new GoToProfiles();
+                    break;
+                case R.id.settings:
+                    fragment = new GoToSettings();
+                    break;
+                case R.id.aboutAuthor:
+                    fragment = new GoToAuthor();
+                    break;
         }
 
         if (fragment != null) {

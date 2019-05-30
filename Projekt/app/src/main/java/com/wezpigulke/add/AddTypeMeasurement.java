@@ -17,21 +17,17 @@ import java.util.Objects;
 public class AddTypeMeasurement extends AppCompatActivity {
 
     private DatabaseHelper myDb;
-    private Button dodaj;
     private EditText typBadania;
     private Cursor cursor;
 
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         myDb = new DatabaseHelper(this);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_type_measurement);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-
-        dodaj = findViewById(R.id.addTypeMeasurementButton);
+        Button dodaj = findViewById(R.id.addTypeMeasurementButton);
         typBadania = findViewById(R.id.typBadania);
 
         dodaj.setOnClickListener(v -> {
@@ -45,20 +41,17 @@ public class AddTypeMeasurement extends AppCompatActivity {
             } else openDialog("Wpisz typ badania");
         });
     }
-
     public void openDialog(String warning) {
         OpenDialog openDialog = new OpenDialog();
         openDialog.setValue(warning);
         openDialog.show(getSupportFragmentManager(), "AddTypeMeasurement");
     }
-
     @Override
     public void onBackPressed() {
         if (cursor != null) cursor.close();
         super.onBackPressed();
         finish();
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -68,6 +61,7 @@ public class AddTypeMeasurement extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
 
 

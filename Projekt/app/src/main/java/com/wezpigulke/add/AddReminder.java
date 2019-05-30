@@ -1104,12 +1104,17 @@ public class AddReminder extends AppCompatActivity {
         Intent intx = new Intent(getApplicationContext(), NotificationReceiver.class);
         putExtraIntent(intx, trescAlarmu, godzinaPrzypomnienia, dataPrzypomnienia, id, rand_val);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intx, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), rand_val, intx,
+                                                                 PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         assert alarmManager != null;
 
-        if (Build.VERSION.SDK_INT < 23) alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
-        else alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+        if (Build.VERSION.SDK_INT < 23) {
+            alarmManager.setExact(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+        }
+        else {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, cal.getTimeInMillis(), pendingIntent);
+        }
 
     }
 

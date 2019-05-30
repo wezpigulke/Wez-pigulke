@@ -30,11 +30,9 @@ public class GetMedicineInformation extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-
         try {
             contentHeaders = new ArrayList<>();
             contentInformation = new ArrayList<>();
-
             Document doc = Jsoup.connect("http://bazalekow.leksykon.com.pl/" + url).get();
             int contentSize = doc.select("span.descr_common > span.descr_section").size();
 
